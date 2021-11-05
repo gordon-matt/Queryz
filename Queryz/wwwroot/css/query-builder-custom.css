@@ -1,0 +1,88 @@
+﻿.query-builder .rules-group-container {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 14px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+    width: 100%;
+}
+
+.rules-group-header label.btn {
+    cursor: pointer;
+}
+
+/* Mimic .fal */
+.glyphicon {
+    font-family: 'Font Awesome 5 Pro';
+    font-weight: 300;
+}
+
+/* Mimic .fa-check-square-o */
+.glyphicon-check:before {
+    content: '\f046';
+}
+
+/* Mimic .fa-plus */
+.glyphicon-plus:before {
+    content: '\f067';
+}
+
+/* Mimic .fa-plus-circle */
+.glyphicon-plus-sign:before {
+    content: '\f055';
+}
+
+/* Mimic .fa-random */
+.glyphicon-random:before {
+    content: '\f074';
+}
+
+/* Mimic .fa-times */
+.glyphicon-remove:before {
+    content: '\f00d';
+}
+
+/* Mimic .fa-sort */
+.glyphicon-sort:before {
+    content: '\f0dc';
+}
+
+/* Mimic .fa-square-o */
+.glyphicon-unchecked:before {
+    content: '\f096';
+}
+
+/* Mimic .fa-warning */
+.glyphicon-warning-sign:before {
+    content: '\f071';
+}
+
+.pull-right {
+    float: right;
+}
+
+/* Custom CSS for "hide/show" checkbox in design mode */
+.rule-container input[type=checkbox][data-show="rule"] {
+    display: none !important;
+}
+
+    .rule-container input[type=checkbox][data-show="rule"] + label:before {
+        font-family: 'Font Awesome 5 Pro';
+        font-weight: 300;
+        font-size: 1.2em;
+        content: "\f06e";
+        color: green;
+        letter-spacing: 10px;
+        cursor:pointer;
+    }
+
+    .rule-container input[type=checkbox][data-show="rule"]:checked + label:before {
+        content: "\f070";
+        color: red;
+        letter-spacing: 10px;
+    }
+
+/* END: Custom CSS for "hide/show" checkbox in design mode */

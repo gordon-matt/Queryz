@@ -1,0 +1,97 @@
+﻿@using System.Data
+@using Queryz.Controllers
+
+@model PreviewModel
+
+@{
+    int columnCount = Model.Data.Columns.Count;
+}
+
+<h2>@Model.ReportName</h2>
+
+<p>
+    This is a preview of the top 10 rows from your report.
+</p>
+<br />
+
+<table class="table table-bordered table-striped">
+    <thead class="bg-secondary text-white">
+        <tr>
+            <td colspan="@columnCount">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download-modal">
+                    <i class="fal fa-download"></i>
+                    Download
+                </button>
+            </td>
+        </tr>
+        <tr>
+            @foreach (DataColumn column in Model.Data.Columns)
+            {
+                <th>@column.ColumnName</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DataRow row in Model.Data.Rows)
+        {
+            <tr>
+                @foreach (DataColumn column in Model.Data.Columns)
+                {
+                    <td>@Html.Raw(row[column.ColumnName].ToString())</td>
+                }
+            </tr>
+        }
+    </tbody>
+    <tfoot class="bg-secondary text-white">
+        <tr>
+            <td colspan="@columnCount">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#download-modal">
+                    <i class="fal fa-download"></i>
+                    Download
+                </button>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+@using (var modal = Html.ExtensoUI().Begin(new Modal("download-modal")))
+{
+    using (var header = modal.BeginHeader("Download Options")) { }
+    using (var body = modal.BeginBody())
+    {
+        <form method="post" action="@Url.Action("Download", "ReportBuilder", new { id = Model.ReportId })" target="_blank">
+            <div class="form-group">
+                <label for="FileFormat">File Format: </label>
+                @Html.DropDownList(
+                    "FileFormat",
+                    Html.GetEnumSelectList<DownloadFileFormat>(),
+                    new { @class = "form-control", onchange = "onFileFormatChanged()" })
+            </div>
+
+            <section id="delimited-options">
+                <div class="form-group">
+                    <label for="Delimiter">Delimiter: </label>
+                    @Html.DropDownList(
+                        "Delimiter",
+                        Html.GetEnumSelectList<DownloadFileDelimiter>(),
+                        new { @class = "form-control" })
+                </div>
+                <div class="form-group form-check">
+                    @Html.CheckBox("AlwaysEnquote", true, new { @class = "form-check-input" })
+                    <label for="AlwaysEnquote" class="form-check-label">Always Enquote</label>
+                </div>
+                <div class="form-group form-check">
+                    @Html.CheckBox("OutputColumnNames", true, new { @class = "form-check-input" })
+                    <label for="OutputColumnNames" class="form-check-label">Output Column Names</label>
+                </div>
+            </section>
+
+            <div class="form-group">
+                <div class="float-right">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+
+        </form>
+    }
+}

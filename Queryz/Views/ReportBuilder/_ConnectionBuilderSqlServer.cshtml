@@ -1,0 +1,142 @@
+﻿<div id="connection-details-content">
+    <div class="form-row">
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_Server", "Server", new { @class = "control-label" })
+            @Html.TextBox("Report_Server", null, new { @class = "form-control", data_bind = "value: reportModel.step1.server, event: { blur: $root.getDatabases }", required = "required" })
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_Database", "Database", new { @class = "control-label" })
+            <select id="Report_Database" name="Report_Database" class="form-control" data-bind="value: reportModel.step1.database" required></select>
+            <span id="databases-loading-progress" style="display: none;" class="text-info">Please Wait…</span>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="form-check">
+                @Html.CheckBox("Report_IntegratedSecurity", new { @class = "form-check-input", data_bind = "checked: reportModel.step1.integratedSecurity, event: { change:reportModel.step1.getDatabases }" })
+                <label class="form-check-label">Integrated Security</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_UserId", "User ID", new { @class = "control-label" })
+            @Html.TextBox("Report_UserId", null, new { @class = "form-control", data_bind = "value: reportModel.step1.userId, enable: reportModel.step1.integratedSecurity() == false, event: { blur: reportModel.step1.getDatabases }" })
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_Password", "Password", new { @class = "control-label" })
+            @Html.Password("Report_Password", null, new { @class = "form-control", data_bind = "value: reportModel.step1.password, enable: reportModel.step1.integratedSecurity() == false, event: { blur: reportModel.step1.getDatabases }" })
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function updateModel(viewModel, data) {
+        viewModel.server = ko.observable(null);
+        viewModel.database = ko.observable(null);
+        viewModel.integratedSecurity = ko.observable(false);
+        viewModel.userId = ko.observable(null);
+        viewModel.password = ko.observable(null);
+
+        viewModel.getDatabases = function () {
+            if (!viewModel.server()) {
+                return false;
+            }
+
+            if (!viewModel.integratedSecurity() && (!viewModel.userId() || !viewModel.password())) {
+                return false;
+            }
+
+            var progress = $("#databases-loading-progress");
+            progress.show();
+
+            var select = $('#Report_Database');
+            select.find('option').remove();
+
+            var connectionInfo = {
+                Server: viewModel.server(),
+                IntegratedSecurity: viewModel.integratedSecurity(),
+                UserId: viewModel.userId(),
+                Password: viewModel.password()
+            };
+
+            if (viewModel.database()) {
+                connectionInfo.Database = viewModel.database();
+            }
+            
+            $.ajax({
+                url: "/report-builder/get-databases",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    provider: 0, // SQL Server
+                    connectionDetails: ko.mapping.toJSON(connectionInfo)
+                }),
+                dataType: "json",
+                async: false
+            })
+            .done(function (json) {
+                if (json.success) {
+                    $(json.databases).each(function (i, val) {
+                        select.append($('<option>', {
+                            value: val,
+                            text: val
+                        }));
+                    });
+                    progress.hide();
+                    // Hack to set first value, else user will see first option is selected, but knockout thinks nothing selected (and get error)
+                    viewModel.database(($("#Report_Database option:first").val()));
+                }
+                else {
+                    $.notify(json.message, "error");
+                    console.log(json.message);
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                $.notify("Could not load databases", "error");
+                console.log(textStatus + ': ' + errorThrown);
+            });
+        };
+
+        if (data) {
+            if (data.Server) {
+                viewModel.server(data.Server);
+            }
+            if (data.IntegratedSecurity && (typeof data.IntegratedSecurity === 'boolean')) {
+                viewModel.integratedSecurity(data.IntegratedSecurity);
+            }
+            if (data.UserId) {
+                viewModel.userId(data.UserId);
+            }
+            if (data.Password) {
+                viewModel.password(data.Password);
+            }
+            if (data.Database) {
+                viewModel.getDatabases();
+                viewModel.database(data.Database);
+            }
+        }
+    };
+
+    function cleanUp(viewModel) {
+        delete viewModel.server;
+        delete viewModel.database;
+        delete viewModel.integratedSecurity;
+        delete viewModel.userId;
+        delete viewModel.password;
+    };
+
+    function onBeforeSave(viewModel) {
+        var data = {
+            Server: viewModel.server(),
+            Database: viewModel.database(),
+            IntegratedSecurity: viewModel.integratedSecurity(),
+            UserId: viewModel.userId(),
+            Password: viewModel.password()
+        };
+
+        viewModel.connectionDetails(ko.mapping.toJSON(data));
+    };
+</script>

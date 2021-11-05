@@ -1,0 +1,11 @@
+﻿#wizard > div.content {
+    overflow: scroll;
+}
+
+.wizard.vertical > .steps {
+    width: 20%;
+}
+
+.wizard.vertical > .content{
+    width: 75%;
+}

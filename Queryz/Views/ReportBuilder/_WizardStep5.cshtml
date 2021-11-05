@@ -1,0 +1,48 @@
+﻿@using Extenso.Data.QueryBuilder
+
+<form id="wizard-form-5">
+    <input type="hidden" name="ReportId" data-bind="value: reportModel.step5.reportId" />
+    <table class="table table-bordered">
+        <thead class="bg-secondary text-white">
+            <tr>
+                <th></th>
+                <th>Column</th>
+                <th>Direction</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="sortable: reportModel.step5.sortings">
+            <tr>
+                <td style="cursor:pointer">
+                    <i class="fal fa-arrows"></i>
+                </td>
+
+                <td>
+                    <select id="Sorting_Column" class="form-control" data-bind="options: $root.reportModel.step5.availableColumns, value: columnName, attr: { name: 'Sortings[' + $index() + '].ColumnName' }" required></select>
+                </td>
+                <td>
+                    @Html.DropDownList(
+                        "Sorting_SortDirection",
+                        WebEnumExtensions.ToSelectList<SortDirection>(),
+                        new { @class = "form-control", data_bind = "value: sortDirection, attr: { name: 'Sortings[' + $index() + '].SortDirection' }", required = "required" })
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-block btn-danger" data-bind="click: $root.reportModel.step5.removeSorting">
+                        <i class="fal fa-times"></i>
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot class="bg-secondary text-white">
+            <tr>
+                <td colspan="4" style="text-align:right">
+                    <button type="button" class="btn btn-primary" data-bind="click: reportModel.step5.addSorting">
+                        <i class="fal fa-plus"></i>
+                        Add
+                    </button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</form>

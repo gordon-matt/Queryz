@@ -1,0 +1,385 @@
+﻿@inject RoleManager<ApplicationRole> RoleManager
+
+@{
+    string rtlClass = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft ? "k-rtl" : string.Empty;
+    bool isAdminUser = User.IsInRole(Constants.Roles.Administrators);
+    bool isEditor = User.IsInRole(Constants.Roles.ReportBuilderEditors);
+}
+
+@section Styles {
+    <environment include="Development">
+        <link rel="stylesheet" type="text/css" href="~/lib/jquery-steps/demo/css/jquery.steps.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-slider/dist/css/bootstrap-slider.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/selectize/dist/css/selectize.bootstrap3.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-select/dist/css/bootstrap-select.css" />
+        <link rel="stylesheet" type="text/css" href="~/jQuery-QueryBuilder/css/query-builder.default.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/jquery-steps@1.1.0/demo/css/jquery.steps.min.css">
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.standalone.min.css"
+              integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U="
+              crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap-slider@10.6.2/dist/css/bootstrap-slider.min.css"
+              integrity="sha256-G3IAYJYIQvZgPksNQDbjvxd/Ca1SfCDFwu2s2lt0oGo="
+              crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/selectize@0.12.6/dist/css/selectize.bootstrap3.css"
+              integrity="sha256-9xc5FBFR3TnnIx/G9SEbdMm0BWyGNRDH1XITfATut8Q="
+              crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap-select@1.13.11/dist/css/bootstrap-select.min.css"
+              integrity="sha256-xX+DsGeZhhgAtFGlA5iy4tpVy7wgoXKcFu13+B1qh7k="
+              crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/jQuery-QueryBuilder@2.5.2/dist/css/query-builder.default.min.css"
+              integrity="sha256-t0OO5vutCzErqiAiLqVcVPbR3krMH9aTnzbtbjmiFUU="
+              crossorigin="anonymous" />
+    </environment>
+
+    <link rel="stylesheet" type="text/css" href="~/css/jquery.steps.customizations.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/query-builder-custom.css" />
+}
+
+@Html.Hidden("GridPageSize", 10)
+
+<div id="grid-section" class="row">
+
+    @if (isAdminUser)
+    {
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
+            <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.create">
+                <i class="fal fa-plus"></i>
+                Add Group
+            </button>
+
+            <div class="float-right">
+                <button type="button" class="btn btn-secondary" data-bind="click: showDataSources">
+                    <i class="fal fa-database"></i>
+                    Data Sources
+                </button>
+                <button type="button" class="btn btn-success" data-bind="click: showEnumerations">
+                    <i class="fal fa-binoculars"></i>
+                    Enumerations
+                </button>
+            </div>
+        </div>
+    }
+
+    <div class="col-md-12 @rtlClass">
+        <div id="Grid"></div>
+    </div>
+</div>
+
+@if (isAdminUser)
+{
+    <div id="report-group-form-section" class="row" style="display:none">
+        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+            @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
+            {
+                using (var header = panel.BeginHeader("Details")) { }
+                using (var body = panel.BeginBody())
+                {
+                    <form id="report-group-form-section-form" role="form">
+                        <fieldset>
+                            <legend id="report-group-form-section-legend"></legend>
+
+                            <div class="form-row">
+                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+                                    @Html.Label("Name", "Name", new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fal fa-file"></i>
+                                            </span>
+                                        </div>
+                                        @Html.TextBox("Name", null, new { @class = "form-control", data_bind = "value: reportGroupModel.name" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+                                    <label for="TimeZoneId">Time Zone</label>
+                                    @Html.TimeZonesDropDownList("TimeZoneId", htmlAttributes: new { @class = "form-control", data_bind = "value: reportGroupModel.timeZoneId" }, emptyText: string.Empty)
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
+                                    @Html.Label("Roles", "Roles", new { @class = "control-label" })
+                                    <div class="two-columns">
+                                        @Html.Queryz().RolesCheckBoxList(
+                                            RoleManager,
+                                            "Roles",
+                                            null,
+                                            labelHtmlAttributes: new { @class = "form-check-label" },
+                                            checkboxHtmlAttributes: new { @class = "form-check-input", data_bind = "checked: reportGroupModel.roles" },
+                                            inputInsideLabel: true,
+                                            wrapInDiv: true,
+                                            wrapperHtmlAttributes: new { @class = "form-check" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="float-right">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: reportGroupModel.cancel">Cancel</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.save"><i class="fal fa-save"></i> Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                }
+            }
+        </article>
+    </div>
+
+    <div id="dataSources-grid-section" class="row" style="display:none">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
+            <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.create">
+                <i class="fal fa-plus"></i>
+                Create
+            </button>
+            <button type="button" class="btn btn-secondary" data-bind="click: dataSourceModel.goBack">
+                <i class="fal fa-arrow-left"></i>
+                Back
+            </button>
+        </div>
+
+        <div class="col-md-12 @rtlClass">
+            <div id="DataSourceGrid"></div>
+        </div>
+    </div>
+
+    <div id="dataSources-form-section" class="row" style="display:none">
+        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+            @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
+            {
+                using (var header = panel.BeginHeader("Details")) { }
+                using (var body = panel.BeginBody())
+                {
+                    <form id="dataSources-form-section-form" role="form">
+                        <fieldset>
+                            <legend id="dataSources-form-section-legend"></legend>
+
+                            <div class="form-row">
+                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+                                    <label for="DataSource_Name">Name</label>
+                                    @Html.TextBox("DataSource_Name", null, new { @class = "form-control", data_bind = "value: dataSourceModel.name" })
+                                </div>
+                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+                                    <label for="DataSource_DataProvider">Data Provider</label>
+                                    @Html.DropDownList("DataSource_DataProvider", WebEnumExtensions.ToSelectList<DataProvider>(emptyText: string.Empty), htmlAttributes: new { @class = "form-control", data_bind = "value: dataSourceModel.dataProvider, event: { change: dataSourceModel.onDataProviderChanged }" })
+                                </div>
+                            </div>
+
+                            <div id="connection-details"></div>
+
+                            <div class="form-row">
+                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="float-right">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: dataSourceModel.cancel">Cancel</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.save"><i class="fal fa-save"></i> Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                }
+            }
+        </article>
+    </div>
+
+    <div id="enumerations-grid-section" class="row" style="display:none">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
+            <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.create">
+                <i class="fal fa-plus"></i>
+                Create
+            </button>
+            <button type="button" class="btn btn-secondary" data-bind="click: enumerationModel.goBack">
+                <i class="fal fa-arrow-left"></i>
+                Back
+            </button>
+        </div>
+
+        <div class="col-md-12 @rtlClass">
+            <div id="EnumerationsGrid"></div>
+        </div>
+    </div>
+
+    <div id="enumerations-form-section" class="row" style="display:none">
+        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+            @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
+            {
+                using (var header = panel.BeginHeader("Details")) { }
+                using (var body = panel.BeginBody())
+                {
+                    <form id="enumerations-form-section-form" role="form">
+                        <fieldset>
+                            <legend id="enumerations-form-section-legend"></legend>
+
+                            <div class="form-row">
+                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+                                    <label for="Enumeration_Name">Name</label>
+                                    @Html.TextBox("Enumeration_Name", null, new { @class = "form-control", data_bind = "value: enumerationModel.name" })
+                                </div>
+
+                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" data-bind="checked: enumerationModel.isBitFlags" />
+                                        <label class="form-check-label">Bit Flags</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @await Html.PartialAsync("_EnumerationValuesTable")
+
+                            <div class="form-row">
+                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="float-right">
+                                        <button type="button" class="btn btn-secondary" data-bind="click: enumerationModel.cancel">Cancel</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.save"><i class="fal fa-save"></i> Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                }
+            }
+        </article>
+    </div>
+}
+
+@if (isAdminUser || isEditor)
+{
+    <div id="wizard-section" class="row" style="display:none">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
+            <a data-bind="click: reportModel.cancel" class="btn btn-secondary text-white">
+                @*<i class="fal fa-arrow-left"></i>*@
+                Cancel
+            </a>
+        </div>
+
+        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+            @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
+            {
+                using (var header = panel.BeginHeader("Create or Edit Report")) { }
+                using (var body = panel.BeginBody())
+                {
+                    <div id="wizard">
+                        <h3>Database Settings</h3>
+                        <section>
+                            @await Html.PartialAsync("_WizardStep1")
+                        </section>
+
+                        <h3>Tables</h3>
+                        <section>
+                            @await Html.PartialAsync("_WizardStep2")
+                        </section>
+
+                        <h3>Columns</h3>
+                        <section>
+                            @await Html.PartialAsync("_WizardStep3")
+                        </section>
+
+                        <h3>Filtering</h3>
+                        <section>
+                            @await Html.PartialAsync("_WizardStep4")
+                        </section>
+
+                        <h3>Sorting</h3>
+                        <section>
+                            @await Html.PartialAsync("_WizardStep5")
+                        </section>
+
+                        <h3>Relationships</h3>
+                        <section>
+                            @await Html.PartialAsync("_WizardStep6")
+                        </section>
+
+                        <h3>Other Options</h3>
+                        <section>
+                            @await Html.PartialAsync("_WizardStep7")
+                        </section>
+                    </div>
+                }
+            }
+        </article>
+    </div>
+}
+
+<script type="text/x-kendo-template" id="reports-template">
+    <div class="reports-grid" id="reports-grid-#=Id#"></div>
+</script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script type="text/javascript" src="~/lib/form2js/src/form2js.min.js"></script>
+
+    <environment include="Development">
+        @*<script type="text/javascript" src="~/lib/form2js/src/form2js.js"></script>*@
+        <script type="text/javascript" src="~/lib/knockout-mapping/dist/knockout.mapping.js"></script>
+        <script type="text/javascript" src="~/lib/knockout-sortable/build/knockout-sortable.js"></script>
+        <script type="text/javascript" src="~/lib/notifyjs-browser/dist/notify.js"></script>
+    </environment>
+    <environment exclude="Development">
+        @*<script src="//cdn.jsdelivr.net/npm/form2js@1.0.0/src/form2js.min.js"></script>*@
+        <script src="//cdn.jsdelivr.net/npm/knockout-mapping@2.6.0/dist/knockout.mapping.min.js" integrity="sha256-AncdToI5RBc9J0Mpz1KE/BW2R9LRwGW6LStEUa4MxCU=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/knockout-sortable@1.1.1/build/knockout-sortable.min.js" integrity="sha256-taysS/xTzY/sODk/x/Jz/NCqUvBD6RMomzCGUjHbVNQ=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        var currentSection = $("#grid-section");
+
+        function switchSection(section) {
+            if (section.attr("id") == currentSection.attr("id")) {
+                return;
+            }
+            currentSection.hide("fast");
+            section.show("fast");
+            currentSection = section;
+        };
+
+        var isAdminUser = @isAdminUser.ToString().ToLowerInvariant();
+        var allowEdit = @((isAdminUser || isEditor).ToString().ToLowerInvariant());
+    </script>
+
+    <script type="text/javascript" src="~/js/App/report-builder/serialize-object.js"></script>
+    <script type="text/javascript" src="~/js/App/report-builder/app.reports.index.js"></script>
+    <script type="text/javascript" src="~/js/jquery.steps.js"></script> @* Customized with "reset" function *@
+
+    <environment include="Development">
+        @*<script type="text/javascript" src="~/lib/jquery-steps/build/jquery.steps.js"></script>*@
+        <script type="text/javascript" src="~/lib/bootbox/bootbox.js"></script>
+        <script type="text/javascript" src="~/lib/moment/moment.js"></script>
+        <script type="text/javascript" src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+        <script type="text/javascript" src="~/lib/microplugin/src/microplugin.js"></script>
+        <script type="text/javascript" src="~/lib/sifter/sifter.js"></script>
+        <script type="text/javascript" src="~/lib/selectize/dist/js/selectize.js"></script>
+        <script type="text/javascript" src="~/lib/bootstrap-select/dist/js/bootstrap-select.js"></script>
+        <script type="text/javascript" src="~/lib/sql-parser-mistic/browser/sql-parser.js"></script>
+        <script type="text/javascript" src="~/lib/interactjs/dist/interact.js"></script>
+        @*<script type="text/javascript" src="~/lib/jQuery-QueryBuilder/dist/js/query-builder.standalone.js"></script>*@
+        <script type="text/javascript" src="~/jQuery-QueryBuilder/js/query-builder.standalone.js"></script>
+    </environment>
+    <environment exclude="Development">
+        @*<script src="//cdn.jsdelivr.net/npm/jquery-steps@1.1.0/build/jquery.steps.min.js" integrity="sha256-yUWanhHkxj+3ow0qZE6AtzP8lZkwLvPagULL6PnZMz0=" crossorigin="anonymous"></script>*@
+        <script src="//cdn.jsdelivr.net/npm/bootbox@4.4.0/bootbox.min.js" integrity="sha256-C2urY+OqJLSraqtjdlohfbUASWG6sat9dP/r+jPvtcQ=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js" integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/bootstrap-slider@10.6.2/dist/bootstrap-slider.min.js" integrity="sha256-oj52qvIP5c7N6lZZoh9z3OYacAIOjsROAcZBHUaJMyw=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/microplugin@0.0.3/src/microplugin.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sifter@0.5.3/sifter.min.js" integrity="sha256-mxM39LWfy+5SpRaErGX16VP6M+saQp36JyvQvkWZk3k=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/selectize@0.12.6/dist/js/selectize.min.js" integrity="sha256-zwkv+PhVN/CSaFNLrcQ/1vQd3vviSPiOEDvu2GxYxQc=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/bootstrap-select@1.13.11/dist/js/bootstrap-select.min.js" integrity="sha256-49+cFFN14Ib7A61zjYlhc4UnmbAPQ0uImp4Sj4JO8TU=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/sql-parser-mistic@1.2.3/browser/sql-parser.min.js" integrity="sha256-WHOrlrLCzeTbo0faeJhWjQo1MvxPalPq8JzvDDw47Qo=" crossorigin="anonymous"></script>
+        <script src="//cdn.jsdelivr.net/npm/interactjs@1.6.2/dist/interact.min.js" integrity="sha256-3kMC7IKSk8Dg0LQ4jbvuFU6hslmD6FCBtikpICo3rXQ=" crossorigin="anonymous"></script>
+        @*<script src="//cdn.jsdelivr.net/npm/jQuery-QueryBuilder@2.5.2/dist/js/query-builder.standalone.min.js" integrity="sha256-4rWMoTWg5M29tfAmyIL4/Jpi8yN7ea+1/r//9lDrjcQ=" crossorigin="anonymous"></script>*@
+        <script type="text/javascript" src="~/jQuery-QueryBuilder/js/query-builder.standalone.min.js"></script>
+    </environment>
+}

@@ -1,0 +1,179 @@
+﻿<div id="connection-details-content">
+    <div class="form-row">
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_Server", "Server", new { @class = "control-label" })
+            @Html.TextBox("Report_Server", null, new { @class = "form-control", data_bind = "value: dataSourceModel.server, event: { blur: $root.getDatabases }", required = "required" })
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_Port", "Port", new { @class = "control-label" })
+            @Html.TextBox("Report_Port", null, new { @class = "form-control", type = "number", data_bind = "value: dataSourceModel.port, event: { blur: $root.getDatabases }", required = "required" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_UserId", "User ID", new { @class = "control-label" })
+            @Html.TextBox("Report_UserId", null, new { @class = "form-control", data_bind = "value: dataSourceModel.userId, event: { blur: dataSourceModel.getDatabases }", required = "required" })
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
+            @Html.Label("Report_Password", "Password", new { @class = "control-label" })
+            @Html.Password("Report_Password", null, new { @class = "form-control", data_bind = "value: dataSourceModel.password, event: { blur: dataSourceModel.getDatabases }", required = "required" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-6 col-sm-6 col-md-8 col-lg-9">
+            @Html.Label("Report_Database", "Database", new { @class = "control-label" })
+            <select id="Report_Database" name="Report_Database" class="form-control" data-bind="value: dataSourceModel.database" required></select>
+            <span id="databases-loading-progress" style="display: none;" class="text-info">Please Wait…</span>
+        </div>
+        <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3">
+            @Html.Label("Report_Schema", "Schema", new { @class = "control-label" })
+            @Html.TextBox("Report_Schema", null, new { @class = "form-control", data_bind = "value: dataSourceModel.schema" })
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function updateModel(viewModel, data) {
+        viewModel.server = ko.observable(null);
+        viewModel.port = ko.observable(5432);
+        viewModel.database = ko.observable(null);
+        viewModel.schema = ko.observable(null);
+        viewModel.userId = ko.observable(null);
+        viewModel.password = ko.observable(null);
+        var customProperties = false;
+
+        viewModel.getDatabases = function () {
+            if (!viewModel.server()) {
+                return false;
+            }
+
+            if (!viewModel.userId() || !viewModel.password()) {
+                return false;
+            }
+
+            var progress = $("#databases-loading-progress");
+            progress.show();
+
+            var select = $('#Report_Database');
+            select.find('option').remove();
+            
+            var connectionInfo = {
+                Server: viewModel.server(),
+                Port: viewModel.port(),
+                UserId: viewModel.userId(),
+                Password: viewModel.password()
+            };
+
+            if (viewModel.database()) {
+                connectionInfo.Database = viewModel.database();
+            }
+
+            $.ajax({
+                url: "/report-builder/get-databases",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    provider: 1, // PG
+                    connectionDetails: ko.mapping.toJSON(connectionInfo)
+                }),
+                dataType: "json",
+                async: false
+            })
+            .done(function (json) {
+                if (json.success) {
+                    $(json.databases).each(function (i, val) {
+                        select.append($('<option>', {
+                            value: val,
+                            text: val
+                        }));
+                    });
+                    progress.hide();
+                    // Hack to set first value, else user will see first option is selected, but knockout thinks nothing selected (and get error)
+                    viewModel.database(($("#Report_Database option:first").val()));
+                }
+                else {
+                    $.notify(json.message, "error");
+                    console.log(json.message);
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                $.notify("Could not load databases", "error");
+                console.log(textStatus + ': ' + errorThrown);
+            });
+        };
+
+        if (data) {
+            if (data.Server) {
+                viewModel.server(data.Server);
+            }
+            if (data.Port) {
+                viewModel.port(data.Port);
+            }
+            if (data.Schema) {
+                viewModel.schema(data.Schema);
+            }
+            if (data.UserId) {
+                viewModel.userId(data.UserId);
+            }
+            if (data.Password) {
+                viewModel.password(data.Password);
+            }
+            if (data.Database) {
+                viewModel.getDatabases();
+                viewModel.database(data.Database);
+            }
+        }
+
+        var dataSourceId = viewModel.id();
+
+        if (dataSourceId > 0) {
+            $.ajax({
+                url: "/report-builder/get-custom-properties/" + dataSourceId,
+                type: "GET",
+                dataType: "json",
+                async: false
+            })
+            .done(function (json) {
+                if (json.success) {
+                    customProperties = json.customProperties;
+                }
+                else {
+                    $.notify(json.message, "error");
+                    console.log(json.message);
+                }
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                $.notify("Could not load custom properties", "error");
+                console.log(textStatus + ': ' + errorThrown);
+            });
+
+            if (customProperties && customProperties["Schema"]) {
+                viewModel.schema(customProperties["Schema"]);
+            }
+        }
+    };
+
+    function cleanUp(viewModel) {
+        delete viewModel.server;
+        delete viewModel.port;
+        delete viewModel.database;
+        delete viewModel.schema;
+        delete viewModel.userId;
+        delete viewModel.password;
+    };
+
+    function onBeforeSave(viewModel) {
+        var data = {
+            Server: viewModel.server(),
+            Port: viewModel.port(),
+            Database: viewModel.database(),
+            Schema: viewModel.schema(),
+            UserId: viewModel.userId(),
+            Password: viewModel.password()
+        };
+
+        viewModel.connectionDetails(ko.mapping.toJSON(data));
+    };
+</script>
