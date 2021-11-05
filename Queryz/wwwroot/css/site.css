@@ -69,3 +69,57 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.reports-grid {
+    border-style: dashed;
+    border-width: 2px;
+    border-color: black;
+}
+.two-columns {
+    -webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+}
+
+.wizard .content {
+    min-height: 100px;
+}
+
+    .wizard .content > .body {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        position: absolute;
+    }
+
+    .wizard .content .body.current {
+        position: relative;
+    }
+
+.wizard > .content > .body ul.dropdown-menu > li {
+    display: inherit !important;
+}
+
+.visible-icon-checkbox {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+    .visible-icon-checkbox + label:before {
+        font-family: 'Font Awesome 5 Pro';
+        font-weight: 300;
+        font-size: 1.2em;
+        content: "\f06e";
+        color: green;
+        letter-spacing: 10px;
+        cursor: pointer;
+    }
+
+    .visible-icon-checkbox:checked + label:before {
+        content: "\f070";
+        color: red;
+        letter-spacing: 10px;
+    }

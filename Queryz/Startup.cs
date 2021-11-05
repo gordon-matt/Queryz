@@ -12,6 +12,7 @@ using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,13 +45,20 @@ namespace Queryz
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    options.Password.
+            //});
+
             services.AddOData();
 
-            services.AddControllersWithViews();
+            services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddRazorPages();
 
             services.AddSession();

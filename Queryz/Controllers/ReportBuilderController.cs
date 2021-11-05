@@ -37,7 +37,7 @@ namespace Queryz.Controllers
         public bool OutputColumnNames { get; set; } = true;
     }
 
-    //[Authorize]
+    [Authorize]
     [Route("report-builder")]
     public class ReportBuilderController : Controller
     {
@@ -452,8 +452,15 @@ namespace Queryz.Controllers
         }
 
         [Route("")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            //// Just for getting things up and running:
+            //await roleManager.CreateAsync(new ApplicationRole(Constants.Roles.Administrators));
+            //await roleManager.CreateAsync(new ApplicationRole(Constants.Roles.ReportBuilderEditors));
+            //await roleManager.CreateAsync(new ApplicationRole(Constants.Roles.ReportBuilderUsers));
+            //var user = await userManager.FindByEmailAsync("admin@mysite.com");
+            //await userManager.AddToRoleAsync(user, Constants.Roles.Administrators);
+
             return View();
         }
 

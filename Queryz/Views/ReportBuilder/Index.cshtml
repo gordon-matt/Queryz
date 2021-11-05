@@ -51,17 +51,17 @@
     {
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
             <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.create">
-                <i class="fal fa-plus"></i>
+                <i class="fa fa-plus"></i>
                 Add Group
             </button>
 
             <div class="float-right">
                 <button type="button" class="btn btn-secondary" data-bind="click: showDataSources">
-                    <i class="fal fa-database"></i>
+                    <i class="fa fa-database"></i>
                     Data Sources
                 </button>
                 <button type="button" class="btn btn-success" data-bind="click: showEnumerations">
-                    <i class="fal fa-binoculars"></i>
+                    <i class="fa fa-binoculars"></i>
                     Enumerations
                 </button>
             </div>
@@ -92,7 +92,7 @@
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">
-                                                <i class="fal fa-file"></i>
+                                                <i class="fa fa-file"></i>
                                             </span>
                                         </div>
                                         @Html.TextBox("Name", null, new { @class = "form-control", data_bind = "value: reportGroupModel.name" })
@@ -126,7 +126,7 @@
                                 <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="float-right">
                                         <button type="button" class="btn btn-secondary" data-bind="click: reportGroupModel.cancel">Cancel</button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.save"><i class="fal fa-save"></i> Save</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.save"><i class="fa fa-save"></i> Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -140,11 +140,11 @@
     <div id="dataSources-grid-section" class="row" style="display:none">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
             <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.create">
-                <i class="fal fa-plus"></i>
+                <i class="fa fa-plus"></i>
                 Create
             </button>
             <button type="button" class="btn btn-secondary" data-bind="click: dataSourceModel.goBack">
-                <i class="fal fa-arrow-left"></i>
+                <i class="fa fa-arrow-left"></i>
                 Back
             </button>
         </div>
@@ -182,7 +182,7 @@
                                 <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="float-right">
                                         <button type="button" class="btn btn-secondary" data-bind="click: dataSourceModel.cancel">Cancel</button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.save"><i class="fal fa-save"></i> Save</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.save"><i class="fa fa-save"></i> Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -196,11 +196,11 @@
     <div id="enumerations-grid-section" class="row" style="display:none">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
             <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.create">
-                <i class="fal fa-plus"></i>
+                <i class="fa fa-plus"></i>
                 Create
             </button>
             <button type="button" class="btn btn-secondary" data-bind="click: enumerationModel.goBack">
-                <i class="fal fa-arrow-left"></i>
+                <i class="fa fa-arrow-left"></i>
                 Back
             </button>
         </div>
@@ -241,7 +241,7 @@
                                 <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="float-right">
                                         <button type="button" class="btn btn-secondary" data-bind="click: enumerationModel.cancel">Cancel</button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.save"><i class="fal fa-save"></i> Save</button>
+                                        <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.save"><i class="fa fa-save"></i> Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -258,7 +258,7 @@
     <div id="wizard-section" class="row" style="display:none">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
             <a data-bind="click: reportModel.cancel" class="btn btn-secondary text-white">
-                @*<i class="fal fa-arrow-left"></i>*@
+                @*<i class="fa fa-arrow-left"></i>*@
                 Cancel
             </a>
         </div>

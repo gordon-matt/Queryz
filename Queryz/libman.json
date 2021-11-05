@@ -170,11 +170,6 @@
         "index.min.js"
       ]
     },
-
-    {
-      "library": "font-awesome@4.7.0",
-      "destination": "wwwroot/lib/font-awesome/"
-    },
     {
       "library": "form2js@1.0.0",
       "destination": "wwwroot/lib/form2js/",
@@ -206,7 +201,6 @@
         "dist/jquery.min.map"
       ]
     },
-
     {
       "library": "jquery-steps@1.1.0",
       "destination": "wwwroot/lib/jquery-steps/",
@@ -221,26 +215,6 @@
         "demo/css/main.min.css",
         "demo/css/normalize.css",
         "demo/css/normalize.min.css"
-      ]
-    },
-    {
-      "library": "jquery-ui-dist@1.12.1",
-      "destination": "wwwroot/lib/jquery-ui-dist/",
-      "files": [
-        "images/ui-icons_444444_256x240.png",
-        "images/ui-icons_555555_256x240.png",
-        "images/ui-icons_777620_256x240.png",
-        "images/ui-icons_777777_256x240.png",
-        "images/ui-icons_cc0000_256x240.png",
-        "images/ui-icons_ffffff_256x240.png",
-        "jquery-ui.theme.min.css",
-        "jquery-ui.theme.css",
-        "jquery-ui.structure.min.css",
-        "jquery-ui.structure.css",
-        "jquery-ui.min.js",
-        "jquery-ui.min.css",
-        "jquery-ui.js",
-        "jquery-ui.css"
       ]
     },
     {
@@ -288,7 +262,6 @@
         "src/microplugin.min.js"
       ]
     },
-
     {
       "library": "moment@2.24.0",
       "destination": "wwwroot/lib/moment/"
@@ -305,7 +278,6 @@
         "dist/notify.min.js"
       ]
     },
-
     {
       "library": "selectize@0.12.6",
       "destination": "wwwroot/lib/selectize/",
@@ -354,6 +326,25 @@
       "files": [
         "qrcode.js",
         "qrcode.min.js"
+      ]
+    },
+    {
+      "library": "jquery-ui-dist@1.12.1",
+      "destination": "wwwroot/lib/jquery-ui-dist/"
+    },
+    {
+      "library": "font-awesome@4.7.0",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/font-awesome.css",
+        "css/font-awesome.css.map",
+        "css/font-awesome.min.css",
+        "fonts/fontawesome-webfont.eot",
+        "fonts/fontawesome-webfont.svg",
+        "fonts/fontawesome-webfont.ttf",
+        "fonts/fontawesome-webfont.woff",
+        "fonts/fontawesome-webfont.woff2",
+        "fonts/FontAwesome.otf"
       ]
     }
   ]

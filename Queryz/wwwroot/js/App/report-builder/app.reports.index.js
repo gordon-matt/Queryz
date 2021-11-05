@@ -92,10 +92,10 @@ var DataSourceModel = function (parent) {
                 template:
                     '<div class="btn-group">' +
                     '<a data-bind="click: dataSourceModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
-                    '<i class="fal fa-edit"></i></a>' +
+                    '<i class="fa fa-edit"></i></a>' +
 
                     '<a data-bind="click: dataSourceModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
-                    '<i class="fal fa-times"></i></a>',
+                    '<i class="fa fa-times"></i></a>',
                 attributes: { "class": "text-center" },
                 filterable: false,
                 width: 150
@@ -393,10 +393,10 @@ var EnumerationModel = function (parent) {
                 template:
                     '<div class="btn-group">' +
                         '<a data-bind="click: enumerationModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
-                        '<i class="fal fa-edit"></i></a>' +
+                        '<i class="fa fa-edit"></i></a>' +
 
                         '<a data-bind="click: enumerationModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
-                        '<i class="fal fa-times"></i></a>' +
+                        '<i class="fa fa-times"></i></a>' +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
@@ -635,13 +635,13 @@ var ReportGroupModel = function (parent) {
                     (
                         !isAdminUser ? ' ' :
                         '<a data-bind="click: reportGroupModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
-                        '<i class="fal fa-edit"></i></a>' +
+                        '<i class="fa fa-edit"></i></a>' +
 
                         '<a data-bind="click: reportGroupModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
-                        '<i class="fal fa-times"></i></a>'
+                        '<i class="fa fa-times"></i></a>'
                     ) +
                         '<a data-bind="click: reportModel.create.bind($data,#=Id#)" class="btn btn-dark text-white" title="Create Report">' +
-                        '<i class="fal fa-plus"></i></a>' +
+                        '<i class="fa fa-plus"></i></a>' +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
@@ -735,18 +735,18 @@ var ReportGroupModel = function (parent) {
                 template: !allowEdit ?
                     '<div class="btn-group">' +
                         '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
-                        '<i class="fal fa-play"></i></a>' +
+                        '<i class="fa fa-play"></i></a>' +
                     '</div>' :
 
                     '<div class="btn-group">' +
                         '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
-                        '<i class="fal fa-play"></i></a>' +
+                        '<i class="fa fa-play"></i></a>' +
 
                         '<a data-bind="click: reportModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
-                        '<i class="fal fa-edit"></i></a>' +
+                        '<i class="fa fa-edit"></i></a>' +
 
                         '<a data-bind="click: reportModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
-                        '<i class="fal fa-times"></i></a>' +
+                        '<i class="fa fa-times"></i></a>' +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,

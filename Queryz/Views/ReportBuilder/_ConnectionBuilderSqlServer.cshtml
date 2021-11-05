@@ -2,11 +2,11 @@
     <div class="form-row">
         <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
             @Html.Label("Report_Server", "Server", new { @class = "control-label" })
-            @Html.TextBox("Report_Server", null, new { @class = "form-control", data_bind = "value: reportModel.step1.server, event: { blur: $root.getDatabases }", required = "required" })
+            @Html.TextBox("Report_Server", null, new { @class = "form-control", data_bind = "value: dataSourceModel.server, event: { blur: $root.getDatabases }", required = "required" })
         </div>
         <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
             @Html.Label("Report_Database", "Database", new { @class = "control-label" })
-            <select id="Report_Database" name="Report_Database" class="form-control" data-bind="value: reportModel.step1.database" required></select>
+            <select id="Report_Database" name="Report_Database" class="form-control" data-bind="value: dataSourceModel.database" required></select>
             <span id="databases-loading-progress" style="display: none;" class="text-info">Please Wait…</span>
         </div>
     </div>
@@ -14,7 +14,7 @@
     <div class="form-row">
         <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
             <div class="form-check">
-                @Html.CheckBox("Report_IntegratedSecurity", new { @class = "form-check-input", data_bind = "checked: reportModel.step1.integratedSecurity, event: { change:reportModel.step1.getDatabases }" })
+                @Html.CheckBox("Report_IntegratedSecurity", new { @class = "form-check-input", data_bind = "checked: dataSourceModel.integratedSecurity, event: { change:dataSourceModel.getDatabases }" })
                 <label class="form-check-label">Integrated Security</label>
             </div>
         </div>
@@ -23,11 +23,11 @@
     <div class="form-row">
         <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
             @Html.Label("Report_UserId", "User ID", new { @class = "control-label" })
-            @Html.TextBox("Report_UserId", null, new { @class = "form-control", data_bind = "value: reportModel.step1.userId, enable: reportModel.step1.integratedSecurity() == false, event: { blur: reportModel.step1.getDatabases }" })
+            @Html.TextBox("Report_UserId", null, new { @class = "form-control", data_bind = "value: dataSourceModel.userId, enable: dataSourceModel.integratedSecurity() == false, event: { blur: dataSourceModel.getDatabases }" })
         </div>
         <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
             @Html.Label("Report_Password", "Password", new { @class = "control-label" })
-            @Html.Password("Report_Password", null, new { @class = "form-control", data_bind = "value: reportModel.step1.password, enable: reportModel.step1.integratedSecurity() == false, event: { blur: reportModel.step1.getDatabases }" })
+            @Html.Password("Report_Password", null, new { @class = "form-control", data_bind = "value: dataSourceModel.password, enable: dataSourceModel.integratedSecurity() == false, event: { blur: dataSourceModel.getDatabases }" })
         </div>
     </div>
 </div>

@@ -63,7 +63,7 @@ namespace Queryz.Controllers.Api
             var query = connection.Query();
             query = ApplyMandatoryFilter(query);
 
-            if (!User.IsInRole("Administrators"))
+            if (!User.IsInRole(Constants.Roles.Administrators))
             {
                 query = query.Include(x => x.ReportGroupRoles);
                 var user = await userManager.FindByNameAsync(User.Identity.Name);
@@ -117,10 +117,10 @@ namespace Queryz.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> GetReports([FromODataUri] int groupId, ODataQueryOptions<Report> options)
         {
-            //if (!CheckPermission(ReadPermission))
-            //{
-            //    return Unauthorized();
-            //}
+            if (!await AuthorizeAsync(ReadPermission))
+            {
+                return Unauthorized();
+            }
 
             options.Validate(new ODataValidationSettings
             {
@@ -137,13 +137,6 @@ namespace Queryz.Controllers.Api
             if (!User.IsInRole("Administrators"))
             {
                 var user = await userManager.FindByNameAsync(User.Identity.Name);
-                //var roles = await membershipService.GetRolesForUser(user.Id);
-                //var roleIds = roles.Select(x => x.Id).ToArray();
-
-                //query = query.Where(x =>
-                //    x.Enabled &&
-                //    x.Group.ReportGroupRoles.Any(y => roleIds.Contains(y.RoleId)));
-
                 var deniedReportIds = (await GetUserDeniedReportIdsAsync(user.Id)).ToArray();
                 query = query.Where(x => x.Enabled && !deniedReportIds.Contains(x.Id));
             }
