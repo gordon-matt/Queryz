@@ -16,7 +16,7 @@
 
 /* Mimic .fal */
 .glyphicon {
-    font-family: 'Font Awesome 5 Pro';
+    font-family: 'FontAwesome';
     font-weight: 300;
 }
 
@@ -70,13 +70,13 @@
 }
 
     .rule-container input[type=checkbox][data-show="rule"] + label:before {
-        font-family: 'Font Awesome 5 Pro';
+        font-family: 'FontAwesome';
         font-weight: 300;
         font-size: 1.2em;
         content: "\f06e";
         color: green;
         letter-spacing: 10px;
-        cursor:pointer;
+        cursor: pointer;
     }
 
     .rule-container input[type=checkbox][data-show="rule"]:checked + label:before {

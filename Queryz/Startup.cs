@@ -119,7 +119,7 @@ namespace Queryz
                 .As(typeof(IRepository<>))
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<RazorViewRenderService>().As<IRazorViewRenderService>().SingleInstance();
+            builder.RegisterType<QueryzRazorViewRenderService>().As<IRazorViewRenderService>().SingleInstance();
             builder.RegisterType<ODataRegistrar>().As<IODataRegistrar>().SingleInstance();
 
             builder.RegisterType<DataSourceService>().As<IDataSourceService>().InstancePerDependency();
