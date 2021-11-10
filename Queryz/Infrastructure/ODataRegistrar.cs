@@ -1,10 +1,10 @@
 ﻿using System;
-using Queryz.Data.Domain;
 using Extenso.AspNetCore.OData;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Queryz.Data.Domain;
 using Queryz.Models;
 
 namespace Queryz.Infrastructure

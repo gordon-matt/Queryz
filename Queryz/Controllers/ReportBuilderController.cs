@@ -1348,7 +1348,7 @@ namespace Queryz.Controllers
         {
             using (var context = (ApplicationDbContext)dbContextFactory.GetContext())
             {
-                var roleIds = context.ReportBuilder_ReportGroupRoles
+                var roleIds = context.ReportGroupRoles
                     .Where(x => x.ReportGroupId == reportGroupId)
                     .Select(x => x.RoleId)
                     .ToArray();

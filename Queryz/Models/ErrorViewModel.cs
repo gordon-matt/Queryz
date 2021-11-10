@@ -1,5 +1,3 @@
-using System;
-
 namespace Queryz.Models
 {
     public class ErrorViewModel

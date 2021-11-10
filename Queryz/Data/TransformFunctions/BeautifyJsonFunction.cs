@@ -1,6 +1,6 @@
-﻿using Queryz.Data.Domain;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Queryz.Data.Domain;
 
 namespace Queryz.Data.TransformFunctions
 {

@@ -62,7 +62,9 @@ namespace Queryz.Data.Domain
     public enum EnumerationHandling : byte
     {
         ShowText = 0,
+
         ShowNumericValue = 1,
+
         ShowBoth = 2
     }
 

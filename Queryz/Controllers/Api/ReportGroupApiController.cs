@@ -179,12 +179,12 @@ namespace Queryz.Controllers.Api
 
             using (var context = (ApplicationDbContext)dbContextFactory.GetContext())
             {
-                var currentRoleIds = from rgr in context.ReportBuilder_ReportGroupRoles
+                var currentRoleIds = from rgr in context.ReportGroupRoles
                                      join r in context.Roles on rgr.RoleId equals r.Id
                                      where rgr.ReportGroupId == reportGroupId
                                      select rgr.RoleId;
 
-                var toDelete = from rgr in context.ReportBuilder_ReportGroupRoles
+                var toDelete = from rgr in context.ReportGroupRoles
                                join r in context.Roles on rgr.RoleId equals r.Id
                                where rgr.ReportGroupId == reportGroupId
                                && !roleIds.Contains(rgr.RoleId)
@@ -198,12 +198,12 @@ namespace Queryz.Controllers.Api
 
                 if (toDelete.Any())
                 {
-                    context.ReportBuilder_ReportGroupRoles.RemoveRange(toDelete);
+                    context.ReportGroupRoles.RemoveRange(toDelete);
                 }
 
                 if (toAdd.Any())
                 {
-                    context.ReportBuilder_ReportGroupRoles.AddRange(toAdd);
+                    context.ReportGroupRoles.AddRange(toAdd);
                 }
 
                 await context.SaveChangesAsync();

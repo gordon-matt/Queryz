@@ -8,6 +8,7 @@ namespace Queryz.Data.Domain
     public class ReportGroup : BaseEntity<int>
     {
         private ICollection<Report> reports;
+
         //private ICollection<EmailReport> emailReports;
         private ICollection<ReportGroupRole> reportGroupRoles;
 

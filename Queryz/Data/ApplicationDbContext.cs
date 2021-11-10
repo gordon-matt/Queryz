@@ -11,23 +11,23 @@ namespace Queryz.Data
         {
         }
 
-        public DbSet<DataSource> ReportBuilder_DataSources { get; set; }
+        public DbSet<DataSource> DataSources { get; set; }
 
-        public DbSet<Enumeration> ReportBuilder_Enumerations { get; set; }
+        public DbSet<Enumeration> Enumerations { get; set; }
 
-        public DbSet<ReportGroupRole> ReportBuilder_ReportGroupRoles { get; set; }
+        public DbSet<ReportGroupRole> ReportGroupRoles { get; set; }
 
-        public DbSet<ReportGroup> ReportBuilder_ReportGroups { get; set; }
+        public DbSet<ReportGroup> ReportGroups { get; set; }
 
-        public DbSet<Report> ReportBuilder_Reports { get; set; }
+        public DbSet<Report> Reports { get; set; }
 
-        public DbSet<ReportSorting> ReportBuilder_ReportSortings { get; set; }
+        public DbSet<ReportSorting> ReportSortings { get; set; }
 
-        public DbSet<ReportTableColumn> ReportBuilder_ReportTableColumns { get; set; }
+        public DbSet<ReportTableColumn> ReportTableColumns { get; set; }
 
-        public DbSet<ReportTable> ReportBuilder_ReportTables { get; set; }
+        public DbSet<ReportTable> ReportTables { get; set; }
 
-        public DbSet<ReportUserBlacklistEntry> ReportBuilder_ReportUserBlacklist { get; set; }
+        public DbSet<ReportUserBlacklistEntry> ReportUserBlacklist { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
