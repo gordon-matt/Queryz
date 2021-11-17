@@ -8,31 +8,21 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
-    <PackageReference Include="EPPlus" Version="5.8.2" />
-    <PackageReference Include="Extenso.AspNetCore.Mvc" Version="5.0.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+    <PackageReference Include="Extenso.AspNetCore.Mvc" Version="5.0.1" />
     <PackageReference Include="Extenso.AspNetCore.Mvc.ExtensoUI" Version="5.0.0" />
-    <PackageReference Include="Extenso.AspNetCore.OData" Version="5.0.0" />
-    <PackageReference Include="Extenso.Core" Version="5.0.1" />
-    <PackageReference Include="Extenso.Data" Version="5.0.0" />
-    <PackageReference Include="Extenso.Data.Entity" Version="5.0.0" />
-    <PackageReference Include="Extenso.Data.MySql" Version="5.0.0" />
-    <PackageReference Include="Extenso.Data.Npgsql" Version="5.0.1" />
-    <PackageReference Include="Extenso.Data.QueryBuilder" Version="5.0.0" />
-    <PackageReference Include="Extenso.Data.QueryBuilder.MySql" Version="5.0.0" />
-    <PackageReference Include="Extenso.Data.QueryBuilder.Npgsql" Version="5.0.0" />
     <PackageReference Include="JQQueryBuilderHelpers" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.5.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.11" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="TimeZoneConverter" Version="3.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Queryz.Shared\Queryz.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31729.503
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queryz", "Queryz\Queryz.csproj", "{219E8D67-D2EB-4267-B7A8-CDEACCA80992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queryz", "Queryz\Queryz.csproj", "{219E8D67-D2EB-4267-B7A8-CDEACCA80992}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queryz.Shared", "Queryz.Shared\Queryz.Shared.csproj", "{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{219E8D67-D2EB-4267-B7A8-CDEACCA80992}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{219E8D67-D2EB-4267-B7A8-CDEACCA80992}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{219E8D67-D2EB-4267-B7A8-CDEACCA80992}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

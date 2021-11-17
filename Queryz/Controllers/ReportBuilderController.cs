@@ -137,6 +137,11 @@ namespace Queryz.Controllers
                 report.Filters = filters;
             }
 
+            if (report.DataSource.DataProvider == DataProvider.MySql)
+            {
+                report.Filters = report.Filters.Replace("\"", "`");
+            }
+
             var result = reportBuilderService.ExecuteReport(report);
 
             switch (options.FileFormat)
@@ -479,6 +484,11 @@ namespace Queryz.Controllers
                     include => include.Sortings);
 
                 report.Filters = model.Query;
+
+                if (report.DataSource.DataProvider == DataProvider.MySql)
+                {
+                    report.Filters = report.Filters.Replace("\"", "`");
+                }
 
                 #region Save filters into session variable for later use in Download() action
 
