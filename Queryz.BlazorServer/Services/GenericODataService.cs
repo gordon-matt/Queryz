@@ -27,11 +27,13 @@ namespace Queryz.BlazorServer.Services
 
         public GenericODataService(string entitySetName)
         {
-            httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
             httpClient = new HttpClient(httpClientHandler);
 
-            baseUri = new Uri("https://localhost:44326/odata/"); // TODO: detect, do NOT hard code
+            baseUri = new Uri("https://localhost:44334/odata/"); // TODO: detect, do NOT hard code
             this.entitySetName = entitySetName;
         }
 
