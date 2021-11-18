@@ -17,8 +17,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Queryz.BlazorServer.Areas.Identity;
+using Queryz.BlazorServer.Services;
 using Queryz.Data;
+using Queryz.Data.Domain;
 using Queryz.Infrastructure;
+using Radzen;
 
 namespace Queryz.BlazorServer
 {
@@ -107,12 +110,14 @@ namespace Queryz.BlazorServer
 
             builder.RegisterType<ODataRegistrar>().As<IODataRegistrar>().SingleInstance();
 
-            //// Radzen
-            //builder.RegisterType<DialogService>().AsSelf().InstancePerLifetimeScope();
-            //builder.RegisterType<NotificationService>().AsSelf().InstancePerLifetimeScope();
+            // Radzen
+            builder.RegisterType<DialogService>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<NotificationService>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<TooltipService>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<ContextMenuService>().AsSelf().InstancePerLifetimeScope();
 
-            //// Services
-            //builder.RegisterType<ReportGroupODataService>().As<IGenericODataService<ReportGroup, int>>().SingleInstance();
+            // Services
+            builder.RegisterType<ReportGroupODataService>().As<IGenericODataService<ReportGroup, int>>().SingleInstance();
         }
     }
 }

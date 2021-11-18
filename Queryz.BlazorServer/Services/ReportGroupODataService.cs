@@ -1,11 +1,11 @@
-﻿//using Queryz.Data.Domain;
+﻿using Queryz.Data.Domain;
 
-//namespace Queryz.BlazorServer.Services
-//{
-//    public class ReportGroupODataService : GenericODataService<ReportGroup>
-//    {
-//        public ReportGroupODataService() : base("ReportGroupApi")
-//        {
-//        }
-//    }
-//}
+namespace Queryz.BlazorServer.Services
+{
+    public class ReportGroupODataService : GenericODataService<ReportGroup>
+    {
+        public ReportGroupODataService() : base("ReportGroupApi")
+        {
+        }
+    }
+}
