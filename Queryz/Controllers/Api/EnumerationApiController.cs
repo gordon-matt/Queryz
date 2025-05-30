@@ -1,20 +1,20 @@
 ﻿using Extenso.AspNetCore.OData;
 using Extenso.Data.Entity;
-using Queryz.Data.Domain;
+using Microsoft.AspNetCore.Authorization;
+using Queryz.Data.Entities;
 
-namespace Queryz.Controllers.Api
+namespace Queryz.Controllers.Api;
+
+public class EnumerationApiController : GenericODataController<Enumeration, int>
 {
-    public class EnumerationApiController : GenericODataController<Enumeration, int>
+    public EnumerationApiController(IAuthorizationService authorizationService, IRepository<Enumeration> repository)
+        : base(authorizationService, repository)
     {
-        public EnumerationApiController(IRepository<Enumeration> repository)
-            : base(repository)
-        {
-        }
+    }
 
-        protected override int GetId(Enumeration entity) => entity.Id;
+    protected override int GetId(Enumeration entity) => entity.Id;
 
-        protected override void SetNewId(Enumeration entity)
-        {
-        }
+    protected override void SetNewId(Enumeration entity)
+    {
     }
 }

@@ -1,17 +1,15 @@
-﻿using Extenso.Data.Entity;
-using Queryz.Data.Domain;
+﻿using Queryz.Data.Entities;
 
-namespace Queryz.Services
+namespace Queryz.Services;
+
+public interface IReportService : IGenericDataService<Report>
 {
-    public interface IReportService : IGenericDataService<Report>
-    {
-    }
+}
 
-    public class ReportService : GenericDataService<Report>, IReportService
+public class ReportService : GenericDataService<Report>, IReportService
+{
+    public ReportService(IRepository<Report> repository)
+        : base(repository)
     {
-        public ReportService(IRepository<Report> repository)
-            : base(repository)
-        {
-        }
     }
 }

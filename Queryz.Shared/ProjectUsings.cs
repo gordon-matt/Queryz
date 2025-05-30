@@ -1,0 +1,9 @@
+﻿global using Extenso;
+global using Extenso.Collections;
+global using Extenso.Data.Entity;
+global using Extenso.Data.QueryBuilder;
+global using Extenso.Data.QueryBuilder.MySql;
+global using Extenso.Data.QueryBuilder.Npgsql;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;

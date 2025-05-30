@@ -1,9 +1,8 @@
-﻿namespace Queryz.Models
-{
-    public class WizardStep2Model
-    {
-        public int ReportId { get; set; }
+﻿namespace Queryz.Models;
 
-        public string[] SelectedTables { get; set; }
-    }
+public class WizardStep2Model
+{
+    public int ReportId { get; set; }
+
+    public string[] SelectedTables { get; set; }
 }

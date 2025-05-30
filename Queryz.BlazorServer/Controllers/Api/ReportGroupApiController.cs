@@ -1,23 +1,20 @@
 ﻿using Extenso.AspNetCore.OData;
 using Extenso.Data.Entity;
-using Queryz.Data.Domain;
+using Microsoft.AspNetCore.Authorization;
+using Queryz.Data.Entities;
 
-namespace Queryz.BlazorServer.Controllers.Api
+namespace Queryz.BlazorServer.Controllers.Api;
+
+public class ReportGroupApiController : GenericODataController<ReportGroup, int>
 {
-    public class ReportGroupApiController : GenericODataController<ReportGroup, int>
+    public ReportGroupApiController(IAuthorizationService authorizationService, IRepository<ReportGroup> repository)
+        : base(authorizationService, repository)
     {
-        public ReportGroupApiController(IRepository<ReportGroup> repository)
-            : base(repository)
-        {
-        }
+    }
 
-        protected override int GetId(ReportGroup entity)
-        {
-            return entity.Id;
-        }
+    protected override int GetId(ReportGroup entity) => entity.Id;
 
-        protected override void SetNewId(ReportGroup entity)
-        {
-        }
+    protected override void SetNewId(ReportGroup entity)
+    {
     }
 }

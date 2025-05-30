@@ -1,78 +1,77 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Extenso.AspNetCore.OData;
+﻿using Extenso.AspNetCore.OData;
 using Extenso.Data.Entity;
-using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Queryz.Data.Domain;
+using Microsoft.AspNetCore.OData.Formatter;
+using Queryz.Data.Entities;
 using Queryz.Services;
 
-namespace Queryz.Controllers.Api
+namespace Queryz.Controllers.Api;
+
+public class ReportApiController : GenericODataController<Report, int>
 {
-    public class ReportApiController : GenericODataController<Report, int>
+    private readonly IReportGroupRoleService reportGroupRoleService;
+    private readonly IReportSortingService reportSortingService;
+    private readonly IReportTableColumnService reportTableColumnService;
+    private readonly IReportTableService reportTableService;
+    private readonly IReportUserBlacklistService reportUserBlacklistService;
+
+    public ReportApiController(
+        IAuthorizationService authorizationService,
+        IRepository<Report> repository,
+        IReportGroupRoleService reportGroupRoleService,
+        IReportSortingService reportSortingService,
+        IReportTableColumnService reportTableColumnService,
+        IReportTableService reportTableService,
+        IReportUserBlacklistService reportUserBlacklistService)
+        : base(authorizationService, repository)
     {
-        private readonly IReportGroupRoleService reportGroupRoleService;
-        private readonly IReportSortingService reportSortingService;
-        private readonly IReportTableColumnService reportTableColumnService;
-        private readonly IReportTableService reportTableService;
-        private readonly IReportUserBlacklistService reportUserBlacklistService;
+        this.reportGroupRoleService = reportGroupRoleService;
+        this.reportSortingService = reportSortingService;
+        this.reportTableColumnService = reportTableColumnService;
+        this.reportTableService = reportTableService;
+        this.reportUserBlacklistService = reportUserBlacklistService;
+    }
 
-        public ReportApiController(
-            IRepository<Report> repository,
-            IReportGroupRoleService reportGroupRoleService,
-            IReportSortingService reportSortingService,
-            IReportTableColumnService reportTableColumnService,
-            IReportTableService reportTableService,
-            IReportUserBlacklistService reportUserBlacklistService)
-            : base(repository)
+    protected override int GetId(Report entity) => entity.Id;
+
+    protected override void SetNewId(Report entity)
+    {
+    }
+
+    protected override async Task<IQueryable<Report>> ApplyMandatoryFilterAsync(IQueryable<Report> query)
+    {
+        query = await base.ApplyMandatoryFilterAsync(query);
+
+        if (!User.IsInRole("Administrators"))
         {
-            this.reportGroupRoleService = reportGroupRoleService;
-            this.reportSortingService = reportSortingService;
-            this.reportTableColumnService = reportTableColumnService;
-            this.reportTableService = reportTableService;
-            this.reportUserBlacklistService = reportUserBlacklistService;
+            query = query.Where(x => x.Enabled);
         }
 
-        protected override int GetId(Report entity) => entity.Id;
+        return query;
+    }
 
-        protected override void SetNewId(Report entity)
+    public override async Task<IActionResult> Delete([FromODataUri] int key)
+    {
+        if (!await AuthorizeAsync(WritePermission))
         {
+            return Unauthorized();
         }
 
-        protected override IQueryable<Report> ApplyMandatoryFilter(IQueryable<Report> query)
+        var entity = await Repository.FindOneAsync(key);
+        if (entity == null)
         {
-            query = base.ApplyMandatoryFilter(query);
-
-            if (!User.IsInRole("Administrators"))
-            {
-                query = query.Where(x => x.Enabled);
-            }
-
-            return query;
+            return NotFound();
         }
 
-        public override async Task<IActionResult> Delete([FromODataUri] int key)
-        {
-            if (!await AuthorizeAsync(WritePermission))
-            {
-                return Unauthorized();
-            }
+        await reportUserBlacklistService.DeleteAsync(x => x.ReportId == key);
+        await reportGroupRoleService.DeleteAsync(x => x.ReportGroupId == key);
+        await reportSortingService.DeleteAsync(x => x.ReportId == key);
+        await reportTableColumnService.DeleteAsync(x => x.ReportId == key);
+        await reportTableService.DeleteAsync(x => x.ReportId == key);
 
-            var entity = await Repository.FindOneAsync(key);
-            if (entity == null)
-            {
-                return NotFound();
-            }
+        await Repository.DeleteAsync(entity);
 
-            await reportUserBlacklistService.DeleteAsync(x => x.ReportId == key);
-            await reportGroupRoleService.DeleteAsync(x => x.ReportGroupId == key);
-            await reportSortingService.DeleteAsync(x => x.ReportId == key);
-            await reportTableColumnService.DeleteAsync(x => x.ReportId == key);
-            await reportTableService.DeleteAsync(x => x.ReportId == key);
-
-            await Repository.DeleteAsync(entity);
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }

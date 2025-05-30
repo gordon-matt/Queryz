@@ -1,17 +1,15 @@
-﻿using Extenso.Data.Entity;
-using Queryz.Data.Domain;
+﻿using Queryz.Data.Entities;
 
-namespace Queryz.Services
+namespace Queryz.Services;
+
+public interface IDataSourceService : IGenericDataService<DataSource>
 {
-    public interface IDataSourceService : IGenericDataService<DataSource>
-    {
-    }
+}
 
-    public class DataSourceService : GenericDataService<DataSource>, IDataSourceService
+public class DataSourceService : GenericDataService<DataSource>, IDataSourceService
+{
+    public DataSourceService(IRepository<DataSource> repository)
+        : base(repository)
     {
-        public DataSourceService(IRepository<DataSource> repository)
-            : base(repository)
-        {
-        }
     }
 }

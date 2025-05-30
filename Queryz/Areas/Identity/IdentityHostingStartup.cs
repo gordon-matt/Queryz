@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿[assembly: HostingStartup(typeof(Queryz.Areas.Identity.IdentityHostingStartup))]
 
-[assembly: HostingStartup(typeof(Queryz.Areas.Identity.IdentityHostingStartup))]
+namespace Queryz.Areas.Identity;
 
-namespace Queryz.Areas.Identity
+public class IdentityHostingStartup : IHostingStartup
 {
-    public class IdentityHostingStartup : IHostingStartup
-    {
-        public void Configure(IWebHostBuilder builder)
-        {
-            builder.ConfigureServices((context, services) =>
-            {
-            });
-        }
-    }
+    public void Configure(IWebHostBuilder builder) => builder.ConfigureServices((context, services) =>
+                                                               {
+                                                               });
 }

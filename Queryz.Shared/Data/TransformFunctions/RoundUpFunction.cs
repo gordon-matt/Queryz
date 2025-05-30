@@ -1,20 +1,10 @@
-﻿using System;
-using Queryz.Data.Domain;
+﻿using Queryz.Data.Entities;
 
-namespace Queryz.Data.TransformFunctions
+namespace Queryz.Data.TransformFunctions;
+
+public class RoundUpFunction : ITransformFunction
 {
-    public class RoundUpFunction : ITransformFunction
-    {
-        public string Name => "Round Up";
+    public string Name => "Round Up";
 
-        public dynamic Transform(dynamic value, Report report)
-        {
-            if (!(value is float) && !(value is decimal) && !(value is double))
-            {
-                return value;
-            }
-
-            return Math.Ceiling(value);
-        }
-    }
+    public dynamic Transform(dynamic value, Report report) => value is not float and not decimal and not double ? value : Math.Ceiling(value);
 }

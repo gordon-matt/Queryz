@@ -1,17 +1,15 @@
-﻿using Extenso.Data.Entity;
-using Queryz.Data.Domain;
+﻿using Queryz.Data.Entities;
 
-namespace Queryz.Services
+namespace Queryz.Services;
+
+public interface IReportGroupService : IGenericDataService<ReportGroup>
 {
-    public interface IReportGroupService : IGenericDataService<ReportGroup>
-    {
-    }
+}
 
-    public class ReportGroupService : GenericDataService<ReportGroup>, IReportGroupService
+public class ReportGroupService : GenericDataService<ReportGroup>, IReportGroupService
+{
+    public ReportGroupService(IRepository<ReportGroup> repository)
+        : base(repository)
     {
-        public ReportGroupService(IRepository<ReportGroup> repository)
-            : base(repository)
-        {
-        }
     }
 }

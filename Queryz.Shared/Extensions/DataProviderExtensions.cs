@@ -1,56 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Data.SqlClient;
-using Extenso;
+﻿using System.Data.Common;
+using Microsoft.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using Npgsql;
-using Queryz.Data.Domain;
+using Queryz.Data.Entities;
 using Queryz.Models;
 
-namespace Queryz.Extensions
+namespace Queryz.Extensions;
+
+public static class DataProviderExtensions
 {
-    public static class DataProviderExtensions
+    public static DbConnection GetConnection(this DataProvider provider, string connectionString) => provider switch
     {
-        public static DbConnection GetConnection(this DataProvider provider, string connectionString)
+        DataProvider.SqlServer => new SqlConnection(connectionString),
+        DataProvider.PostgreSql => new NpgsqlConnection(connectionString),
+        DataProvider.MySql => new MySqlConnection(connectionString),
+        _ => throw new NotSupportedException(),
+    };
+
+    public static string GetConnectionString(this DataProvider provider, string connectionDetails)
+    {
+        IConnectionBuilderModel model = provider switch
         {
-            switch (provider)
-            {
-                case DataProvider.SqlServer: return new SqlConnection(connectionString);
-                case DataProvider.PostgreSql: return new NpgsqlConnection(connectionString);
-                case DataProvider.MySql: return new MySqlConnection(connectionString);
-                default: throw new NotSupportedException();
-            }
-        }
+            DataProvider.SqlServer => connectionDetails.JsonDeserialize<SqlServerConnectionBuilderModel>(),
+            DataProvider.PostgreSql => connectionDetails.JsonDeserialize<PostgreSqlConnectionBuilderModel>(),
+            DataProvider.MySql => connectionDetails.JsonDeserialize<MySqlConnectionBuilderModel>(),
+            _ => throw new NotSupportedException(),
+        };
+        return model.ToConnectionString();
+    }
 
-        public static string GetConnectionString(this DataProvider provider, string connectionDetails)
+    public static string GetConnectionString(this DataProvider provider, string connectionDetails, out IDictionary<string, string> customProperties)
+    {
+        IConnectionBuilderModel model = provider switch
         {
-            IConnectionBuilderModel model;
-            switch (provider)
-            {
-                case DataProvider.SqlServer: model = connectionDetails.JsonDeserialize<SqlServerConnectionBuilderModel>(); break;
-                case DataProvider.PostgreSql: model = connectionDetails.JsonDeserialize<PostgreSqlConnectionBuilderModel>(); break;
-                case DataProvider.MySql: model = connectionDetails.JsonDeserialize<MySqlConnectionBuilderModel>(); break;
-                default: throw new NotSupportedException();
-            }
+            DataProvider.SqlServer => connectionDetails.JsonDeserialize<SqlServerConnectionBuilderModel>(),
+            DataProvider.PostgreSql => connectionDetails.JsonDeserialize<PostgreSqlConnectionBuilderModel>(),
+            DataProvider.MySql => connectionDetails.JsonDeserialize<MySqlConnectionBuilderModel>(),
+            _ => throw new NotSupportedException(),
+        };
+        customProperties = model.GetCustomProperties();
 
-            return model.ToConnectionString();
-        }
-
-        public static string GetConnectionString(this DataProvider provider, string connectionDetails, out IDictionary<string, string> customProperties)
-        {
-            IConnectionBuilderModel model;
-            switch (provider)
-            {
-                case DataProvider.SqlServer: model = connectionDetails.JsonDeserialize<SqlServerConnectionBuilderModel>(); break;
-                case DataProvider.PostgreSql: model = connectionDetails.JsonDeserialize<PostgreSqlConnectionBuilderModel>(); break;
-                case DataProvider.MySql: model = connectionDetails.JsonDeserialize<MySqlConnectionBuilderModel>(); break;
-                default: throw new NotSupportedException();
-            }
-
-            customProperties = model.GetCustomProperties();
-
-            return model.ToConnectionString();
-        }
+        return model.ToConnectionString();
     }
 }

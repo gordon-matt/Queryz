@@ -1,17 +1,15 @@
-﻿using Extenso.Data.Entity;
-using Queryz.Data.Domain;
+﻿using Queryz.Data.Entities;
 
-namespace Queryz.Services
+namespace Queryz.Services;
+
+public interface IEnumerationService : IGenericDataService<Enumeration>
 {
-    public interface IEnumerationService : IGenericDataService<Enumeration>
-    {
-    }
+}
 
-    public class EnumerationService : GenericDataService<Enumeration>, IEnumerationService
+public class EnumerationService : GenericDataService<Enumeration>, IEnumerationService
+{
+    public EnumerationService(IRepository<Enumeration> repository)
+        : base(repository)
     {
-        public EnumerationService(IRepository<Enumeration> repository)
-            : base(repository)
-        {
-        }
     }
 }

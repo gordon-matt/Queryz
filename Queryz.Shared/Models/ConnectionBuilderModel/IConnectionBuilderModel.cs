@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
+﻿namespace Queryz.Models;
 
-namespace Queryz.Models
+public interface IConnectionBuilderModel
 {
-    public interface IConnectionBuilderModel
-    {
-        string ToConnectionString();
+    string ToConnectionString();
 
-        IDictionary<string, string> GetCustomProperties();
-    }
+    IDictionary<string, string> GetCustomProperties();
 }

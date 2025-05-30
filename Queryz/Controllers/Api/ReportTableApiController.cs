@@ -1,20 +1,20 @@
 ﻿using Extenso.AspNetCore.OData;
 using Extenso.Data.Entity;
-using Queryz.Data.Domain;
+using Microsoft.AspNetCore.Authorization;
+using Queryz.Data.Entities;
 
-namespace Queryz.Controllers.Api
+namespace Queryz.Controllers.Api;
+
+public class ReportTableApiController : GenericODataController<ReportTable, int>
 {
-    public class ReportTableApiController : GenericODataController<ReportTable, int>
+    public ReportTableApiController(IAuthorizationService authorizationService, IRepository<ReportTable> repository)
+        : base(authorizationService, repository)
     {
-        public ReportTableApiController(IRepository<ReportTable> repository)
-            : base(repository)
-        {
-        }
+    }
 
-        protected override int GetId(ReportTable entity) => entity.Id;
+    protected override int GetId(ReportTable entity) => entity.Id;
 
-        protected override void SetNewId(ReportTable entity)
-        {
-        }
+    protected override void SetNewId(ReportTable entity)
+    {
     }
 }

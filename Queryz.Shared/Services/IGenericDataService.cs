@@ -1,119 +1,109 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Extenso.Data.Entity;
+﻿using System.Linq.Expressions;
 
-namespace Queryz.Services
+namespace Queryz.Services;
+
+public interface IGenericDataService<TEntity> where TEntity : class
 {
-    public interface IGenericDataService<TEntity> where TEntity : class
-    {
-        #region Open Connection
+    #region Open Connection
 
-        /// <summary>
-        /// Used to access an IQueryable and run custom queries directly against the database
-        /// </summary>
-        /// <returns></returns>
-        IRepositoryConnection<TEntity> OpenConnection();
+    /// <summary>
+    /// Used to access an IQueryable and run custom queries directly against the database
+    /// </summary>
+    /// <returns></returns>
+    IRepositoryConnection<TEntity> OpenConnection();
 
-        IRepositoryConnection<TEntity> UseConnection<TOther>(IRepositoryConnection<TOther> connection)
-            where TOther : class;
+    IRepositoryConnection<TEntity> UseConnection<TOther>(IRepositoryConnection<TOther> connection)
+        where TOther : class;
 
-        #endregion Open Connection
+    #endregion Open Connection
 
-        #region Find
+    #region Find
 
-        /// <summary>
-        /// Retrieve all entities
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<TEntity> Find(params Expression<Func<TEntity, dynamic>>[] includePaths);
+    /// <summary>
+    /// Retrieve all entities
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<TEntity> Find(SearchOptions<TEntity> options);
 
-        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    IEnumerable<TResult> Find<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection);
 
-        Task<IEnumerable<TEntity>> FindAsync(params Expression<Func<TEntity, dynamic>>[] includePaths);
+    Task<IEnumerable<TEntity>> FindAsync(SearchOptions<TEntity> options);
 
-        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    Task<IEnumerable<TResult>> FindAsync<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection);
 
-        TEntity FindOne(params object[] keyValues);
+    TEntity FindOne(params object[] keyValues);
 
-        //TEntity FindOne(object[] keyValues, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
 
-        TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    Task<TEntity> FindOneAsync(params object[] keyValues);
 
-        Task<TEntity> FindOneAsync(params object[] keyValues);
+    Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
 
-        //Task<TEntity> FindOneAsync(object[] keyValues, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    #endregion Find
 
-        Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    #region Count
 
-        #endregion Find
+    int Count();
 
-        #region Count
+    int Count(Expression<Func<TEntity, bool>> countExpression);
 
-        int Count();
+    Task<int> CountAsync();
 
-        int Count(Expression<Func<TEntity, bool>> countExpression);
+    Task<int> CountAsync(Expression<Func<TEntity, bool>> countExpression);
 
-        Task<int> CountAsync();
+    #endregion Count
 
-        Task<int> CountAsync(Expression<Func<TEntity, bool>> countExpression);
+    #region Delete
 
-        #endregion Count
+    int DeleteAll();
 
-        #region Delete
+    int Delete(TEntity entity);
 
-        int DeleteAll();
+    int Delete(IEnumerable<TEntity> entities);
 
-        int Delete(TEntity entity);
+    int Delete(Expression<Func<TEntity, bool>> filterExpression);
 
-        int Delete(IEnumerable<TEntity> entities);
+    int Delete(IQueryable<TEntity> query);
 
-        int Delete(Expression<Func<TEntity, bool>> filterExpression);
+    Task<int> DeleteAllAsync();
 
-        int Delete(IQueryable<TEntity> query);
+    Task<int> DeleteAsync(TEntity entity);
 
-        Task<int> DeleteAllAsync();
+    Task<int> DeleteAsync(IEnumerable<TEntity> entities);
 
-        Task<int> DeleteAsync(TEntity entity);
+    Task<int> DeleteAsync(Expression<Func<TEntity, bool>> filterExpression);
 
-        Task<int> DeleteAsync(IEnumerable<TEntity> entities);
+    Task<int> DeleteAsync(IQueryable<TEntity> query);
 
-        Task<int> DeleteAsync(Expression<Func<TEntity, bool>> filterExpression);
+    #endregion Delete
 
-        Task<int> DeleteAsync(IQueryable<TEntity> query);
+    #region Insert
 
-        #endregion Delete
+    int Insert(TEntity entity);
 
-        #region Insert
+    int Insert(IEnumerable<TEntity> entities);
 
-        int Insert(TEntity entity);
+    Task<int> InsertAsync(TEntity entity);
 
-        int Insert(IEnumerable<TEntity> entities);
+    Task<int> InsertAsync(IEnumerable<TEntity> entities);
 
-        Task<int> InsertAsync(TEntity entity);
+    #endregion Insert
 
-        Task<int> InsertAsync(IEnumerable<TEntity> entities);
+    #region Update
 
-        #endregion Insert
+    int Update(TEntity entity);
 
-        #region Update
+    int Update(IEnumerable<TEntity> entities);
 
-        int Update(TEntity entity);
+    Task<int> UpdateAsync(TEntity entity);
 
-        int Update(IEnumerable<TEntity> entities);
+    Task<int> UpdateAsync(IEnumerable<TEntity> entities);
 
-        Task<int> UpdateAsync(TEntity entity);
+    //int Update(Expression<Func<TEntity, TEntity>> updateExpression);
 
-        Task<int> UpdateAsync(IEnumerable<TEntity> entities);
+    //int Update(Expression<Func<TEntity, bool>> filterExpression, Expression<Func<TEntity, TEntity>> updateExpression);
 
-        //int Update(Expression<Func<TEntity, TEntity>> updateExpression);
+    //int Update(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression);
 
-        //int Update(Expression<Func<TEntity, bool>> filterExpression, Expression<Func<TEntity, TEntity>> updateExpression);
-
-        //int Update(IQueryable<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression);
-
-        #endregion Update
-    }
+    #endregion Update
 }

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Queryz.Data;
 
+#nullable disable
+
 namespace Queryz.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -15,9 +17,10 @@ namespace Queryz.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("ApplicationRoleApplicationUser", b =>
                 {
@@ -38,8 +41,9 @@ namespace Queryz.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -55,15 +59,16 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -79,7 +84,7 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -101,7 +106,7 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -116,7 +121,7 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -135,10 +140,10 @@ namespace Queryz.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ApplicationRole", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -162,10 +167,10 @@ namespace Queryz.Data.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ApplicationUser", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -227,15 +232,16 @@ namespace Queryz.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.DataSource", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.DataSource", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConnectionString")
                         .IsRequired()
@@ -258,15 +264,16 @@ namespace Queryz.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Queryz_DataSources");
+                    b.ToTable("DataSources", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.Enumeration", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.Enumeration", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsBitFlags")
                         .HasColumnType("bit");
@@ -284,15 +291,16 @@ namespace Queryz.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Queryz_Enumerations");
+                    b.ToTable("Enumerations", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.Report", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.Report", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DataSourceId")
                         .HasColumnType("int");
@@ -334,15 +342,16 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Queryz_Reports");
+                    b.ToTable("Reports", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportGroup", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -357,10 +366,10 @@ namespace Queryz.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Queryz_ReportGroups");
+                    b.ToTable("ReportGroups", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportGroupRole", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportGroupRole", b =>
                 {
                     b.Property<int>("ReportGroupId")
                         .HasColumnType("int");
@@ -372,15 +381,16 @@ namespace Queryz.Data.Migrations
 
                     b.HasKey("ReportGroupId", "RoleId");
 
-                    b.ToTable("Queryz_ReportGroupRoles");
+                    b.ToTable("ReportGroupRoles", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportSorting", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportSorting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ColumnName")
                         .IsRequired()
@@ -401,15 +411,16 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("Queryz_ReportSortings");
+                    b.ToTable("ReportSortings", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportTable", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportTable", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ForeignKeyColumn")
                         .HasMaxLength(255)
@@ -442,15 +453,16 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("Queryz_ReportTables");
+                    b.ToTable("ReportTables", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportTableColumn", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportTableColumn", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Alias")
                         .HasMaxLength(255)
@@ -502,10 +514,10 @@ namespace Queryz.Data.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("Queryz_ReportTableColumns");
+                    b.ToTable("ReportTableColumns", "qryz");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportUserBlacklistEntry", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportUserBlacklistEntry", b =>
                 {
                     b.Property<int>("ReportId")
                         .HasColumnType("int");
@@ -517,18 +529,18 @@ namespace Queryz.Data.Migrations
 
                     b.HasKey("ReportId", "UserId");
 
-                    b.ToTable("Queryz_ReportUserBlacklist");
+                    b.ToTable("ReportUserBlacklist", "qryz");
                 });
 
             modelBuilder.Entity("ApplicationRoleApplicationUser", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.ApplicationRole", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Queryz.Data.Domain.ApplicationUser", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -537,7 +549,7 @@ namespace Queryz.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.ApplicationRole", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -546,7 +558,7 @@ namespace Queryz.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.ApplicationUser", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -555,7 +567,7 @@ namespace Queryz.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.ApplicationUser", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -564,13 +576,13 @@ namespace Queryz.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.ApplicationRole", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Queryz.Data.Domain.ApplicationUser", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -579,22 +591,22 @@ namespace Queryz.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.ApplicationUser", null)
+                    b.HasOne("Queryz.Data.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.Report", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.Report", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.DataSource", "DataSource")
+                    b.HasOne("Queryz.Data.Entities.DataSource", "DataSource")
                         .WithMany("Reports")
                         .HasForeignKey("DataSourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Queryz.Data.Domain.ReportGroup", "Group")
+                    b.HasOne("Queryz.Data.Entities.ReportGroup", "Group")
                         .WithMany("Reports")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -605,9 +617,9 @@ namespace Queryz.Data.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportGroupRole", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportGroupRole", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.ReportGroup", "ReportGroup")
+                    b.HasOne("Queryz.Data.Entities.ReportGroup", "ReportGroup")
                         .WithMany("ReportGroupRoles")
                         .HasForeignKey("ReportGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -616,9 +628,9 @@ namespace Queryz.Data.Migrations
                     b.Navigation("ReportGroup");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportSorting", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportSorting", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.Report", "Report")
+                    b.HasOne("Queryz.Data.Entities.Report", "Report")
                         .WithMany("Sortings")
                         .HasForeignKey("ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -627,9 +639,9 @@ namespace Queryz.Data.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportTable", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportTable", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.Report", "Report")
+                    b.HasOne("Queryz.Data.Entities.Report", "Report")
                         .WithMany("Tables")
                         .HasForeignKey("ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -638,13 +650,13 @@ namespace Queryz.Data.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportTableColumn", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportTableColumn", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.Enumeration", "Enumeration")
+                    b.HasOne("Queryz.Data.Entities.Enumeration", "Enumeration")
                         .WithMany("Columns")
                         .HasForeignKey("EnumerationId");
 
-                    b.HasOne("Queryz.Data.Domain.Report", "Report")
+                    b.HasOne("Queryz.Data.Entities.Report", "Report")
                         .WithMany("Columns")
                         .HasForeignKey("ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -655,9 +667,9 @@ namespace Queryz.Data.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportUserBlacklistEntry", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportUserBlacklistEntry", b =>
                 {
-                    b.HasOne("Queryz.Data.Domain.Report", "Report")
+                    b.HasOne("Queryz.Data.Entities.Report", "Report")
                         .WithMany()
                         .HasForeignKey("ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -666,17 +678,17 @@ namespace Queryz.Data.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.DataSource", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.DataSource", b =>
                 {
                     b.Navigation("Reports");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.Enumeration", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.Enumeration", b =>
                 {
                     b.Navigation("Columns");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.Report", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.Report", b =>
                 {
                     b.Navigation("Columns");
 
@@ -685,7 +697,7 @@ namespace Queryz.Data.Migrations
                     b.Navigation("Tables");
                 });
 
-            modelBuilder.Entity("Queryz.Data.Domain.ReportGroup", b =>
+            modelBuilder.Entity("Queryz.Data.Entities.ReportGroup", b =>
                 {
                     b.Navigation("ReportGroupRoles");
 

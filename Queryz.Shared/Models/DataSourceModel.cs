@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Queryz.Data.Domain;
+using Queryz.Data.Entities;
 
-namespace Queryz.Models
+namespace Queryz.Models;
+
+public class DataSourceModel
 {
-    public class DataSourceModel
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        public DataProvider DataProvider { get; set; }
+    [Required]
+    public DataProvider DataProvider { get; set; }
 
-        [Required]
-        public string ConnectionDetails { get; set; } // JSON to construct connection string
-    }
+    [Required]
+    public string ConnectionDetails { get; set; } // JSON to construct connection string
 }

@@ -1,11 +1,10 @@
-﻿using Queryz.Data.Domain;
+﻿using Queryz.Data.Entities;
 
-namespace Queryz.Data.TransformFunctions
+namespace Queryz.Data.TransformFunctions;
+
+public interface ITransformFunction
 {
-    public interface ITransformFunction
-    {
-        string Name { get; }
+    string Name { get; }
 
-        dynamic Transform(dynamic value, Report report);
-    }
+    dynamic Transform(dynamic value, Report report);
 }
