@@ -1,6 +1,4 @@
-﻿using Queryz.Data.Entities;
-
-namespace Queryz.BlazorServer.Services;
+﻿namespace Queryz.BlazorServer.Services;
 
 public class ReportGroupODataService : GenericODataService<ReportGroup>
 {

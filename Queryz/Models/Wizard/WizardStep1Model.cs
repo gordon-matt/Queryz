@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Queryz.Models;
+﻿namespace Queryz.Models;
 
 public class WizardStep1Model
 {

@@ -1,9 +1,6 @@
-﻿using Extenso.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
+﻿using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Queryz.Services;
@@ -34,9 +31,9 @@ public class QueryzRazorViewRenderService : IRazorViewRenderService
         get
         {
             reusableActionContext ??= new ActionContext(
-                    httpContextAccessor == null ? new DefaultHttpContext { RequestServices = serviceProvider } : httpContextAccessor.HttpContext,
-                    new RouteData(),
-                    new ActionDescriptor());
+                httpContextAccessor == null ? new DefaultHttpContext { RequestServices = serviceProvider } : httpContextAccessor.HttpContext,
+                new RouteData(),
+                new ActionDescriptor());
             return reusableActionContext;
         }
     }
@@ -49,10 +46,13 @@ public class QueryzRazorViewRenderService : IRazorViewRenderService
                 httpContextAccessor == null ? new DefaultHttpContext { RequestServices = serviceProvider } : httpContextAccessor.HttpContext,
                 routeData,
                 new ActionDescriptor());
+
         using var stringWriter = new StringWriter();
+
         var viewResult = useActionContext
             ? razorViewEngine.FindView(actionContext, viewName, false)
             : razorViewEngine.GetView(viewName, viewName, false);
+
         if (viewResult.View == null)
         {
             throw new ArgumentNullException("View", $"{viewName} does not match any available view");

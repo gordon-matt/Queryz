@@ -1,7 +1,4 @@
-﻿using System.Text;
-using Radzen;
-
-namespace Queryz.BlazorServer.Services;
+﻿namespace Queryz.BlazorServer.Services;
 
 public abstract class GenericODataService<TEntity> : GenericODataService<TEntity, int>
     where TEntity : class

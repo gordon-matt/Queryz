@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Queryz.Models;
 
 namespace Queryz.Controllers;
 

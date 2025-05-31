@@ -1,12 +1,4 @@
-﻿using Extenso.AspNetCore.OData;
-using Extenso.Data.Entity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Formatter;
-using Queryz.Data.Entities;
-using Queryz.Services;
-
-namespace Queryz.Controllers.Api;
+﻿namespace Queryz.Controllers.Api;
 
 public class ReportApiController : GenericODataController<Report, int>
 {

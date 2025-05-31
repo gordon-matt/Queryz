@@ -1,6 +1,4 @@
-﻿using Extenso.Data.QueryBuilder;
-
-namespace Queryz.Models;
+﻿namespace Queryz.Models;
 
 public class WizardStep5Model
 {

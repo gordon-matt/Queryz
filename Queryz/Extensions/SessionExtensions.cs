@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Queryz.Extensions;
+﻿namespace Queryz.Extensions;
 
 public static class SessionExtensions
 {

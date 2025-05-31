@@ -1,6 +1,4 @@
-﻿using JQQueryBuilderHelpers;
-
-namespace Queryz.Models;
+﻿namespace Queryz.Models;
 
 public class RunReportModel
 {

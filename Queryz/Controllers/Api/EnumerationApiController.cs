@@ -1,9 +1,4 @@
-﻿using Extenso.AspNetCore.OData;
-using Extenso.Data.Entity;
-using Microsoft.AspNetCore.Authorization;
-using Queryz.Data.Entities;
-
-namespace Queryz.Controllers.Api;
+﻿namespace Queryz.Controllers.Api;
 
 public class EnumerationApiController : GenericODataController<Enumeration, int>
 {

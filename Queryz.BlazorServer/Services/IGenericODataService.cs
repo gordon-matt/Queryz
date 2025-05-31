@@ -1,6 +1,4 @@
-﻿using Radzen;
-
-namespace Queryz.BlazorServer.Services;
+﻿namespace Queryz.BlazorServer.Services;
 
 public interface IGenericODataService<TEntity, TKey> : IDisposable
     where TEntity : class

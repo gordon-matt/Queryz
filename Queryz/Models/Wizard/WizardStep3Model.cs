@@ -2,12 +2,6 @@
 
 public class WizardStep3Model
 {
-    //public WizardStep3Model()
-    //{
-    //    AvailableColumns = new List<ColumnModel>();
-    //    SelectedColumns = new List<SelectedColumnModel>();
-    //}
-
     public int ReportId { get; set; }
 
     public ColumnModel[] AvailableColumns { get; set; }

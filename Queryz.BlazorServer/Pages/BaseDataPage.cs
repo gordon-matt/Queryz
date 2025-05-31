@@ -1,9 +1,4 @@
-﻿using Extenso;
-using Extenso.Data.Entity;
-using Microsoft.AspNetCore.Components;
-using Queryz.BlazorServer.Services;
-using Radzen;
-using Radzen.Blazor;
+﻿using Queryz.BlazorServer.Services;
 
 namespace Queryz.BlazorServer.Pages;
 

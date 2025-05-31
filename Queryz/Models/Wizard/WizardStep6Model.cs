@@ -1,6 +1,4 @@
-﻿using Extenso.Data.QueryBuilder;
-
-namespace Queryz.Models;
+﻿namespace Queryz.Models;
 
 public class WizardStep6Model
 {
@@ -25,9 +23,10 @@ public class RelationshipModel
 
     public IEnumerable<string> AvailableParentTables { get; set; }
 
-    public bool IsEmpty => string.IsNullOrEmpty(ParentTable) &&
-                string.IsNullOrEmpty(PrimaryKey) &&
-                string.IsNullOrEmpty(ForeignKey);
+    public bool IsEmpty =>
+        string.IsNullOrEmpty(ParentTable) &&
+        string.IsNullOrEmpty(PrimaryKey) &&
+        string.IsNullOrEmpty(ForeignKey);
 
     public override string ToString() =>
         $"{JoinType} {TableName}.{ForeignKey} ON {ParentTable}.{PrimaryKey}";

@@ -1,36 +1,4 @@
-﻿using System.Data;
-using System.Text;
-using Extenso;
-using Extenso.AspNetCore.Mvc.Rendering;
-using Extenso.Collections;
-using Extenso.Data;
-using Extenso.Data.Common;
-using Extenso.Data.Entity;
-using JQQueryBuilderHelpers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using MySql.Data.MySqlClient;
-using Newtonsoft.Json.Linq;
-using Npgsql;
-using Queryz.Data;
-using Queryz.Data.Entities;
-using Queryz.Data.TransformFunctions;
-using Queryz.Extensions;
-using Queryz.Models;
-using Queryz.Services;
-
-namespace Queryz.Controllers;
-
-public class DownloadOptions
-{
-    public bool AlwaysEnquote { get; set; } = true;
-    public DownloadFileDelimiter Delimiter { get; set; } = DownloadFileDelimiter.Comma;
-    public DownloadFileFormat FileFormat { get; set; }
-    public bool OutputColumnNames { get; set; } = true;
-}
+﻿namespace Queryz.Controllers;
 
 [Authorize]
 [Route("report-builder")]

@@ -1,11 +1,4 @@
-﻿using Extenso.AspNetCore.Mvc;
-using Extenso.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Queryz.Data.Entities;
-
-namespace Queryz.Extensions;
+﻿namespace Queryz.Extensions;
 
 public static class HtmlHelperExtensions
 {
@@ -33,9 +26,7 @@ public class Queryz<TModel>
         object wrapperHtmlAttributes = null)
     {
         var selectList = roleManager.Roles
-            .ToSelectList(
-                value => value.Id,
-                text => text.Name);
+            .ToSelectList(value => value.Id, text => text.Name);
 
         return html.CheckBoxList(
             name,

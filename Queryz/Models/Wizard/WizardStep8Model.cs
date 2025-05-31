@@ -1,6 +1,4 @@
-﻿//using System.Collections.Generic;
-
-//namespace Queryz.Models
+﻿//namespace Queryz.Models
 //{
 //    public class WizardStep8Model
 //    {

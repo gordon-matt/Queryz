@@ -1,16 +1,5 @@
-﻿using Extenso.AspNetCore.OData;
-using Extenso.Data.Entity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Formatter;
-using Microsoft.AspNetCore.OData.Query;
+﻿using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Query.Validator;
-using Microsoft.EntityFrameworkCore;
-using Queryz.Data;
-using Queryz.Data.Entities;
-using Queryz.Models;
-using Queryz.Services;
 
 namespace Queryz.Controllers.Api;
 
@@ -137,7 +126,7 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
             }))
             .AsQueryable();
 
-        if (!User.IsInRole("Administrators"))
+        if (!User.IsInRole(SharedConstants.Roles.Administrators))
         {
             var user = await userManager.FindByNameAsync(User.Identity.Name);
             int[] deniedReportIds = (await GetUserDeniedReportIdsAsync(user.Id)).ToArray();

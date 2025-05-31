@@ -1,6 +1,4 @@
-﻿using Queryz.Data.Entities;
-
-namespace Queryz.Models;
+﻿namespace Queryz.Models;
 
 public class WizardStep7Model
 {

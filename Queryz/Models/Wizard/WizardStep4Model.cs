@@ -1,7 +1,4 @@
-﻿using Extenso.Data.QueryBuilder;
-using JQQueryBuilderHelpers;
-
-namespace Queryz.Models;
+﻿namespace Queryz.Models;
 
 public class WizardStep4Model
 {

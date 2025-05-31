@@ -2,18 +2,9 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Extenso.AspNetCore.Mvc.ExtensoUI;
 using Extenso.AspNetCore.Mvc.ExtensoUI.Providers;
-using Extenso.AspNetCore.Mvc.Rendering;
-using Extenso.AspNetCore.OData;
-using Extenso.Data.Entity;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.OData;
-using Microsoft.EntityFrameworkCore;
-using Queryz.Data;
-using Queryz.Data.Entities;
-using Queryz.Data.TransformFunctions;
 using Queryz.Infrastructure;
-using Queryz.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
