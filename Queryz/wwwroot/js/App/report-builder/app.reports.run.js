@@ -32,7 +32,8 @@ var ViewModel = function () {
             }
         });
 
-        if (model.Query) {
+        if (model.Query && model.Query != "null") {
+            console.log(`model.Query: ${model.Query}`);
             //$('#query-builder').queryBuilder('setRulesFromSQL', model.Query);
             $('#query-builder').queryBuilder('setRules', JSON.parse(model.Query));
         }
@@ -52,7 +53,7 @@ var ViewModel = function () {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
                 ReportId: self.reportId(),
-                Query: result.sql
+                Query: result?.sql
             }),
             dataType: "json",
             async: false

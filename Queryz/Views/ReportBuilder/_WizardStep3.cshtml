@@ -67,7 +67,8 @@
                 </td>
                 <td>
                     <div class="form-check">
-                        <input type="checkbox" class="visible-icon-checkbox" data-bind="checked: isHidden, attr: { name: 'SelectedColumns[' + $index() + '].IsHidden' }" />
+                        @* <input type="checkbox" class="visible-icon-checkbox" data-bind="checked: isHidden, attr: { name: 'SelectedColumns[' + $index() + '].IsHidden' }" /> *@
+                        <input type="checkbox" data-bind="checked: isHidden, attr: { name: 'SelectedColumns[' + $index() + '].IsHidden' }" />
                         <label></label>
                     </div>
                 </td>

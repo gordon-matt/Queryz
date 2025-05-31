@@ -570,7 +570,7 @@ public class ReportBuilderController : Controller
             query = query.Replace($"\"{tableName}\".\"", $"\"{tableName}_");
         }
 
-        model.Query = query;
+        model.Query = query == "null" ? null : query;
 
         ViewBag.Title = $"{report.Group.Name} - {report.Name}";
 

@@ -109,17 +109,17 @@ body {
 }
 
     .visible-icon-checkbox + label:before {
-        font-family: 'Font Awesome 5 Pro';
-        font-weight: 300;
+        font-family: 'FontAwesome';
+        font-weight: normal;
         font-size: 1.2em;
-        content: "\f06e";
+        content: "\f06e"; /* eye icon */
         color: green;
         letter-spacing: 10px;
         cursor: pointer;
     }
 
     .visible-icon-checkbox:checked + label:before {
-        content: "\f070";
+        content: "\f070"; /* eye-slash icon */
         color: red;
         letter-spacing: 10px;
     }
