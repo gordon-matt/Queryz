@@ -44,34 +44,37 @@
 @Html.Hidden("GridPageSize", 10)
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-12">
         <h2>@Model.ReportName</h2>
     </div>
 </div>
 
 <div id="wizard-section" class="row">
-    <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+    <article class="col-12">
         @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState, htmlAttributes: new { style = "height:100%" })))
         {
             using (var header = panel.BeginHeader("Configure & Run Report")) { }
             using (var body = panel.BeginBody())
             {
-                <div id="loading" class="splash" style="display:none">
-                    <div class="message">Loading...</div>
-                    <i class="fas fa-spinner fa-spin"></i>
+                <div id="loading" class="d-flex flex-column align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75" style="display:none; z-index: 1000;">
+                    <div class="fs-5 mb-2">Loading...</div>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
+                
                 <div id="wizard">
-                    <h3>Filtering</h3>
-                    <section>
+                    <h3 class="fs-4 mb-3">Filtering</h3>
+                    <section class="mb-4">
                         <div class="alert alert-info">
-                            <strong>NOTE: </strong>The <strong>In</strong> operation allows you to specify multiple values. Separate each value with a semicolon (;) - and don't use spaces between values.
+                            <strong class="fw-bold">NOTE: </strong>The <strong class="fw-bold">In</strong> operation allows you to specify multiple values. Separate each value with a semicolon (;) - and don't use spaces between values.
                         </div>
 
-                        <div id="query-builder"></div>
+                        <div id="query-builder" class="border rounded p-3 bg-light"></div>
                     </section>
 
-                    <h3>Preview</h3>
-                    <section></section>
+                    <h3 class="fs-4 mb-3">Preview</h3>
+                    <section class="mb-4"></section>
                 </div>
             }
         }

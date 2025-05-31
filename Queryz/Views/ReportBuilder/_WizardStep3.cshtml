@@ -2,96 +2,96 @@
 
 <form id="wizard-form-3">
     <input type="hidden" name="ReportId" data-bind="value: reportModel.step3.reportId" />
-    <table class="table table-bordered">
-        <thead class="bg-secondary text-white">
-            <tr>
-                <td colspan="9">
-                    <button type="button" class="btn btn-warning" data-bind="event: { click: $root.reportModel.step3.removeAllColumns }">
-                        <i class="fas fa-xmark"></i>
-                        Remove All
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <th></th>
-                <th>Column</th>
-                <th>Type</th>
-                <th>Alias</th>
-                <th style="display:none">Display Column</th>
-                <th>Enumeration</th>
-                <th>Transform Function</th>
-                <th>Format</th>
-                <th>Hidden?</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody data-bind="sortable: reportModel.step3.selectedColumns">
-            <tr>
-                <td style="cursor:pointer">
-                    <i class="fas fa-arrows-up-down-left-right"></i>
-                </td>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-secondary">
+                <tr>
+                    <td colspan="10">
+                        <button type="button" class="btn btn-warning" data-bind="event: { click: $root.reportModel.step3.removeAllColumns }">
+                            <i class="fas fa-xmark me-1"></i>
+                            Remove All
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Column</th>
+                    <th>Type</th>
+                    <th>Alias</th>
+                    <th class="d-none">Display Column</th>
+                    <th>Enumeration</th>
+                    <th>Transform Function</th>
+                    <th>Format</th>
+                    <th>Hidden?</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-bind="sortable: reportModel.step3.selectedColumns">
+                <tr>
+                    <td style="cursor:pointer">
+                        <i class="fas fa-arrows-up-down-left-right"></i>
+                    </td>
 
-                <td>
-                    <input type="hidden" data-bind="value: isLiteral, attr: { name: 'SelectedColumns[' + $index() + '].IsLiteral' }" />
-                    <!-- ko ifnot: isLiteral -->
-                    <select class="form-control" data-bind="options: $root.reportModel.step3.availableColumns, optionsText: 'name', optionsValue: 'name', value: columnName, attr: { name: 'SelectedColumns[' + $index() + '].ColumnName' }, event: { change: $root.reportModel.step3.column_onChange.bind($data, $index()) }"></select>
-                    <!-- /ko -->
-                    <!-- ko if: isLiteral -->
-                    <input type="text" class="form-control" data-bind="value: columnName, attr: { name: 'SelectedColumns[' + $index() + '].ColumnName' }" />
-                    <!-- /ko -->
-                </td>
+                    <td>
+                        <input type="hidden" data-bind="value: isLiteral, attr: { name: 'SelectedColumns[' + $index() + '].IsLiteral' }" />
+                        <!-- ko ifnot: isLiteral -->
+                        <select class="form-select" data-bind="options: $root.reportModel.step3.availableColumns, optionsText: 'name', optionsValue: 'name', value: columnName, attr: { name: 'SelectedColumns[' + $index() + '].ColumnName' }, event: { change: $root.reportModel.step3.column_onChange.bind($data, $index()) }"></select>
+                        <!-- /ko -->
+                        <!-- ko if: isLiteral -->
+                        <input type="text" class="form-control" data-bind="value: columnName, attr: { name: 'SelectedColumns[' + $index() + '].ColumnName' }" />
+                        <!-- /ko -->
+                    </td>
 
-                <td>
-                    @*<span data-bind="text: type, attr: { id: 'SelectedColumns[' + $index() + '].Type' }"></span>*@
-                    <span data-bind="text: type"></span>
-                </td>
-                <td>
-                    <!-- ko ifnot: isLiteral -->
-                    <input type="text" class="form-control" data-bind="value: alias, attr: { name: 'SelectedColumns[' + $index() + '].Alias' }" />
-                    <!-- /ko -->
-                    <!-- ko if: isLiteral -->
-                    <input type="text" class="form-control" data-bind="value: alias, attr: { name: 'SelectedColumns[' + $index() + '].Alias' }" required />
-                    <!-- /ko -->
-                </td>
-                <td style="display:none">
-                    <select class="form-control" data-bind="value: displayColumn, attr: { name: 'SelectedColumns[' + $index() + '].DisplayColumn' }" style="display:none"></select>
-                </td>
-                <td>
-                    <select class="form-control" data-bind="options: $root.reportModel.step3.availableEnumerations, optionsText: 'name', optionsValue: 'id', optionsCaption: 'None', value: enumerationId, attr: { name: 'SelectedColumns[' + $index() + '].EnumerationId' }"></select>
-                </td>
-                <td>
-                    <select class="form-control" data-bind="options: $root.reportModel.step3.availableTransformFunctions, optionsText: 'name', optionsValue: 'name', optionsCaption: 'None', value: transformFunction, attr: { name: 'SelectedColumns[' + $index() + '].TransformFunction' }"></select>
-                </td>
-                <td>
-                    <input type="text" class="form-control" data-bind="value: format, attr: { name: 'SelectedColumns[' + $index() + '].Format' }" />
-                </td>
-                <td>
-                    <div class="form-check">
-                        @* <input type="checkbox" class="visible-icon-checkbox" data-bind="checked: isHidden, attr: { name: 'SelectedColumns[' + $index() + '].IsHidden' }" /> *@
-                        <input type="checkbox" data-bind="checked: isHidden, attr: { name: 'SelectedColumns[' + $index() + '].IsHidden' }" />
-                        <label></label>
-                    </div>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-block btn-danger" data-bind="click: $root.reportModel.step3.removeColumn">
-                        <i class="fas fa-xmark"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-        <tfoot class="bg-secondary text-white">
-            <tr>
-                <td colspan="9" style="text-align:right">
-                    <button type="button" class="btn btn-primary" data-bind="click: reportModel.step3.addColumn">
-                        <i class="fas fa-plus"></i>
-                        Add
-                    </button>
-                    <button type="button" class="btn btn-primary" data-bind="click: reportModel.step3.addLiteral">
-                        <i class="fas fa-plus"></i>
-                        Add Literal
-                    </button>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+                    <td>
+                        <span data-bind="text: type"></span>
+                    </td>
+                    <td>
+                        <!-- ko ifnot: isLiteral -->
+                        <input type="text" class="form-control" data-bind="value: alias, attr: { name: 'SelectedColumns[' + $index() + '].Alias' }" />
+                        <!-- /ko -->
+                        <!-- ko if: isLiteral -->
+                        <input type="text" class="form-control" data-bind="value: alias, attr: { name: 'SelectedColumns[' + $index() + '].Alias' }" required />
+                        <!-- /ko -->
+                    </td>
+                    <td class="d-none">
+                        <select class="form-select" data-bind="value: displayColumn, attr: { name: 'SelectedColumns[' + $index() + '].DisplayColumn' }" class="d-none"></select>
+                    </td>
+                    <td>
+                        <select class="form-select" data-bind="options: $root.reportModel.step3.availableEnumerations, optionsText: 'name', optionsValue: 'id', optionsCaption: 'None', value: enumerationId, attr: { name: 'SelectedColumns[' + $index() + '].EnumerationId' }"></select>
+                    </td>
+                    <td>
+                        <select class="form-select" data-bind="options: $root.reportModel.step3.availableTransformFunctions, optionsText: 'name', optionsValue: 'name', optionsCaption: 'None', value: transformFunction, attr: { name: 'SelectedColumns[' + $index() + '].TransformFunction' }"></select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" data-bind="value: format, attr: { name: 'SelectedColumns[' + $index() + '].Format' }" />
+                    </td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" data-bind="checked: isHidden, attr: { name: 'SelectedColumns[' + $index() + '].IsHidden' }" />
+                            <label class="form-check-label"></label>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: $root.reportModel.step3.removeColumn">
+                            <i class="fas fa-xmark"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot class="table-secondary">
+                <tr>
+                    <td colspan="10" class="text-end">
+                        <button type="button" class="btn btn-primary me-2" data-bind="click: reportModel.step3.addColumn">
+                            <i class="fas fa-plus me-1"></i>
+                            Add
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bind="click: reportModel.step3.addLiteral">
+                            <i class="fas fa-plus me-1"></i>
+                            Add Literal
+                        </button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </form>

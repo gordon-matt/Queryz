@@ -1,39 +1,45 @@
-﻿<div class="form-row">
-    <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
-        <table class="table table-bordered">
-            <thead class="bg-secondary text-white">
-                <tr>
-                    <th>Numeric Value</th>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: enumerationModel.values">
-                <tr>
-                    <td>
-                        @Html.TextBox("Enumeration_Id", null, new { @class = "form-control", data_bind = "value: id", type = "number", required = "required" })
-                    </td>
-                    <td>
-                        @Html.TextBox("Enumeration_Name", null, new { @class = "form-control", data_bind = "value: name", required = "required" })
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-block btn-danger" data-bind="click: $root.enumerationModel.removeEnumerationValue">
-                            <i class="fas fa-xmark"></i>
-                            Remove
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot class="bg-secondary text-white">
-                <tr>
-                    <td colspan="3" style="text-align:right">
-                        <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.addEnumerationValue">
-                            <i class="fas fa-plus"></i>
-                            Add
-                        </button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+﻿<div class="row mb-4">
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-secondary">
+                    <tr>
+                        <th class="fw-semibold">Numeric Value</th>
+                        <th class="fw-semibold">Name</th>
+                        <th style="width: 120px;"></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: enumerationModel.values">
+                    <tr>
+                        <td>
+                            @Html.TextBox("Enumeration_Id", null, new { @class = "form-control", data_bind = "value: id", type = "number", required = "required" })
+                        </td>
+                        <td>
+                            @Html.TextBox("Enumeration_Name", null, new { @class = "form-control", data_bind = "value: name", required = "required" })
+                        </td>
+                        <td class="text-center">
+                            <button type="button" 
+                                    class="btn btn-sm btn-danger w-100" 
+                                    data-bind="click: $root.enumerationModel.removeEnumerationValue">
+                                <i class="fas fa-times me-1"></i>
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot class="table-secondary">
+                    <tr>
+                        <td colspan="3" class="text-end">
+                            <button type="button" 
+                                    class="btn btn-primary" 
+                                    data-bind="click: enumerationModel.addEnumerationValue">
+                                <i class="fas fa-plus me-1"></i>
+                                Add
+                            </button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </div>

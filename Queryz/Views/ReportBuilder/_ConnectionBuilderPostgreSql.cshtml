@@ -1,34 +1,34 @@
 ﻿<div id="connection-details-content">
-    <div class="form-row">
-        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-            @Html.Label("Report_Server", "Server", new { @class = "control-label" })
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+            <label for="Report_Server" class="form-label">Server</label>
             @Html.TextBox("Report_Server", null, new { @class = "form-control", data_bind = "value: dataSourceModel.server, event: { blur: $root.getDatabases }", required = "required" })
         </div>
-        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-            @Html.Label("Report_Port", "Port", new { @class = "control-label" })
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+            <label for="Report_Port" class="form-label">Port</label>
             @Html.TextBox("Report_Port", null, new { @class = "form-control", type = "number", data_bind = "value: dataSourceModel.port, event: { blur: $root.getDatabases }", required = "required" })
         </div>
     </div>
 
-    <div class="form-row">
-        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-            @Html.Label("Report_UserId", "User ID", new { @class = "control-label" })
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+            <label for="Report_UserId" class="form-label">User ID</label>
             @Html.TextBox("Report_UserId", null, new { @class = "form-control", data_bind = "value: dataSourceModel.userId, event: { blur: dataSourceModel.getDatabases }", required = "required" })
         </div>
-        <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-            @Html.Label("Report_Password", "Password", new { @class = "control-label" })
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+            <label for="Report_Password" class="form-label">Password</label>
             @Html.Password("Report_Password", null, new { @class = "form-control", data_bind = "value: dataSourceModel.password, event: { blur: dataSourceModel.getDatabases }", required = "required" })
         </div>
     </div>
 
-    <div class="form-row">
-        <div class="form-group col-6 col-sm-6 col-md-8 col-lg-9">
-            @Html.Label("Report_Database", "Database", new { @class = "control-label" })
-            <select id="Report_Database" name="Report_Database" class="form-control" data-bind="value: dataSourceModel.database" required></select>
-            <span id="databases-loading-progress" style="display: none;" class="text-info">Please Wait…</span>
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-sm-6 col-md-8 col-lg-9">
+            <label for="Report_Database" class="form-label">Database</label>
+            <select id="Report_Database" name="Report_Database" class="form-select" data-bind="value: dataSourceModel.database" required></select>
+            <div id="databases-loading-progress" class="text-info mt-1" style="display: none;">Please Wait…</div>
         </div>
-        <div class="form-group col-6 col-sm-6 col-md-4 col-lg-3">
-            @Html.Label("Report_Schema", "Schema", new { @class = "control-label" })
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <label for="Report_Schema" class="form-label">Schema</label>
             @Html.TextBox("Report_Schema", null, new { @class = "form-control", data_bind = "value: dataSourceModel.schema" })
         </div>
     </div>

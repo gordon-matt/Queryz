@@ -2,38 +2,55 @@
 
 <form id="wizard-form-6">
     <input type="hidden" name="ReportId" data-bind="value: reportModel.step6.reportId" />
-    <table class="table table-bordered">
-        <thead class="bg-secondary text-white">
-            <tr>
-                <th>Join Type</th>
-                <th>Table</th>
-                <th>Parent Table</th>
-                <th>Primary Key</th>
-                <th>Foreign Key</th>
-            </tr>
-        </thead>
-        <tbody data-bind="foreach: reportModel.step6.relationships">
-            <tr>
-                <td>
-                    @Html.DropDownList(
-                        "Relationships_JoinType",
-                        WebEnumExtensions.ToSelectList<JoinType>(),
-                        new { @class = "form-control", data_bind = "value: joinType, attr: { name: 'Relationships[' + $index() + '].JoinType' }" })
-                </td>
-                <td>
-                    <span data-bind="text: tableName"></span>
-                    <input type="hidden" data-bind="value: tableName, attr: { name: 'Relationships[' + $index() + '].TableName' }" />
-                </td>
-                <td>
-                    <select class="form-control" data-bind="value: parentTable, options: availableParentTables, optionsCaption: '', event: { change: $root.reportModel.step6.parentTable_onChange.bind($data, $index()) }, attr: { name: 'Relationships[' + $index() + '].ParentTable' }"></select>
-                </td>
-                <td>
-                    <select class="form-control" data-bind="value: primaryKey, optionsCaption: '', attr: { name: 'Relationships[' + $index() + '].PrimaryKey' }"></select>
-                </td>
-                <td>
-                    <select class="form-control" data-bind="value: foreignKey, optionsCaption: '', options: availableColumns, attr: { name: 'Relationships[' + $index() + '].ForeignKey' }"></select>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Join Type</th>
+                    <th>Table</th>
+                    <th>Parent Table</th>
+                    <th>Primary Key</th>
+                    <th>Foreign Key</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: reportModel.step6.relationships">
+                <tr>
+                    <td>
+                        @Html.DropDownList(
+                            "Relationships_JoinType",
+                            WebEnumExtensions.ToSelectList<JoinType>(),
+                            new { @class = "form-control", data_bind = "value: joinType, attr: { name: 'Relationships[' + $index() + '].JoinType' }" })
+                    </td>
+                    <td>
+                        <span class="d-flex align-items-center" data-bind="text: tableName" style="min-height: 38px;"></span>
+                        <input type="hidden" data-bind="value: tableName, attr: { name: 'Relationships[' + $index() + '].TableName' }" />
+                    </td>
+                    <td>
+                        <select class="form-select" 
+                                data-bind="value: parentTable, 
+                                          options: availableParentTables, 
+                                          optionsCaption: '', 
+                                          event: { change: $root.reportModel.step6.parentTable_onChange.bind($data, $index()) }, 
+                                          attr: { name: 'Relationships[' + $index() + '].ParentTable' }">
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-select" 
+                                data-bind="value: primaryKey, 
+                                          optionsCaption: '', 
+                                          attr: { name: 'Relationships[' + $index() + '].PrimaryKey' }">
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-select" 
+                                data-bind="value: foreignKey, 
+                                          optionsCaption: '', 
+                                          options: availableColumns, 
+                                          attr: { name: 'Relationships[' + $index() + '].ForeignKey' }">
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </form>

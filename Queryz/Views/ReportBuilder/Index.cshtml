@@ -46,29 +46,29 @@
 @Html.Hidden("GridPageSize", 10)
 
 <div id="grid-section" class="row">
-
     @if (isAdminUser)
     {
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
-            <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.create">
-                <i class="fas fa-plus"></i>
-                Add Group
-            </button>
-
-            <div class="float-end">
-                <button type="button" class="btn btn-secondary" data-bind="click: showDataSources">
-                    <i class="fas fa-database"></i>
+        <div class="col-12 mb-3 d-flex justify-content-between">
+            <div>
+                <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.create">
+                    <i class="fas fa-plus me-1"></i>
+                    Add Group
+                </button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-secondary me-2" data-bind="click: showDataSources">
+                    <i class="fas fa-database me-1"></i>
                     Data Sources
                 </button>
                 <button type="button" class="btn btn-success" data-bind="click: showEnumerations">
-                    <i class="fas fa-binoculars"></i>
+                    <i class="fas fa-binoculars me-1"></i>
                     Enumerations
                 </button>
             </div>
         </div>
     }
 
-    <div class="col-md-12 @rtlClass">
+    <div class="col-12 @rtlClass">
         <div id="Grid"></div>
     </div>
 </div>
@@ -76,7 +76,7 @@
 @if (isAdminUser)
 {
     <div id="report-group-form-section" class="row" style="display:none">
-        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+        <article class="col-12">
             @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
             {
                 using (var header = panel.BeginHeader("Details")) { }
@@ -84,31 +84,29 @@
                 {
                     <form id="report-group-form-section-form" role="form">
                         <fieldset>
-                            <legend id="report-group-form-section-legend"></legend>
+                            <legend id="report-group-form-section-legend" class="mb-4"></legend>
 
-                            <div class="form-row">
-                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-                                    @Html.Label("Name", "Name", new { @class = "control-label" })
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="Name" class="form-label">Name</label>
                                     <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <i class="fas fa-file"></i>
-                                            </span>
-                                        </div>
+                                        <span class="input-group-text">
+                                            <i class="fas fa-file"></i>
+                                        </span>
                                         @Html.TextBox("Name", null, new { @class = "form-control", data_bind = "value: reportGroupModel.name" })
                                     </div>
                                 </div>
 
-                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-                                    <label for="TimeZoneId">Time Zone</label>
-                                    @Html.TimeZonesDropDownList("TimeZoneId", htmlAttributes: new { @class = "form-control", data_bind = "value: reportGroupModel.timeZoneId" }, emptyText: string.Empty)
+                                <div class="col-12 col-md-6">
+                                    <label for="TimeZoneId" class="form-label">Time Zone</label>
+                                    @Html.TimeZonesDropDownList("TimeZoneId", htmlAttributes: new { @class = "form-select", data_bind = "value: reportGroupModel.timeZoneId" }, emptyText: string.Empty)
                                 </div>
                             </div>
 
-                            <div class="form-row">
-                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
-                                    @Html.Label("Roles", "Roles", new { @class = "control-label" })
-                                    <div class="two-columns">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">Roles</label>
+                                    <div class="" two-columns">
                                         @Html.Queryz().RolesCheckBoxList(
                                             RoleManager,
                                             "Roles",
@@ -117,17 +115,18 @@
                                             checkboxHtmlAttributes: new { @class = "form-check-input", data_bind = "checked: reportGroupModel.roles" },
                                             inputInsideLabel: true,
                                             wrapInDiv: true,
-                                            wrapperHtmlAttributes: new { @class = "form-check" })
+                                            wrapperHtmlAttributes: new { @class = "form-check col-md-4 col-lg-3 mb-2" })
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-row">
-                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div class="float-end">
-                                        <button type="button" class="btn btn-secondary" data-bind="click: reportGroupModel.cancel">Cancel</button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.save"><i class="fas fa-save"></i> Save</button>
-                                    </div>
+                            <div class="row">
+                                <div class="col-12 text-end">
+                                    <button type="button" class="btn btn-secondary me-2" data-bind="click: reportGroupModel.cancel">Cancel</button>
+                                    <button type="button" class="btn btn-primary" data-bind="click: reportGroupModel.save">
+                                        <i class="fas fa-save me-1"></i>
+                                        Save
+                                    </button>
                                 </div>
                             </div>
                         </fieldset>
@@ -138,24 +137,24 @@
     </div>
 
     <div id="dataSources-grid-section" class="row" style="display:none">
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
-            <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.create">
-                <i class="fas fa-plus"></i>
+        <div class="col-12 mb-3">
+            <button type="button" class="btn btn-primary me-2" data-bind="click: dataSourceModel.create">
+                <i class="fas fa-plus me-1"></i>
                 Create
             </button>
             <button type="button" class="btn btn-secondary" data-bind="click: dataSourceModel.goBack">
-                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-left me-1"></i>
                 Back
             </button>
         </div>
 
-        <div class="col-md-12 @rtlClass">
+        <div class="col-12 @rtlClass">
             <div id="DataSourceGrid"></div>
         </div>
     </div>
 
     <div id="dataSources-form-section" class="row" style="display:none">
-        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+        <article class="col-12">
             @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
             {
                 using (var header = panel.BeginHeader("Details")) { }
@@ -163,27 +162,28 @@
                 {
                     <form id="dataSources-form-section-form" role="form">
                         <fieldset>
-                            <legend id="dataSources-form-section-legend"></legend>
+                            <legend id="dataSources-form-section-legend" class="mb-4"></legend>
 
-                            <div class="form-row">
-                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-                                    <label for="DataSource_Name">Name</label>
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="DataSource_Name" class="form-label">Name</label>
                                     @Html.TextBox("DataSource_Name", null, new { @class = "form-control", data_bind = "value: dataSourceModel.name" })
                                 </div>
-                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-                                    <label for="DataSource_DataProvider">Data Provider</label>
-                                    @Html.DropDownList("DataSource_DataProvider", WebEnumExtensions.ToSelectList<DataProvider>(emptyText: string.Empty), htmlAttributes: new { @class = "form-control", data_bind = "value: dataSourceModel.dataProvider, event: { change: dataSourceModel.onDataProviderChanged }" })
+                                <div class="col-12 col-md-6">
+                                    <label for="DataSource_DataProvider" class="form-label">Data Provider</label>
+                                    @Html.DropDownList("DataSource_DataProvider", WebEnumExtensions.ToSelectList<DataProvider>(emptyText: string.Empty), htmlAttributes: new { @class = "form-select", data_bind = "value: dataSourceModel.dataProvider, event: { change: dataSourceModel.onDataProviderChanged }" })
                                 </div>
                             </div>
 
-                            <div id="connection-details"></div>
+                            <div id="connection-details" class="mb-3"></div>
 
-                            <div class="form-row">
-                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div class="float-end">
-                                        <button type="button" class="btn btn-secondary" data-bind="click: dataSourceModel.cancel">Cancel</button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.save"><i class="fas fa-save"></i> Save</button>
-                                    </div>
+                            <div class="row">
+                                <div class="col-12 text-end">
+                                    <button type="button" class="btn btn-secondary me-2" data-bind="click: dataSourceModel.cancel">Cancel</button>
+                                    <button type="button" class="btn btn-primary" data-bind="click: dataSourceModel.save">
+                                        <i class="fas fa-save me-1"></i>
+                                        Save
+                                    </button>
                                 </div>
                             </div>
                         </fieldset>
@@ -194,24 +194,24 @@
     </div>
 
     <div id="enumerations-grid-section" class="row" style="display:none">
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
-            <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.create">
-                <i class="fas fa-plus"></i>
+        <div class="col-12 mb-3">
+            <button type="button" class="btn btn-primary me-2" data-bind="click: enumerationModel.create">
+                <i class="fas fa-plus me-1"></i>
                 Create
             </button>
             <button type="button" class="btn btn-secondary" data-bind="click: enumerationModel.goBack">
-                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-left me-1"></i>
                 Back
             </button>
         </div>
 
-        <div class="col-md-12 @rtlClass">
+        <div class="col-12 @rtlClass">
             <div id="EnumerationsGrid"></div>
         </div>
     </div>
 
     <div id="enumerations-form-section" class="row" style="display:none">
-        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+        <article class="col-12">
             @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
             {
                 using (var header = panel.BeginHeader("Details")) { }
@@ -219,17 +219,17 @@
                 {
                     <form id="enumerations-form-section-form" role="form">
                         <fieldset>
-                            <legend id="enumerations-form-section-legend"></legend>
+                            <legend id="enumerations-form-section-legend" class="mb-4"></legend>
 
-                            <div class="form-row">
-                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-                                    <label for="Enumeration_Name">Name</label>
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="Enumeration_Name" class="form-label">Name</label>
                                     @Html.TextBox("Enumeration_Name", null, new { @class = "form-control", data_bind = "value: enumerationModel.name" })
                                 </div>
 
-                                <div class="form-group col-6 col-sm-6 col-md-6 col-lg-6">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" data-bind="checked: enumerationModel.isBitFlags" />
+                                <div class="col-12 col-md-6">
+                                    <div class="form-check form-switch pt-3">
+                                        <input type="checkbox" class="form-check-input" role="switch" data-bind="checked: enumerationModel.isBitFlags" />
                                         <label class="form-check-label">Bit Flags</label>
                                     </div>
                                 </div>
@@ -237,12 +237,13 @@
 
                             @await Html.PartialAsync("_EnumerationValuesTable")
 
-                            <div class="form-row">
-                                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div class="float-end">
-                                        <button type="button" class="btn btn-secondary" data-bind="click: enumerationModel.cancel">Cancel</button>
-                                        <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.save"><i class="fas fa-save"></i> Save</button>
-                                    </div>
+                            <div class="row">
+                                <div class="col-12 text-end">
+                                    <button type="button" class="btn btn-secondary me-2" data-bind="click: enumerationModel.cancel">Cancel</button>
+                                    <button type="button" class="btn btn-primary" data-bind="click: enumerationModel.save">
+                                        <i class="fas fa-save me-1"></i>
+                                        Save
+                                    </button>
                                 </div>
                             </div>
                         </fieldset>
@@ -256,51 +257,51 @@
 @if (isAdminUser || isEditor)
 {
     <div id="wizard-section" class="row" style="display:none">
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mb-3">
-            <a data-bind="click: reportModel.cancel" class="btn btn-secondary text-white">
-                @*<i class="fas fa-arrow-left"></i>*@
+        <div class="col-12 mb-3">
+            <a data-bind="click: reportModel.cancel" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>
                 Cancel
             </a>
         </div>
 
-        <article class="col-12 col-sm-12 col-md-12 col-lg-12">
+        <article class="col-12">
             @using (var panel = Html.ExtensoUI().Begin(new Panel(state: Constants.DefaultExtensoUIState)))
             {
                 using (var header = panel.BeginHeader("Create or Edit Report")) { }
                 using (var body = panel.BeginBody())
                 {
                     <div id="wizard">
-                        <h3>Database Settings</h3>
+                        <h3 class="fs-5"><i class="fas fa-database me-2"></i>Database Settings</h3>
                         <section>
                             @await Html.PartialAsync("_WizardStep1")
                         </section>
 
-                        <h3>Tables</h3>
+                        <h3 class="fs-5"><i class="fas fa-table me-2"></i>Tables</h3>
                         <section>
                             @await Html.PartialAsync("_WizardStep2")
                         </section>
 
-                        <h3>Columns</h3>
+                        <h3 class="fs-5"><i class="fas fa-table-columns me-2"></i>Columns</h3>
                         <section>
                             @await Html.PartialAsync("_WizardStep3")
                         </section>
 
-                        <h3>Filtering</h3>
+                        <h3 class="fs-5"><i class="fas fa-filter me-2"></i>Filtering</h3>
                         <section>
                             @await Html.PartialAsync("_WizardStep4")
                         </section>
 
-                        <h3>Sorting</h3>
+                        <h3 class="fs-5"><i class="fas fa-arrow-down-a-z me-2"></i>Sorting</h3>
                         <section>
                             @await Html.PartialAsync("_WizardStep5")
                         </section>
 
-                        <h3>Relationships</h3>
+                        <h3 class="fs-5"><i class="fas fa-link me-2"></i>Relationships</h3>
                         <section>
                             @await Html.PartialAsync("_WizardStep6")
                         </section>
 
-                        <h3>Other Options</h3>
+                        <h3 class="fs-5"><i class="fas fa-gear me-2"></i>Other Options</h3>
                         <section>
                             @await Html.PartialAsync("_WizardStep7")
                         </section>
