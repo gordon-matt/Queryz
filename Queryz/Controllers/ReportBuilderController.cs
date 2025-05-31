@@ -110,13 +110,16 @@ public class ReportBuilderController : Controller
     [Route("download/{id}")]
     public async Task<FileResult> Download(int id, DownloadOptions options)
     {
-        var report = await reportService.FindOneAsync(
-            x => x.Id == id,
-            include => include.Group,
-            include => include.DataSource,
-            include => include.Tables,
-            include => include.Columns,
-            include => include.Sortings);
+        var report = await reportService.FindOneAsync(new SearchOptions<Report>
+        {
+            Query = x => x.Id == id,
+            Include = query => query
+                .Include(x => x.Group)
+                .Include(x => x.DataSource)
+                .Include(x => x.Tables)
+                .Include(x => x.Columns)
+                .Include(x => x.Sortings)
+        });
 
         report.Filters = null;
         string filters = ReportFilters[report.Id];
@@ -206,7 +209,11 @@ public class ReportBuilderController : Controller
 
         try
         {
-            var report = await reportService.FindOneAsync(x => x.Id == reportId, include => include.DataSource);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == reportId,
+                Include = query => query.Include(x => x.DataSource)
+            });
 
             using var connection = report.DataSource.DataProvider.GetConnection(report.DataSource.ConnectionString);
             var columnData = DbConnectionHelpers.GetColumnData(connection, report.DataSource, tableName);
@@ -439,15 +446,7 @@ public class ReportBuilderController : Controller
         });
 
     [Route("")]
-    public async Task<IActionResult> Index() =>
-        //// Just for getting things up and running:
-        //await roleManager.CreateAsync(new ApplicationRole(Constants.Roles.Administrators));
-        //await roleManager.CreateAsync(new ApplicationRole(Constants.Roles.ReportBuilderEditors));
-        //await roleManager.CreateAsync(new ApplicationRole(Constants.Roles.ReportBuilderUsers));
-        //var user = await userManager.FindByEmailAsync("admin@mysite.com");
-        //await userManager.AddToRoleAsync(user, Constants.Roles.Administrators);
-
-        View();
+    public IActionResult Index() => View();
 
     [HttpPost]
     [Route("preview")]
@@ -455,13 +454,16 @@ public class ReportBuilderController : Controller
     {
         try
         {
-            var report = await reportService.FindOneAsync(
-                x => x.Id == model.ReportId,
-                include => include.Group,
-                include => include.DataSource,
-                include => include.Tables,
-                include => include.Columns,
-                include => include.Sortings);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == model.ReportId,
+                Include = query => query
+                    .Include(x => x.Group)
+                    .Include(x => x.DataSource)
+                    .Include(x => x.Tables)
+                    .Include(x => x.Columns)
+                    .Include(x => x.Sortings)
+            });
 
             report.Filters = model.Query;
 
@@ -524,12 +526,15 @@ public class ReportBuilderController : Controller
             return Unauthorized();
         }
 
-        var report = await reportService.FindOneAsync(
-            x => x.Id == id,
-            include => include.Group,
-            include => include.DataSource,
-            include => include.Tables,
-            include => include.Columns);
+        var report = await reportService.FindOneAsync(new SearchOptions<Report>
+        {
+            Query = x => x.Id == id,
+            Include = query => query
+                .Include(x => x.Group)
+                .Include(x => x.DataSource)
+                .Include(x => x.Tables)
+                .Include(x => x.Columns)
+        });
 
         var queryBuilderFilters = GetQueryBuilderFilters(report);
 
@@ -677,9 +682,11 @@ public class ReportBuilderController : Controller
 
             if (!isNew)
             {
-                report = await reportService.FindOneAsync(
-                    x => x.Id == model.Id,
-                    include => include.Tables);
+                report = await reportService.FindOneAsync(new SearchOptions<Report>
+                {
+                    Query = x => x.Id == model.Id,
+                    Include = query => query.Include(x => x.Tables)
+                });
 
                 report.Name = model.Name;
                 report.GroupId = model.GroupId;
@@ -749,11 +756,14 @@ public class ReportBuilderController : Controller
 
         try
         {
-            var report = await reportService.FindOneAsync(
-                x => x.Id == model.ReportId,
-                include => include.DataSource,
-                include => include.Tables,
-                include => include.Columns);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == model.ReportId,
+                Include = query => query
+                    .Include(x => x.DataSource)
+                    .Include(x => x.Tables)
+                    .Include(x => x.Columns)
+            });
 
             string[] existingTableNames = report.Tables.Select(x => x.Name).ToArray();
 
@@ -883,11 +893,14 @@ public class ReportBuilderController : Controller
 
         try
         {
-            var report = await reportService.FindOneAsync(
-                x => x.Id == model.ReportId,
-                include => include.DataSource,
-                include => include.Tables,
-                include => include.Columns);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == model.ReportId,
+                Include = query => query
+                    .Include(x => x.DataSource)
+                    .Include(x => x.Tables)
+                    .Include(x => x.Columns)
+            });
 
             var selectedColumns = model.SelectedColumns.Select((x, i) => new
             {
@@ -991,11 +1004,14 @@ public class ReportBuilderController : Controller
             #endregion Literals
 
             // Refresh, so we have the columns to use for query builder.
-            report = await reportService.FindOneAsync(
-                x => x.Id == model.ReportId,
-                include => include.DataSource,
-                include => include.Tables,
-                include => include.Columns);
+            report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == model.ReportId,
+                Include = query => query
+                    .Include(x => x.DataSource)
+                    .Include(x => x.Tables)
+                    .Include(x => x.Columns)
+            });
 
             var queryBuilderFilters = GetQueryBuilderFilters(report);
 
@@ -1066,12 +1082,15 @@ public class ReportBuilderController : Controller
 
         try
         {
-            var report = await reportService.FindOneAsync(
-                x => x.Id == model.ReportId,
-                include => include.DataSource,
-                include => include.Tables,
-                include => include.Columns,
-                include => include.Sortings);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == model.ReportId,
+                Include = query => query
+                    .Include(x => x.DataSource)
+                    .Include(x => x.Tables)
+                    .Include(x => x.Columns)
+                    .Include(x => x.Sortings)
+            });
 
             report.Filters = model.Query;
 
@@ -1119,11 +1138,14 @@ public class ReportBuilderController : Controller
 
         try
         {
-            var report = await reportService.FindOneAsync(
-                x => x.Id == model.ReportId,
-                include => include.DataSource,
-                include => include.Tables,
-                include => include.Sortings);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == model.ReportId,
+                Include = query => query
+                    .Include(x => x.DataSource)
+                    .Include(x => x.Tables)
+                    .Include(x => x.Sortings)
+            });
 
             await reportSortingService.DeleteAsync(x => x.ReportId == report.Id);
 
@@ -1199,9 +1221,11 @@ public class ReportBuilderController : Controller
 
         try
         {
-            var report = await reportService.FindOneAsync(
-                x => x.Id == model.ReportId,
-                include => include.Tables);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == model.ReportId,
+                Include = query => query.Include(x => x.Tables)
+            });
 
             var toUpdate = new List<ReportTable>();
             foreach (var table in report.Tables)
@@ -1318,7 +1342,11 @@ public class ReportBuilderController : Controller
     {
         try
         {
-            var report = await reportService.FindOneAsync(x => x.Id == reportId, include => include.DataSource);
+            var report = await reportService.FindOneAsync(new SearchOptions<Report>
+            {
+                Query = x => x.Id == reportId,
+                Include = query => query.Include(x => x.DataSource)
+            });
 
             if (report == null)
             {
@@ -1388,7 +1416,11 @@ public class ReportBuilderController : Controller
 
     #region Non-Public Methods
 
-    private async Task<bool> CheckUserHasAccessToReportAsync(int reportId, string userId) => await reportUserBlacklistService.FindOneAsync(x => x.ReportId == reportId && x.UserId == userId) == null;
+    private async Task<bool> CheckUserHasAccessToReportAsync(int reportId, string userId) =>
+        await reportUserBlacklistService.FindOneAsync(new SearchOptions<ReportUserBlacklistEntry>
+        {
+            Query = x => x.ReportId == reportId && x.UserId == userId
+        }) == null;
 
     private Tuple<IDictionary<string, string>, IEnumerable<JQQueryBuilderFilter>> GetQueryBuilderFilters(Report report)
     {

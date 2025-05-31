@@ -63,7 +63,7 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
         var query = connection.Query();
         query = await ApplyMandatoryFilterAsync(query);
 
-        if (!User.IsInRole(Constants.Roles.Administrators))
+        if (!User.IsInRole(SharedConstants.Roles.Administrators))
         {
             query = query.Include(x => x.ReportGroupRoles);
             var user = await userManager.FindByNameAsync(User.Identity.Name);
@@ -183,7 +183,7 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
 
         var reportGroup = await Repository.FindOneAsync(reportGroupId);
 
-        using (var context = (ApplicationDbContext)dbContextFactory.GetContext())
+        using (var context = dbContextFactory.GetContext() as ApplicationDbContext)
         {
             var currentRoleIds = from rgr in context.ReportGroupRoles
                                  join r in context.Roles on rgr.RoleId equals r.Id

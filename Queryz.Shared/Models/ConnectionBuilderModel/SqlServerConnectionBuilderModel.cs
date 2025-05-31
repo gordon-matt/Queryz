@@ -13,8 +13,8 @@ public class SqlServerConnectionBuilderModel : IConnectionBuilderModel
     public string Password { get; set; }
 
     public string ToConnectionString() => IntegratedSecurity
-            ? string.Format("Server={0};Database={1};Integrated Security=True;Connection Timeout=300", Server, Database)
-            : string.Format("Server={0};Database={1};User Id={2};Password={3};Connection Timeout=300", Server, Database, UserId, Password);
+        ? string.Format("Server={0};Database={1};Integrated Security=True;Connection Timeout=300;TrustServerCertificate=True", Server, Database)
+        : string.Format("Server={0};Database={1};User Id={2};Password={3};Connection Timeout=300;TrustServerCertificate=True", Server, Database, UserId, Password);
 
     public IDictionary<string, string> GetCustomProperties() => new Dictionary<string, string>();
 }

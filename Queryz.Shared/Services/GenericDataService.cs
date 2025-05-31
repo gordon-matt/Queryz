@@ -53,21 +53,35 @@ public class GenericDataService<TEntity> : IGenericDataService<TEntity> where TE
 
     #region Find
 
-    public virtual IEnumerable<TEntity> Find(SearchOptions<TEntity> options) => repository.Find(options);
+    public virtual IEnumerable<TEntity> Find(SearchOptions<TEntity> options) =>
+        repository.Find(options);
 
-    public virtual IEnumerable<TResult> Find<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection) => repository.Find(options, projection);
+    public virtual IEnumerable<TResult> Find<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection) =>
+        repository.Find(options, projection);
 
-    public virtual async Task<IEnumerable<TEntity>> FindAsync(SearchOptions<TEntity> options) => await repository.FindAsync(options);
+    public virtual async Task<IEnumerable<TEntity>> FindAsync(SearchOptions<TEntity> options) =>
+        await repository.FindAsync(options);
 
-    public virtual async Task<IEnumerable<TResult>> FindAsync<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection) => await repository.FindAsync(options, projection);
+    public virtual async Task<IEnumerable<TResult>> FindAsync<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection) =>
+        await repository.FindAsync(options, projection);
 
-    public virtual TEntity FindOne(params object[] keyValues) => repository.FindOne(keyValues);
+    public virtual TEntity FindOne(params object[] keyValues) =>
+        repository.FindOne(keyValues);
 
-    public virtual TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths) => repository.FindOne(filterExpression, includePaths);
+    public TEntity FindOne(SearchOptions<TEntity> options) =>
+        repository.FindOne(options);
 
-    public virtual async Task<TEntity> FindOneAsync(params object[] keyValues) => await repository.FindOneAsync(keyValues);
+    public TResult FindOne<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection) =>
+        repository.FindOne(options, projection);
 
-    public virtual async Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths) => await repository.FindOneAsync(filterExpression, includePaths);
+    public virtual async Task<TEntity> FindOneAsync(params object[] keyValues) =>
+        await repository.FindOneAsync(keyValues);
+
+    public async Task<TEntity> FindOneAsync(SearchOptions<TEntity> options) =>
+        await repository.FindOneAsync(options);
+
+    public async Task<TResult> FindOneAsync<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection) =>
+        await repository.FindOneAsync(options, projection);
 
     #endregion Find
 

@@ -33,11 +33,15 @@ public interface IGenericDataService<TEntity> where TEntity : class
 
     TEntity FindOne(params object[] keyValues);
 
-    TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    TEntity FindOne(SearchOptions<TEntity> options);
+
+    TResult FindOne<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projections);
 
     Task<TEntity> FindOneAsync(params object[] keyValues);
 
-    Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression, params Expression<Func<TEntity, dynamic>>[] includePaths);
+    Task<TEntity> FindOneAsync(SearchOptions<TEntity> options);
+
+    Task<TResult> FindOneAsync<TResult>(SearchOptions<TEntity> options, Expression<Func<TEntity, TResult>> projection);
 
     #endregion Find
 
