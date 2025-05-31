@@ -96,7 +96,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseExtensoUI<Bootstrap4UIProvider>();
+app.UseExtensoUI<Bootstrap5UIProvider>();
 
 app.UseAuthentication();
 app.UseAuthorization();

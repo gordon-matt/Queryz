@@ -3,19 +3,15 @@
   "defaultProvider": "jsdelivr",
   "libraries": [
     {
-      "library": "bootbox@4.4.0",
-      "destination": "wwwroot/lib/bootbox/",
-      "files": [
-        "bootbox.js",
-        "bootbox.min.js"
-      ]
+      "library": "bootbox@6.0.4",
+      "destination": "wwwroot/lib/bootbox/"
     },
     {
-      "library": "bootstrap@4.3.1",
+      "library": "bootstrap@5.3.6",
       "destination": "wwwroot/lib/bootstrap/"
     },
     {
-      "library": "bootstrap-datepicker@1.9.0",
+      "library": "bootstrap-datepicker@1.10.0",
       "destination": "wwwroot/lib/bootstrap-datepicker/"
     },
     {
@@ -27,72 +23,28 @@
       "destination": "wwwroot/lib/bootstrap-select/"
     },
     {
-      "library": "bootstrap-slider@10.6.2",
-      "destination": "wwwroot/lib/bootstrap-slider/",
-      "files": [
-        "dist/css/bootstrap-slider.css",
-        "dist/css/bootstrap-slider.min.css",
-        "dist/bootstrap-slider.js",
-        "dist/bootstrap-slider.min.js"
-      ]
+      "library": "bootstrap-slider@11.0.2",
+      "destination": "wwwroot/lib/bootstrap-slider/"
     },
     {
-      "library": "crossfilter2@1.4.7",
-      "destination": "wwwroot/lib/crossfilter2/",
-      "files": [
-        "crossfilter.js",
-        "crossfilter.min.js",
-        "index.d.ts",
-        "index.js",
-        "index.min.js"
-      ]
+      "library": "crossfilter2@1.5.4",
+      "destination": "wwwroot/lib/crossfilter2/"
     },
     {
       "library": "form2js@1.0.0",
-      "destination": "wwwroot/lib/form2js/",
-      "files": [
-        "src/form2js.js",
-        "src/form2js.min.js",
-        "src/jquery.toObject.js",
-        "src/jquery.toObject.min.js",
-        "src/js2form.js",
-        "src/js2form.min.js"
-      ]
+      "destination": "wwwroot/lib/form2js/"
     },
     {
-      "library": "interactjs@1.6.2",
-      "destination": "wwwroot/lib/interactjs/",
-      "files": [
-        "dist/interact.js",
-        "dist/interact.js.map",
-        "dist/interact.min.js",
-        "dist/interact.min.js.map"
-      ]
+      "library": "interactjs@1.10.27",
+      "destination": "wwwroot/lib/interactjs/"
     },
     {
-      "library": "jquery@2.2.4",
-      "destination": "wwwroot/lib/jquery/",
-      "files": [
-        "dist/jquery.js",
-        "dist/jquery.min.js",
-        "dist/jquery.min.map"
-      ]
+      "library": "jquery@3.7.1",
+      "destination": "wwwroot/lib/jquery/"
     },
     {
       "library": "jquery-steps@1.1.0",
-      "destination": "wwwroot/lib/jquery-steps/",
-      "files": [
-        "build/jquery.steps-1.1.0.zip",
-        "build/jQuery.Steps.1.1.0.nupkg",
-        "build/jquery.steps.js",
-        "build/jquery.steps.min.js",
-        "demo/css/jquery.steps.css",
-        "demo/css/jquery.steps.min.css",
-        "demo/css/main.css",
-        "demo/css/main.min.css",
-        "demo/css/normalize.css",
-        "demo/css/normalize.min.css"
-      ]
+      "destination": "wwwroot/lib/jquery-steps/"
     },
     {
       "library": "jquery-validation@1.19.1",
@@ -103,12 +55,8 @@
       "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
     },
     {
-      "library": "jszip@3.2.2",
-      "destination": "wwwroot/lib/jszip/",
-      "files": [
-        "dist/jszip.js",
-        "dist/jszip.min.js"
-      ]
+      "library": "jszip@3.10.1",
+      "destination": "wwwroot/lib/jszip/"
     },
     {
       "library": "knockout@3.4.0",
@@ -116,82 +64,31 @@
     },
     {
       "library": "knockout-mapping@2.6.0",
-      "destination": "wwwroot/lib/knockout-mapping/",
-      "files": [
-        "dist/knockout.mapping.js",
-        "dist/knockout.mapping.min.js",
-        "dist/knockout.mapping.min.js.map"
-      ]
+      "destination": "wwwroot/lib/knockout-mapping/"
     },
     {
       "library": "knockout-sortable@1.1.1",
-      "destination": "wwwroot/lib/knockout-sortable/",
-      "files": [
-        "build/knockout-sortable.js",
-        "build/knockout-sortable.min.js"
-      ]
+      "destination": "wwwroot/lib/knockout-sortable/"
     },
     {
       "library": "microplugin@0.0.3",
-      "destination": "wwwroot/lib/microplugin/",
-      "files": [
-        "src/microplugin.js",
-        "src/microplugin.min.js"
-      ]
+      "destination": "wwwroot/lib/microplugin/"
     },
     {
-      "library": "moment@2.24.0",
+      "library": "moment@2.30.1",
       "destination": "wwwroot/lib/moment/"
     },
     {
       "library": "notifyjs-browser@0.4.2",
-      "destination": "wwwroot/lib/notifyjs-browser/",
-      "files": [
-        "dist/styles/metro/notify-metro.css",
-        "dist/styles/metro/notify-metro.js",
-        "dist/styles/metro/notify-metro.min.css",
-        "dist/styles/metro/notify-metro.min.js",
-        "dist/notify.js",
-        "dist/notify.min.js"
-      ]
+      "destination": "wwwroot/lib/notifyjs-browser/"
     },
     {
       "library": "selectize@0.12.6",
-      "destination": "wwwroot/lib/selectize/",
-      "files": [
-        "selectize.jquery.json",
-        "dist/css/selectize.bootstrap2.css",
-        "dist/css/selectize.bootstrap2.min.css",
-        "dist/css/selectize.bootstrap3.css",
-        "dist/css/selectize.bootstrap3.min.css",
-        "dist/css/selectize.css",
-        "dist/css/selectize.default.css",
-        "dist/css/selectize.default.min.css",
-        "dist/css/selectize.legacy.css",
-        "dist/css/selectize.legacy.min.css",
-        "dist/css/selectize.min.css",
-        "dist/js/standalone/selectize.js",
-        "dist/js/standalone/selectize.min.js",
-        "dist/js/selectize.js",
-        "dist/js/selectize.min.js",
-        "dist/less/selectize.bootstrap2.less",
-        "dist/less/selectize.bootstrap3.less",
-        "dist/less/selectize.default.less",
-        "dist/less/selectize.legacy.less",
-        "dist/less/selectize.less",
-        "dist/less/plugins/drag_drop.less",
-        "dist/less/plugins/dropdown_header.less",
-        "dist/less/plugins/optgroup_columns.less",
-        "dist/less/plugins/remove_button.less"
-      ]
+      "destination": "wwwroot/lib/selectize/"
     },
     {
-      "library": "sifter@0.5.3",
-      "destination": "wwwroot/lib/sifter/",
-      "files": [
-        "sifter.js",
-        "sifter.min.js"
-      ]
+      "library": "sifter@0.6.0",
+      "destination": "wwwroot/lib/sifter/"
     },
     {
       "library": "sql-parser-mistic@1.2.3",
@@ -199,30 +96,15 @@
     },
     {
       "library": "qrcodejs@1.0.0",
-      "destination": "wwwroot/lib/qrcodejs/",
-      "files": [
-        "qrcode.js",
-        "qrcode.min.js"
-      ]
+      "destination": "wwwroot/lib/qrcodejs/"
     },
     {
-      "library": "jquery-ui-dist@1.12.1",
+      "library": "jquery-ui-dist@1.13.3",
       "destination": "wwwroot/lib/jquery-ui-dist/"
     },
     {
-      "library": "font-awesome@4.7.0",
-      "destination": "wwwroot/lib/font-awesome/",
-      "files": [
-        "css/font-awesome.css",
-        "css/font-awesome.css.map",
-        "css/font-awesome.min.css",
-        "fonts/fontawesome-webfont.eot",
-        "fonts/fontawesome-webfont.svg",
-        "fonts/fontawesome-webfont.ttf",
-        "fonts/fontawesome-webfont.woff",
-        "fonts/fontawesome-webfont.woff2",
-        "fonts/FontAwesome.otf"
-      ]
+      "library": "@fortawesome/fontawesome-free@6.1.1",
+      "destination": "wwwroot/lib/fortawesome/fontawesome-free/"
     }
   ]
 }

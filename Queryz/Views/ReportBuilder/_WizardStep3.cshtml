@@ -7,7 +7,7 @@
             <tr>
                 <td colspan="9">
                     <button type="button" class="btn btn-warning" data-bind="event: { click: $root.reportModel.step3.removeAllColumns }">
-                        <i class="fa fa-times"></i>
+                        <i class="fas fa-xmark"></i>
                         Remove All
                     </button>
                 </td>
@@ -28,7 +28,7 @@
         <tbody data-bind="sortable: reportModel.step3.selectedColumns">
             <tr>
                 <td style="cursor:pointer">
-                    <i class="fa fa-arrows"></i>
+                    <i class="fas fa-arrows-up-down-left-right"></i>
                 </td>
 
                 <td>
@@ -74,7 +74,7 @@
                 </td>
                 <td>
                     <button type="button" class="btn btn-sm btn-block btn-danger" data-bind="click: $root.reportModel.step3.removeColumn">
-                        <i class="fa fa-times"></i>
+                        <i class="fas fa-xmark"></i>
                     </button>
                 </td>
             </tr>
@@ -83,11 +83,11 @@
             <tr>
                 <td colspan="9" style="text-align:right">
                     <button type="button" class="btn btn-primary" data-bind="click: reportModel.step3.addColumn">
-                        <i class="fa fa-plus"></i>
+                        <i class="fas fa-plus"></i>
                         Add
                     </button>
                     <button type="button" class="btn btn-primary" data-bind="click: reportModel.step3.addLiteral">
-                        <i class="fa fa-plus"></i>
+                        <i class="fas fa-plus"></i>
                         Add Literal
                     </button>
                 </td>
