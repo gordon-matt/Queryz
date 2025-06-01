@@ -18,10 +18,7 @@
     <thead class="table-secondary">
         <tr>
             <td colspan="@columnCount">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#download-modal">
-                    <i class="fas fa-download"></i>
-                    Download
-                </button>
+                @Html.ExtensoUI().ModalLaunchButton("download-modal", "Download", new { @class = "btn btn-primary" })
             </td>
         </tr>
         <tr>
@@ -45,10 +42,7 @@
     <tfoot class="table-secondary">
         <tr>
             <td colspan="@columnCount">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#download-modal">
-                    <i class="fas fa-download"></i>
-                    Download
-                </button>
+                @Html.ExtensoUI().ModalLaunchButton("download-modal", "Download", new { @class = "btn btn-primary" })
             </td>
         </tr>
     </tfoot>

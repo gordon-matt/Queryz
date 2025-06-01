@@ -44,13 +44,16 @@
                 return false;
             }
 
-            var progress = $("#databases-loading-progress");
-            progress.show();
+            const progress = document.getElementById("databases-loading-progress");
+            const select = document.getElementById("Report_Database");
 
-            var select = $('#Report_Database');
-            select.find('option').remove();
+            // Show loading progress
+            progress.style.display = "block";
 
-            var connectionInfo = {
+            // Clear existing options
+            select.innerHTML = "";
+
+            const connectionInfo = {
                 Server: viewModel.server(),
                 Port: viewModel.port(),
                 UserId: viewModel.userId(),
@@ -60,54 +63,62 @@
             if (viewModel.database()) {
                 connectionInfo.Database = viewModel.database();
             }
-            
-            $.ajax({
-                url: "/report-builder/get-databases",
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-                    provider: 2, // MySql
-                    connectionDetails: ko.mapping.toJSON(connectionInfo)
-                }),
-                dataType: "json",
-                async: false
-            })
-            .done(function (json) {
-                if (json.success) {
-                    $(json.databases).each(function (i, val) {
-                        select.append($('<option>', {
-                            value: val,
-                            text: val
-                        }));
-                    });
-                    progress.hide();
-                    // Hack to set first value, else user will see first option is selected, but knockout thinks nothing selected (and get error)
-                    viewModel.database(($("#Report_Database option:first").val()));
-                }
-                else {
-                    $.notify(json.message, "error");
-                    console.log(json.message);
-                }
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify("Could not load databases", "error");
-                console.log(textStatus + ': ' + errorThrown);
-            });
+
+            try {
+                const response = fetch("/report-builder/get-databases", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                    },
+                    body: JSON.stringify({
+                        provider: 2, // MySQL
+                        connectionDetails: ko.mapping.toJSON(connectionInfo)
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
+                .then(json => {
+                    if (json.success) {
+                        // Add new options
+                        json.databases.forEach(database => {
+                            const option = new Option(database, database);
+                            select.add(option);
+                        });
+
+                        // Hide loading progress
+                        progress.style.display = "none";
+
+                        // Set first value
+                        if (select.options.length > 0) {
+                            viewModel.database(select.options[0].value);
+                        }
+                    } else {
+                        showNotification(json.message, "error");
+                        console.error(json.message);
+                    }
+                })
+            } catch (error) {
+                showNotification("Could not load databases", "error");
+                console.error("Error:", error);
+                progress.style.display = "none";
+            }
         };
 
+        // Helper function to replace $.notify
+        function showNotification(message, type) {
+            // Replace this with your preferred notification system
+            console[type === "error" ? "error" : "log"](message);
+            // If you're using a notification library, call it here
+        }
+
+        // Initialize with data if provided
         if (data) {
-            if (data.Server) {
-                viewModel.server(data.Server);
-            }
-            if (data.Port) {
-                viewModel.port(data.Port);
-            }
-            if (data.UserId) {
-                viewModel.userId(data.UserId);
-            }
-            if (data.Password) {
-                viewModel.password(data.Password);
-            }
+            if (data.Server) viewModel.server(data.Server);
+            if (data.Port) viewModel.port(data.Port);
+            if (data.UserId) viewModel.userId(data.UserId);
+            if (data.Password) viewModel.password(data.Password);
             if (data.Database) {
                 viewModel.getDatabases();
                 viewModel.database(data.Database);

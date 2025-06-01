@@ -54,13 +54,13 @@
                 return false;
             }
 
-            var progress = $("#databases-loading-progress");
-            progress.show();
+            const progress = document.getElementById("databases-loading-progress");
+            const select = document.getElementById("Report_Database");
 
-            var select = $('#Report_Database');
-            select.find('option').remove();
+            progress.style.display = "block";
+            select.innerHTML = ""; // Clear existing options
 
-            var connectionInfo = {
+            const connectionInfo = {
                 Server: viewModel.server(),
                 IntegratedSecurity: viewModel.integratedSecurity(),
                 UserId: viewModel.userId(),
@@ -70,39 +70,44 @@
             if (viewModel.database()) {
                 connectionInfo.Database = viewModel.database();
             }
-            
-            $.ajax({
-                url: "/report-builder/get-databases",
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-                    provider: 0, // SQL Server
-                    connectionDetails: ko.mapping.toJSON(connectionInfo)
-                }),
-                dataType: "json",
-                async: false
-            })
-            .done(function (json) {
-                if (json.success) {
-                    $(json.databases).each(function (i, val) {
-                        select.append($('<option>', {
-                            value: val,
-                            text: val
-                        }));
-                    });
-                    progress.hide();
-                    // Hack to set first value, else user will see first option is selected, but knockout thinks nothing selected (and get error)
-                    viewModel.database(($("#Report_Database option:first").val()));
-                }
-                else {
-                    $.notify(json.message, "error");
-                    console.log(json.message);
-                }
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
+
+            try {
+                const response = fetch("/report-builder/get-databases", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                    },
+                    body: JSON.stringify({
+                        provider: 0, // SQL Server
+                        connectionDetails: ko.mapping.toJSON(connectionInfo)
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.json();
+                })
+                .then(json => {
+                    if (json.success) {
+                        json.databases.forEach(database => {
+                            const option = document.createElement("option");
+                            option.value = database;
+                            option.textContent = database;
+                            select.appendChild(option);
+                        });
+
+                        progress.style.display = "none";
+                        // Set first value
+                        viewModel.database(select.options[0]?.value);
+                    } else {
+                        $.notify(json.message, "error");
+                        console.error(json.message);
+                    }
+                })
+            } catch (error) {
                 $.notify("Could not load databases", "error");
-                console.log(textStatus + ': ' + errorThrown);
-            });
+                console.error("Error:", error);
+                progress.style.display = "none";
+            }
         };
 
         if (data) {

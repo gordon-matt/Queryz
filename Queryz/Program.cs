@@ -4,6 +4,7 @@ using Extenso.AspNetCore.Mvc.ExtensoUI;
 using Extenso.AspNetCore.Mvc.ExtensoUI.Providers;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.OData;
+using OfficeOpenXml;
 using Queryz.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -127,5 +128,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
+
+ExcelPackage.License.SetNonCommercialPersonal("Queryz");
 
 app.Run();

@@ -43,10 +43,6 @@
       "destination": "wwwroot/lib/jquery/"
     },
     {
-      "library": "jquery-steps@1.1.0",
-      "destination": "wwwroot/lib/jquery-steps/"
-    },
-    {
       "library": "jquery-validation@1.19.1",
       "destination": "wwwroot/lib/jquery-validation/"
     },

@@ -1,7 +1,7 @@
 ﻿'use strict'
 
-var ViewModel = function () {
-    var self = this;
+const ViewModel = function () {
+    const self = this;
 
     self.reportId = ko.observable(0);
     
@@ -9,17 +9,14 @@ var ViewModel = function () {
     
     self.init = function () {
         // Load translations first, else will have errors
-        $.ajax({
-            url: "/report-builder/get-translations",
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
+
+        fetch("/report-builder/get-translations")
+        .then(response => response.json())
+        .then(json => {
             self.translations = json;
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus + ': ' + errorThrown);
+        .catch(error => {
+            console.error('Error: ', error);
         });
 
         self.reportId(model.ReportId);
@@ -33,55 +30,52 @@ var ViewModel = function () {
         });
 
         if (model.Query && model.Query != "null") {
-            console.log(`model.Query: ${model.Query}`);
             //$('#query-builder').queryBuilder('setRulesFromSQL', model.Query);
             $('#query-builder').queryBuilder('setRules', JSON.parse(model.Query));
         }
     };
     
     self.submit = function () {
-        var result = $('#query-builder').queryBuilder('getSQL', false);
-        
-        var success = false;
+        const result = $('#query-builder').queryBuilder('getSQL', false);
         
         $('#loading').show();
         $('#wizard').hide();
 
-        $.ajax({
-            url: "/report-builder/preview",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({
+        return fetch("/report-builder/preview", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify({
                 ReportId: self.reportId(),
                 Query: result?.sql
-            }),
-            dataType: "json",
-            async: false
+            })
         })
-        .done(function (json) {
+        .then(response => response.json())
+        .then(json => {
             if (json.success) {
                 $("#wizard-p-1").html(json.html);
-                success = true;
+                return true;
             }
             else {
                 $.notify(json.message, "error");
-                console.log(json.message);
-                success = false;
+                return false;
             }
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
+        .catch(error => {
             $.notify("Error when trying to run report!", "error");
-            console.log(textStatus + ': ' + errorThrown);
-            success = false;
+            console.error('Error: ', error);
+            return false;
+        })
+        .finally(() => {
+            $('#loading').hide();
+            $('#wizard').show();
         });
-
-        $('#loading').hide();
-        $('#wizard').show();
-        return success;
     };
 };
 
 var viewModel;
+let isProgrammaticStepChange = false; // prevent infinite loop on step change
 $(document).ready(function () {
     $("#wizard").steps({
         headerTag: "h3",
@@ -90,11 +84,24 @@ $(document).ready(function () {
         stepsOrientation: "vertical",
         enableFinishButton: false,
         onStepChanging: function (event, currentIndex, newIndex) {
+            if (isProgrammaticStepChange) {
+                isProgrammaticStepChange = false; // Reset flag
+                return true; // Allow programmatic step changes
+            }
+
             if (newIndex < currentIndex) {
                 // Always allow previous step
                 return true;
             };
-            return viewModel.submit();
+
+            viewModel.submit().then((success) => {
+                if (success) {
+                    isProgrammaticStepChange = true;
+                    $("#wizard").steps("next"); // Manually move to next step
+                }
+            });
+
+            return false; // Block for now
         },
         onFinishing: function (event, currentIndex) {
             return true;

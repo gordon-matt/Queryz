@@ -6,7 +6,6 @@
 
 @section Styles {
     <environment include="Development">
-        <link rel="stylesheet" type="text/css" href="~/lib/jquery-steps/demo/css/jquery.steps.css" />
         <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.css" />
         <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-slider/dist/css/bootstrap-slider.css" />
         <link rel="stylesheet" type="text/css" href="~/lib/selectize/dist/css/selectize.bootstrap3.css" />
@@ -14,8 +13,6 @@
         <link rel="stylesheet" type="text/css" href="~/jQuery-QueryBuilder/css/query-builder.default.css" />
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/jquery-steps@1.1.0/demo/css/jquery.steps.min.css">
-
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker3.standalone.min.css"
               integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U="
               crossorigin="anonymous" />
@@ -36,7 +33,8 @@
               integrity="sha256-t0OO5vutCzErqiAiLqVcVPbR3krMH9aTnzbtbjmiFUU="
               crossorigin="anonymous" />
     </environment>
-
+    
+    <link rel="stylesheet" type="text/css" href="~/css/jquery.steps.css" />
     <link rel="stylesheet" type="text/css" href="~/css/jquery.steps.customizations.css" />
     <link rel="stylesheet" type="text/css" href="~/css/query-builder-custom.css" />
 }
@@ -56,7 +54,7 @@
             using (var header = panel.BeginHeader("Configure & Run Report")) { }
             using (var body = panel.BeginBody())
             {
-                <div id="loading" class="d-flex flex-column align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75" style="display:none; z-index: 1000;">
+                <div id="loading" class="d-flex flex-column align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75" style="display:none;">
                     <div class="fs-5 mb-2">Loading...</div>
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -86,7 +84,6 @@
 
     <environment include="Development">
         <script type="text/javascript" src="~/lib/notifyjs-browser/dist/notify.js"></script>
-        @*<script type="text/javascript" src="~/lib/jquery-steps/build/jquery.steps.js"></script>*@
         <script type="text/javascript" src="~/lib/bootbox/dist/bootbox.js"></script>
         <script type="text/javascript" src="~/lib/moment/moment.js"></script>
         <script type="text/javascript" src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
@@ -102,7 +99,6 @@
     </environment>
     <environment exclude="Development">
         <script src="//cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
-        @*<script src="//cdn.jsdelivr.net/npm/jquery-steps@1.1.0/build/jquery.steps.min.js" integrity="sha256-yUWanhHkxj+3ow0qZE6AtzP8lZkwLvPagULL6PnZMz0=" crossorigin="anonymous"></script>*@
         <script src="//cdn.jsdelivr.net/npm/bootbox@6.0.4/dist/bootbox.min.js" integrity="sha256-C2urY+OqJLSraqtjdlohfbUASWG6sat9dP/r+jPvtcQ=" crossorigin="anonymous"></script>
         <script src="//cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js" integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
