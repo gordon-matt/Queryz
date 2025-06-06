@@ -434,10 +434,12 @@ public class ReportBuilderController : Controller
             });
 
             report.Filters = model.Query;
-
-            if (report.DataSource.DataProvider == DataProvider.MySql)
+            if (!string.IsNullOrWhiteSpace(report.Filters))
             {
-                report.Filters = report.Filters.Replace("\"", "`");
+                if (report.DataSource.DataProvider == DataProvider.MySql)
+                {
+                    report.Filters = report.Filters.Replace("\"", "`");
+                }
             }
 
             #region Save filters into session variable for later use in Download() action
@@ -451,6 +453,7 @@ public class ReportBuilderController : Controller
             {
                 reportFilters.Add(report.Id, model.Query);
             }
+
             ReportFilters = reportFilters;
 
             #endregion Save filters into session variable for later use in Download() action
