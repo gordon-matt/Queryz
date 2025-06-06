@@ -5,49 +5,44 @@ const enumerationApiUrl = "/odata/EnumerationApi";
 const reportGroupApiUrl = "/odata/ReportGroupApi";
 const reportApiUrl = "/odata/ReportApi";
 
-const ViewModel = function () {
-    const self = this;
+class ViewModel {
+    constructor() {
+        this.dataSourceModel = new DataSourceModel(this);
+        this.enumerationModel = new EnumerationModel(this);
+        this.reportGroupModel = new ReportGroupModel(this);
+        this.reportModel = new ReportModel(this);
 
-    self.dataSourceModel = new DataSourceModel(self);
-    self.enumerationModel = new EnumerationModel(self);
-    self.reportGroupModel = new ReportGroupModel(self);
-    self.reportModel = new ReportModel(self);
-    
-    self.gridPageSize = 10;
-    self.translations = false;
+        this.gridPageSize = 10;
+        this.translations = false;
+    }
 
-    self.init = function () {
+    init = () => {
         currentSection = $("#grid-section");
 
         // Load translations first, else will have errors
-        $.ajax({
-            url: "/report-builder/get-translations",
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            self.translations = json;
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus + ': ' + errorThrown);
-        });
+        fetch("/report-builder/get-translations")
+            .then(response => response.json())
+            .then(json => {
+                this.translations = json;
+                this.gridPageSize = $("#GridPageSize").val();
 
-        self.gridPageSize = $("#GridPageSize").val();
-
-        self.dataSourceModel.init();
-        self.enumerationModel.init();
-        self.reportGroupModel.init();
+                this.dataSourceModel.init();
+                this.enumerationModel.init();
+                this.reportGroupModel.init();
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+            });
     };
 
-    self.showDataSources = function () {
+    showDataSources() {
         switchSection($("#dataSources-grid-section"));
     };
 
-    self.showEnumerations = function () {
+    showEnumerations() {
         switchSection($("#enumerations-grid-section"));
     };
-};
+}
 
 var viewModel;
 $(document).ready(function () {
@@ -89,7 +84,7 @@ $(document).ready(function () {
             switchSection($("#grid-section"));
         }
     });
-    
+
     viewModel = new ViewModel();
     ko.applyBindings(viewModel);
     viewModel.init();

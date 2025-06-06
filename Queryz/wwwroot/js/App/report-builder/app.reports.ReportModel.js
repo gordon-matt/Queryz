@@ -1,80 +1,84 @@
-﻿const ReportModel = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class ReportModel {
+    constructor(parent) {
+        // Ensure parent exists and has translations
+        this.parent = parent || { translations: {} };
 
-    self.step1 = new WizardStep1Model(self);
-    self.step2 = new WizardStep2Model(self);
-    self.step3 = new WizardStep3Model(self);
-    self.step4 = new WizardStep4Model(self);
-    self.step5 = new WizardStep5Model(self);
-    self.step6 = new WizardStep6Model(self);
-    self.step7 = new WizardStep7Model(self);
+        this.step1 = new WizardStep1Model(this);
+        this.step2 = new WizardStep2Model(this);
+        this.step3 = new WizardStep3Model(this);
+        this.step4 = new WizardStep4Model(this);
+        this.step5 = new WizardStep5Model(this);
+        this.step6 = new WizardStep6Model(this);
+        this.step7 = new WizardStep7Model(this);
+    }
 
-    self.create = function (groupId) {
-        self.step1.id(0);
-        self.step1.name(null);
-        self.step1.groupId(groupId);
-        self.step1.dataSourceId(null);
-        self.step1.enabled(true);
-        self.step1.emailEnabled(false);
+    create = (groupId) => {
+        this.step1.id(0);
+        this.step1.name(null);
+        this.step1.groupId(groupId);
+        this.step1.dataSourceId(null);
+        this.step1.enabled(true);
+        this.step1.emailEnabled(false);
 
-        self.step7.isDistinct(false);
-        self.step7.rowLimit(null);
-        self.step7.enumerationHandling(0);
+        this.step7.isDistinct(false);
+        this.step7.rowLimit(null);
+        this.step7.enumerationHandling(0);
 
         $("#wizard").steps('reset');
         switchSection($("#wizard-section"));
     };
 
-    self.edit = function (id) {
-        $.ajax({
-            url: `/report-builder/start-wizard/${id}`,
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            if (json.success) {
-                self.step1.id(json.model.id);
-                self.step1.name(json.model.name);
-                self.step1.groupId(json.model.groupId);
-                self.step1.dataSourceId(json.model.dataSourceId);
-                self.step1.enabled(json.model.enabled);
-                self.step1.emailEnabled(json.model.emailEnabled);
+    getTranslations = () => {
+        return this.parent?.translations || {};
+    }
 
-                $("#wizard").steps('reset');
-                switchSection($("#wizard-section"));
-            }
-            else {
-                $.notify(json.message, "error");
-                console.log(json.message);
-            }
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.translations.getRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-        });
-    };
-    self.remove = function (id) {
-        if (confirm(self.parent.translations.deleteRecordConfirm)) {
-            $.ajax({
-                url: `${reportApiUrl}(${id})`,
-                type: "DELETE",
-                async: false
-            })
-            .done(function (json) {
-                $('#Grid').data('kendoGrid').dataSource.read();
-                $('#Grid').data('kendoGrid').refresh();
+    edit = (id) => {
+        const translations = this.getTranslations();
 
-                $.notify(self.parent.translations.deleteRecordSuccess, "success");
+        fetch(`/report-builder/start-wizard/${id}`)
+            .then(response => response.json())
+            .then(json => {
+                if (json.success) {
+                    this.step1.id(json.model.id);
+                    this.step1.name(json.model.name);
+                    this.step1.groupId(json.model.groupId);
+                    this.step1.dataSourceId(json.model.dataSourceId);
+                    this.step1.enabled(json.model.enabled);
+                    this.step1.emailEnabled(json.model.emailEnabled);
+
+                    $("#wizard").steps('reset');
+                    switchSection($("#wizard-section"));
+                }
+                else {
+                    $.notify(json.message, "error");
+                    console.log(json.message);
+                }
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.deleteRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(translations.getRecordError, "error");
+                console.error('Error: ', error);
             });
+    };
+
+    remove = (id) => {
+        const translations = this.getTranslations();
+        if (confirm(translations.deleteRecordConfirm)) {
+            fetch(`${reportApiUrl}(${id})`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(json => {
+                    $('#Grid').data('kendoGrid').dataSource.read();
+                    $('#Grid').data('kendoGrid').refresh();
+
+                    $.notify(translations.deleteRecordSuccess, "success");
+                })
+                .catch(error => {
+                    $.notify(translations.deleteRecordError, "error");
+                    console.error('Error: ', error);
+                });
         }
     };
-    self.cancel = function () {
+
+    cancel() {
         switchSection($("#grid-section"));
     };
-};
+}

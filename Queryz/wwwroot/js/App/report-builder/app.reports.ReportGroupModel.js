@@ -1,17 +1,16 @@
-﻿var ReportGroupModel = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class ReportGroupModel {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.id = ko.observable(0);
-    self.name = ko.observable(null);
-    self.timeZoneId = ko.observable(null);
+        this.id = ko.observable(0);
+        this.name = ko.observable(null);
+        this.timeZoneId = ko.observable(null);
+        this.roles = ko.observableArray([]);
+        this.validator = false;
+    }
 
-    self.roles = ko.observableArray([]);
-
-    self.validator = false;
-
-    self.init = function () {
-        self.validator = $("#report-group-form-section-form").validate({
+    init = () => {
+        this.validator = $("#report-group-form-section-form").validate({
             rules: {
                 Name: { required: true, maxlength: 255 }
             }
@@ -54,7 +53,7 @@
                         }
                     }
                 },
-                pageSize: self.parent.gridPageSize,
+                pageSize: this.parent.gridPageSize,
                 serverPaging: true,
                 serverFiltering: true,
                 serverSorting: true,
@@ -78,7 +77,7 @@
             scrollable: false,
             columns: [{
                 field: "Name",
-                title: self.parent.translations.columns.name,
+                title: this.parent.translations.columns.name,
                 filterable: true
             }, {
                 field: "Id",
@@ -87,25 +86,25 @@
                     '<div class="btn-group">' +
                     (
                         !isAdminUser ? ' ' :
-                        '<a data-bind="click: reportGroupModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
-                        '<i class="fas fa-edit"></i></a>' +
+                            '<a data-bind="click: reportGroupModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + this.parent.translations.edit + '">' +
+                            '<i class="fas fa-edit"></i></a>' +
 
-                        '<a data-bind="click: reportGroupModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
-                        '<i class="fas fa-xmark"></i></a>'
+                            '<a data-bind="click: reportGroupModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + this.parent.translations.delete + '">' +
+                            '<i class="fas fa-xmark"></i></a>'
                     ) +
-                        '<a data-bind="click: reportModel.create.bind($data,#=Id#)" class="btn btn-dark text-white" title="Create Report">' +
-                        '<i class="fas fa-plus"></i></a>' +
+                    '<a data-bind="click: reportModel.create.bind($data,#=Id#)" class="btn btn-dark text-white" title="Create Report">' +
+                    '<i class="fas fa-plus"></i></a>' +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
                 width: 180
             }],
             detailTemplate: kendo.template($("#reports-template").html()),
-            detailInit: self.detailInit
+            detailInit: this.detailInit
         });
     };
 
-    self.detailInit = function (e) {
+    detailInit = (e) => {
         const groupId = e.data.Id;
 
         const detailRow = e.detailRow;
@@ -116,7 +115,7 @@
             }
         });
 
-        const detailGrid = detailRow.find(".reports-grid").kendoGrid({
+        detailRow.find(".reports-grid").kendoGrid({
             data: null,
             dataSource: {
                 type: "odata",
@@ -161,7 +160,7 @@
                         }
                     }
                 },
-                pageSize: self.parent.gridPageSize,
+                pageSize: this.parent.gridPageSize,
                 serverPaging: true,
                 serverFiltering: true,
                 serverSorting: true,
@@ -180,26 +179,26 @@
             scrollable: false,
             columns: [{
                 field: "Name",
-                title: self.parent.translations.columns.name,
+                title: this.parent.translations.columns.name,
                 filterable: true
             }, {
                 field: "Id",
                 title: " ",
                 template: !allowEdit ?
                     '<div class="btn-group">' +
-                        '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
-                        '<i class="fas fa-play"></i></a>' +
+                    '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
+                    '<i class="fas fa-play"></i></a>' +
                     '</div>' :
 
                     '<div class="btn-group">' +
-                        '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
-                        '<i class="fas fa-play"></i></a>' +
+                    '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
+                    '<i class="fas fa-play"></i></a>' +
 
-                        '<a data-bind="click: reportModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
-                        '<i class="fas fa-edit"></i></a>' +
+                    '<a data-bind="click: reportModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + this.parent.translations.edit + '">' +
+                    '<i class="fas fa-edit"></i></a>' +
 
-                        '<a data-bind="click: reportModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
-                        '<i class="fas fa-xmark"></i></a>' +
+                    '<a data-bind="click: reportModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + this.parent.translations.delete + '">' +
+                    '<i class="fas fa-xmark"></i></a>' +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
@@ -207,167 +206,159 @@
             }]
         });
     };
-    self.create = function () {
-        self.id(0);
-        self.name(null);
-        self.timeZoneId(null);
 
-        self.roles([]);
+    create = () => {
+        this.id(0);
+        this.name(null);
+        this.timeZoneId(null);
+        this.roles([]);
 
-        self.validator.resetForm();
+        this.validator.resetForm();
         switchSection($("#report-group-form-section"));
-        $("#report-group-form-section-legend").html(self.parent.translations.create);
+        $("#report-group-form-section-legend").html(this.parent.translations.create);
     };
-    self.edit = function (id) {
-        $.ajax({
-            url: `${reportGroupApiUrl}(${id})`,
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            self.id(json.Id);
-            self.name(json.Name);
-            self.timeZoneId(json.TimeZoneId);
 
-            self.getRoles(id);
+    edit = (id) => {
+        fetch(`${reportGroupApiUrl}(${id})`)
+            .then(response => response.json())
+            .then(json => {
+                this.id(json.Id);
+                this.name(json.Name);
+                this.timeZoneId(json.TimeZoneId);
 
-            self.validator.resetForm();
-            switchSection($("#report-group-form-section"));
-            $("#form-group-form-section-legend").html(self.parent.translations.edit);
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.translations.getRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-        });
-    };
-    self.remove = function (id) {
-        if (confirm("If there are still reports assigned to this group, then deleting the group will also delete the reports. Are you sure you want to do that?")) {
-            $.ajax({
-                url: `${reportGroupApiUrl}(${id})`,
-                type: "DELETE",
-                async: false
+                this.getRoles(id);
+
+                this.validator.resetForm();
+                switchSection($("#report-group-form-section"));
+                $("#form-group-form-section-legend").html(this.parent.translations.edit);
             })
-            .done(function (json) {
-                $('#Grid').data('kendoGrid').dataSource.read();
-                $('#Grid').data('kendoGrid').refresh();
-
-                $.notify(self.parent.translations.deleteRecordSuccess, "success");
-                self.parent.reportModel.step1.reloadGroups();
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.deleteRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(this.parent.translations.getRecordError, "error");
+                console.error('Error: ', error);
             });
+    };
+
+    remove = (id) => {
+        if (confirm("If there are still reports assigned to this group, then deleting the group will also delete the reports. Are you sure you want to do that?")) {
+            fetch(`${reportGroupApiUrl}(${id})`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(json => {
+                    $('#Grid').data('kendoGrid').dataSource.read();
+                    $('#Grid').data('kendoGrid').refresh();
+
+                    $.notify(this.parent.translations.deleteRecordSuccess, "success");
+                    this.parent.reportModel.step1.reloadGroups();
+                })
+                .catch(error => {
+                    $.notify(this.parent.translations.deleteRecordError, "error");
+                    console.error('Error: ', error);
+                });
         }
     };
-    self.save = function () {
-        const isNew = (self.id() == 0);
+
+    save = () => {
+        const isNew = (this.id() == 0);
 
         if (!$("#report-group-form-section-form").valid()) {
             return false;
         }
 
         const record = {
-            Id: self.id(),
-            Name: self.name(),
-            TimeZoneId: self.timeZoneId()
+            Id: this.id(),
+            Name: this.name(),
+            TimeZoneId: this.timeZoneId()
         };
 
         if (isNew) {
-            $.ajax({
-                url: reportGroupApiUrl,
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(record),
-                dataType: "json",
-                async: false
+            fetch(reportGroupApiUrl, {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(record)
             })
-            .done(function (json) {
+            .then(response => response.json())
+            .then(json => {
                 $('#Grid').data('kendoGrid').dataSource.read();
                 $('#Grid').data('kendoGrid').refresh();
 
                 switchSection($("#grid-section"));
 
-                self.id(json.Id);
-                self.setRoles();
+                this.id(json.Id);
+                this.setRoles();
 
-                $.notify(self.parent.translations.insertRecordSuccess, "success");
-                self.parent.reportModel.step1.reloadGroups();
+                $.notify(this.parent.translations.insertRecordSuccess, "success");
+                this.parent.reportModel.step1.reloadGroups();
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.insertRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(this.parent.translations.insertRecordError, "error");
+                console.error('Error: ', error);
             });
         }
         else {
-            $.ajax({
-                url: `${reportGroupApiUrl}(${self.id()})`,
-                type: "PUT",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(record),
-                dataType: "json",
-                async: false
+            fetch(reportGroupApiUrl, {
+                method: "PUT",
+                headers: {
+                    'Content-type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(record)
             })
-            .done(function (json) {
+            .then(response => response.json())
+            .then(json => {
                 $('#Grid').data('kendoGrid').dataSource.read();
                 $('#Grid').data('kendoGrid').refresh();
 
                 switchSection($("#grid-section"));
 
-                self.setRoles();
-                
-                $.notify(self.parent.translations.updateRecordSuccess, "success");
-                self.parent.reportModel.step1.reloadGroups();
+                this.setRoles();
+
+                $.notify(this.parent.translations.updateRecordSuccess, "success");
+                this.parent.reportModel.step1.reloadGroups();
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.updateRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(this.parent.translations.updateRecordError, "error");
+                console.error('Error: ', error);
             });
         }
     };
-    self.cancel = function () {
+
+    cancel() {
         switchSection($("#grid-section"));
     };
 
-    self.getRoles = function (id) {
-        self.roles([]);
-        $.ajax({
-            url: `${reportGroupApiUrl}/Default.GetRoles(id=${id})`,
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            if (json.value && json.value.length > 0) {
-                $.each(json.value, function () {
-                    self.roles.push(this.Id);
-                });
-            }
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify("Error when trying to retrieve roles for selected report group.", "error");
-            console.log(textStatus + ': ' + errorThrown);
-        });
+    getRoles = (id) => {
+        this.roles([]);
+        fetch(`${reportGroupApiUrl}/Default.GetRoles(id=${id})`)
+            .then(response => response.json())
+            .then(json => {
+                if (json.value?.length) {
+                    json.value.forEach(item => this.roles.push(item.Id));
+                }
+            })
+            .catch(error => {
+                $.notify("Error when trying to retrieve roles for selected report group.", "error");
+                console.error('Error: ', error);
+            });
     };
 
-    self.setRoles = function () {
-        $.ajax({
-            url: `${reportGroupApiUrl}/Default.SetRoles`,
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({
-                id: self.id(),
-                roles: self.roles()
-            }),
-            async: false
+    setRoles = () => {
+        fetch(`${reportGroupApiUrl}/Default.SetRoles`, {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify({
+                id: this.id(),
+                roles: this.roles()
+            })
         })
-        .done(function (json) {
+        .then(response => response.json())
+        .then(json => {
             $.notify("Successfully saved roles for selected report group.", "success");
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
+        .catch(error => {
             $.notify("Error when trying to save roles for selected report group.", "error");
-            console.log(textStatus + ': ' + errorThrown);
+            console.error('Error: ', error);
         });
     };
-};
+}
