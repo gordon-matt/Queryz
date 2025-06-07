@@ -1,16 +1,17 @@
-﻿var WizardStep4Model = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class WizardStep4Model {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.reportId = ko.observable(0);
-    self.query = ko.observable(null);
+        this.reportId = ko.observable(0);
+        this.query = ko.observable(null);
 
-    self.id = -1;
+        this.id = -1;
+    }
 
-    self.init = function (model) {
-        self.reportId(model.reportId);
-        self.query(model.query);
-        
+    init = (model) => {
+        this.reportId(model.reportId);
+        this.query(model.query);
+
         $('#query-builder').queryBuilder('destroy');
 
         let queryBuilderConfig = model.jqQueryBuilderConfig;
@@ -30,60 +31,57 @@
                 $('#query-builder').queryBuilder('setRules', JSON.parse(model.query));
             }
             catch (x) {
-                console.log(`Error when parsing query: ${model.query}.`)
-                console.log(`The error message is as follows: ${x.message}.`)
+                console.log(`Error when parsing query: ${model.query}.`);
+                console.log(`The error message is as follows: ${x.message}.`);
             }
         }
     };
-    
-    self.save = function () {
+
+    save = () => {
         //const result = $('#query-builder').queryBuilder('getSQL', false);
         const result = JSON.stringify($('#query-builder').queryBuilder('getRules'));
 
-        let success = false;
-        
-        $.ajax({
-            url: "/report-builder/save-wizard-step-4",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({
-                ReportId: self.reportId(),
+        return fetch("/report-builder/save-wizard-step-4", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify({
+                ReportId: this.reportId(),
                 //Query: result.sql
                 Query: result
-            }),
-            dataType: "json",
-            async: false
+            })
         })
-        .done(function (json) {
+        .then(response => response.json())
+        .then(json => {
             if (json.success) {
-                self.parent.step5.reportId(json.model.reportId);
-                self.parent.step5.availableColumns([]);
-                self.parent.step5.sortings([]);
-                $.each(json.model.availableColumns, function () {
-                    self.parent.step5.availableColumns.push(this);
+                this.parent.step5.reportId(json.model.reportId);
+                this.parent.step5.availableColumns([]);
+                this.parent.step5.sortings([]);
+
+                json.model.availableColumns.forEach(item => {
+                    this.parent.step5.availableColumns.push(item);
                 });
-                $.each(json.model.sortings, function () {
-                    const sorting = this;
-                    self.parent.step5.sortings.push({
-                        columnName: sorting.columnName,
-                        sortDirection: sorting.sortDirection
+
+                json.model.sortings.forEach(item => {
+                    this.parent.step5.sortings.push({
+                        columnName: item.columnName,
+                        sortDirection: item.sortDirection
                     });
                 });
 
-                success = true;
+                return true;
             }
             else {
                 $.notify(json.message, "error");
                 console.log(json.message);
-                success = false;
+                return false;
             }
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.parent.translations.UpdateRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-            success = false;
+        .catch(error => {
+            $.notify(this.parent.parent.translations.updateRecordError, "error");
+            console.error('Error: ', error);
+            return false;
         });
-
-        return success;
     };
-};
+}

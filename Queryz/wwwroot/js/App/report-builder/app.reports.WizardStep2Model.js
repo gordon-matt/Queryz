@@ -1,81 +1,75 @@
-﻿var WizardStep2Model = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class WizardStep2Model {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.reportId = ko.observable(0);
-    self.availableTables = ko.observableArray([]);
-    self.selectedTables = ko.observableArray([]);
+        this.reportId = ko.observable(0);
+        this.availableTables = ko.observableArray([]);
+        this.selectedTables = ko.observableArray([]);
+    }
 
-    self.save = function () {
-        let success = false;
-
-        $.ajax({
-            url: "/report-builder/save-wizard-step-2",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            //data: JSON.stringify($('#wizard-form-2').serializeObject()),
-            data: ko.toJSON({
-                ReportId: self.reportId,
-                SelectedTables: self.selectedTables
-            }),
-            dataType: "json",
-            async: false
+    save = () => {
+        return fetch("/report-builder/save-wizard-step-2", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: ko.toJSON({
+                ReportId: this.reportId,
+                SelectedTables: this.selectedTables
+            })
         })
-        .done(function (json) {
+        .then(response => response.json())
+        .then(json => {
             if (json.success) {
-                self.parent.step3.reportId(json.model.reportId);
-                self.parent.step3.availableColumns([]);
-                self.parent.step3.selectedColumns([]);
-                self.parent.step3.availableEnumerations([]);
-                self.parent.step3.availableTransformFunctions([]);
+                this.parent.step3.reportId(json.model.reportId);
+                this.parent.step3.availableColumns([]);
+                this.parent.step3.selectedColumns([]);
+                this.parent.step3.availableEnumerations([]);
+                this.parent.step3.availableTransformFunctions([]);
 
-                $.each(json.model.availableColumns, function () {
-                    const column = this;
-                    self.parent.step3.availableColumns.push({
-                        name: column.columnName,
-                        type: column.type,
-                        isForeignKey: column.isForeignKey,
-                        availableParentColumns: column.availableParentColumns
+                json.model.availableColumns.forEach(item => {
+                    this.parent.step3.availableColumns.push({
+                        name: item.columnName,
+                        type: item.type,
+                        isForeignKey: item.isForeignKey,
+                        availableParentColumns: item.availableParentColumns
                     });
                 });
 
-                $.each(json.model.availableEnumerations, function (i, val) {
-                    self.parent.step3.availableEnumerations.push({ id: val.id, name: val.name });
+                json.model.availableEnumerations.forEach(item => {
+                    this.parent.step3.availableEnumerations.push({ id: item.id, name: item.name });
                 });
 
-                $.each(json.model.availableTransformFunctions, function () {
-                    const transformFunction = this;
-                    self.parent.step3.availableTransformFunctions.push({ name: transformFunction });
+                json.model.availableTransformFunctions.forEach(item => {
+                    this.parent.step3.availableTransformFunctions.push({ name: item });
                 });
 
-                $.each(json.model.selectedColumns, function (i, selectedColumn) {
-                    self.parent.step3.selectedColumns.push(new SelectedColumnModel(
-                        selectedColumn.columnName,
-                        selectedColumn.type,
-                        selectedColumn.alias,
-                        selectedColumn.isLiteral,
-                        selectedColumn.displayColumn,
-                        selectedColumn.enumerationId,
-                        selectedColumn.transformFunction,
-                        selectedColumn.format,
-                        selectedColumn.isHidden
+                json.model.selectedColumns.forEach(item => {
+                    this.parent.step3.selectedColumns.push(new SelectedColumnModel(
+                        item.columnName,
+                        item.type,
+                        item.alias,
+                        item.isLiteral,
+                        item.displayColumn,
+                        item.enumerationId,
+                        item.transformFunction,
+                        item.format,
+                        item.isHidden
                     ));
                 });
 
-                success = true;
+                return true;
             }
             else {
                 $.notify(json.message, "error");
                 console.log(json.message);
-                success = false;
+                return false;
             }
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.parent.translations.UpdateRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-            success = false;
+        .catch(error => {
+            $.notify(this.parent.parent.translations.updateRecordError, "error");
+            console.error('Error: ', error);
+            return false;
         });
-
-        return success;
     };
-};
+}

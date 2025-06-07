@@ -64,12 +64,15 @@
         const translations = this.getTranslations();
         if (confirm(translations.deleteRecordConfirm)) {
             fetch(`${reportApiUrl}(${id})`, { method: 'DELETE' })
-                .then(response => response.json())
-                .then(json => {
-                    $('#Grid').data('kendoGrid').dataSource.read();
-                    $('#Grid').data('kendoGrid').refresh();
+                .then(response => {
+                    if (response.ok) {
+                        $('#Grid').data('kendoGrid').dataSource.read();
+                        $('#Grid').data('kendoGrid').refresh();
 
-                    $.notify(translations.deleteRecordSuccess, "success");
+                        $.notify(translations.deleteRecordSuccess, "success");
+                    } else {
+                        $.notify(translations.deleteRecordError, "error");
+                    }
                 })
                 .catch(error => {
                     $.notify(translations.deleteRecordError, "error");

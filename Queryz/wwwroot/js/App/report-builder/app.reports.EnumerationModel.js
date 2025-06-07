@@ -1,18 +1,19 @@
-﻿var EnumerationModel = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class EnumerationModel {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.id = ko.observable(0);
-    self.name = ko.observable(null);
-    self.isBitFlags = ko.observable(false);
-    self.values = ko.observableArray([]);
+        this.id = ko.observable(0);
+        this.name = ko.observable(null);
+        this.isBitFlags = ko.observable(false);
+        this.values = ko.observableArray([]);
 
-    self.newValueId = 0; // A temporary value, auto-incremented.. used for automatically setting the next value. Can still be changed by user, if needed.
+        this.newValueId = 0; // A temporary value, auto-incremented.. used for automatically setting the next value. Can still be changed by user, if needed.
 
-    self.validator = false;
+        this.validator = false;
+    }
 
-    self.init = function () {
-        self.validator = $("#enumerations-form-section-form").validate({
+    init = () => {
+        this.validator = $("#enumerations-form-section-form").validate({
             rules: {
                 Enumeration_Name: { required: true, maxlength: 128 }
             }
@@ -55,7 +56,7 @@
                         }
                     }
                 },
-                pageSize: self.parent.gridPageSize,
+                pageSize: this.parent.gridPageSize,
                 serverPaging: true,
                 serverFiltering: true,
                 serverSorting: true,
@@ -79,18 +80,17 @@
             scrollable: false,
             columns: [{
                 field: "Name",
-                title: self.parent.translations.columns.name,
+                title: this.parent.translations.columns.name,
                 filterable: true
             }, {
                 field: "Id",
                 title: " ",
-                template:
-                    '<div class="btn-group">' +
-                        '<a data-bind="click: enumerationModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
-                        '<i class="fas fa-edit"></i></a>' +
+                template: '<div class="btn-group">' +
+                    '<a data-bind="click: enumerationModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + this.parent.translations.edit + '">' +
+                    '<i class="fas fa-edit"></i></a>' +
 
-                        '<a data-bind="click: enumerationModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
-                        '<i class="fas fa-xmark"></i></a>' +
+                    '<a data-bind="click: enumerationModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + this.parent.translations.delete + '">' +
+                    '<i class="fas fa-xmark"></i></a>' +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
@@ -98,143 +98,150 @@
             }]
         });
     };
-    
-    self.create = function () {
-        self.id(0);
-        self.name(null);
-        self.isBitFlags(false);
-        self.values([]);
-        self.newValueId = 0;
-        
-        self.validator.resetForm();
+
+    create = () => {
+        this.id(0);
+        this.name(null);
+        this.isBitFlags(false);
+        this.values([]);
+        this.newValueId = 0;
+
+        this.validator.resetForm();
         switchSection($("#enumerations-form-section"));
-        $("#enumerations-form-section-legend").html(self.parent.translations.create);
+        $("#enumerations-form-section-legend").html(this.parent.translations.create);
     };
-    self.edit = function (id) {
-        self.values([]);
-        self.newValueId = 0;
 
-        $.ajax({
-            url: `${enumerationApiUrl}(${id})`,
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            self.id(json.Id);
-            self.name(json.Name);
-            self.isBitFlags(json.IsBitFlags);
+    edit = (id) => {
+        this.values([]);
+        this.newValueId = 0;
 
-            if (json.Values) {
-                const data = ko.toJS(ko.mapping.fromJSON(json.Values));
-                $.each(data, function () {
-                    self.values.push(this);
-                    self.newValueId = this.id + 1;
-                });
-            }
+        fetch(`${enumerationApiUrl}(${id})`)
+            .then(response => response.json())
+            .then(json => {
+                this.id(json.Id);
+                this.name(json.Name);
+                this.isBitFlags(json.IsBitFlags);
 
-            self.validator.resetForm();
-            switchSection($("#enumerations-form-section"));
-            $("#enumerations-form-section-legend").html(self.parent.translations.edit);
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.translations.getRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-        });
-    };
-    self.remove = function (id) {
-        if (confirm(self.parent.translations.deleteRecordConfirm)) {
-            $.ajax({
-                url: `${enumerationApiUrl}(${id})`,
-                type: "DELETE",
-                async: false
+                if (json.Values) {
+                    const data = ko.toJS(ko.mapping.fromJSON(json.Values));
+                    data.forEach(item => {
+                        this.values.push(item);
+                        this.newValueId = item.id + 1;
+                    });
+                }
+
+                this.validator.resetForm();
+                switchSection($("#enumerations-form-section"));
+                $("#enumerations-form-section-legend").html(this.parent.translations.edit);
             })
-            .done(function (json) {
-                $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
-                $('#EnumerationsGrid').data('kendoGrid').refresh();
-
-                $.notify(self.parent.translations.deleteRecordSuccess, "success");
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.deleteRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(this.parent.translations.getRecordError, "error");
+                console.error('Error: ', error);
             });
+    };
+
+    remove = (id) => {
+        if (confirm(this.parent.translations.deleteRecordConfirm)) {
+            fetch(`${enumerationApiUrl}(${id})`, { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
+                        $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
+                        $('#EnumerationsGrid').data('kendoGrid').refresh();
+
+                        $.notify(this.parent.translations.deleteRecordSuccess, "success");
+                    } else {
+                        $.notify(this.parent.translations.deleteRecordError, "error");
+                    }
+                })
+                .catch(error => {
+                    $.notify(this.parent.translations.deleteRecordError, "error");
+                    console.error('Error: ', error);
+                });
         }
     };
-    self.save = function () {
-        const isNew = (self.id() == 0);
+
+    save = () => {
+        const isNew = (this.id() == 0);
 
         if (!$("#enumerations-form-section-form").valid()) {
             return false;
         }
 
-        const valuesJson = ko.mapping.toJSON(self.values());
+        const valuesJson = ko.mapping.toJSON(this.values());
 
         const record = {
-            Id: self.id(),
-            Name: self.name(),
-            IsBitFlags: self.isBitFlags(),
+            Id: this.id(),
+            Name: this.name(),
+            IsBitFlags: this.isBitFlags(),
             Values: valuesJson
         };
 
         if (isNew) {
-            $.ajax({
-                url: enumerationApiUrl,
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(record),
-                dataType: "json",
-                async: false
+            fetch(enumerationApiUrl, {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(record)
             })
-            .done(function (json) {
-                $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
-                $('#EnumerationsGrid').data('kendoGrid').refresh();
+            .then(response => {
+                if (response.ok) {
+                    $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
+                    $('#EnumerationsGrid').data('kendoGrid').refresh();
 
-                switchSection($("#enumerations-grid-section"));
+                    switchSection($("#enumerations-grid-section"));
 
-                $.notify(self.parent.translations.insertRecordSuccess, "success");
+                    $.notify(this.parent.translations.insertRecordSuccess, "success");
+                } else {
+                    $.notify(this.parent.translations.insertRecordError, "error");
+                }
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.insertRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(this.parent.translations.insertRecordError, "error");
+                console.error('Error: ', error);
             });
         }
         else {
-            $.ajax({
-                url: `${enumerationApiUrl}(${self.id()})`,
-                type: "PUT",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(record),
-                dataType: "json",
-                async: false
+            fetch(`${enumerationApiUrl}(${this.id()})`, {
+                method: "PUT",
+                headers: {
+                    'Content-type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(record)
             })
-            .done(function (json) {
-                $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
-                $('#EnumerationsGrid').data('kendoGrid').refresh();
+            .then(response => {
+                if (response.ok) {
+                    $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
+                    $('#EnumerationsGrid').data('kendoGrid').refresh();
 
-                switchSection($("#enumerations-grid-section"));
+                    switchSection($("#enumerations-grid-section"));
 
-                $.notify(self.parent.translations.updateRecordSuccess, "success");
+                    $.notify(this.parent.translations.updateRecordSuccess, "success");
+                } else {
+                    $.notify(this.parent.translations.updateRecordError, "error");
+                }
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.updateRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(this.parent.translations.updateRecordError, "error");
+                console.error('Error: ', error);
             });
         }
     };
 
-    self.cancel = function () {
+    cancel = () => {
         switchSection($("#enumerations-grid-section"));
     };
-    self.goBack = function () {
+
+    goBack = () => {
         switchSection($("#grid-section"));
     };
-    
-    self.addEnumerationValue = function () {
-        self.values.push({ id: self.newValueId, name: null });
-        self.newValueId++;
+
+    addEnumerationValue = () => {
+        this.values.push({ id: this.newValueId, name: null });
+        this.newValueId++;
     };
-    self.removeEnumerationValue = function () {
-        self.values.remove(this);
+
+    removeEnumerationValue = () => {
+        this.values.remove(this);
     };
-};
+}

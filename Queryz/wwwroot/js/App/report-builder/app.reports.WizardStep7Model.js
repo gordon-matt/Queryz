@@ -1,48 +1,45 @@
-﻿var WizardStep7Model = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class WizardStep7Model {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.reportId = ko.observable(0);
-    self.isDistinct = ko.observable(false);
-    self.rowLimit = ko.observable(0);
-    self.enumerationHandling = ko.observable(0);
+        this.reportId = ko.observable(0);
+        this.isDistinct = ko.observable(false);
+        this.rowLimit = ko.observable(0);
+        this.enumerationHandling = ko.observable(0);
 
-    self.availableUsers = ko.observableArray([]);
-    self.deniedUserIds = ko.observableArray([]);
+        this.availableUsers = ko.observableArray([]);
+        this.deniedUserIds = ko.observableArray([]);
+    }
 
-    self.save = function () {
-        let success = false;
-
-        $.ajax({
-            url: "/report-builder/save-wizard-step-7",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({
-                ReportId: self.reportId(),
-                IsDistinct: self.isDistinct(),
-                RowLimit: self.rowLimit(),
-                EnumerationHandling: self.enumerationHandling(),
-                DeniedUserIds: self.deniedUserIds()
-            }),
-            dataType: "json",
-            async: false
+    save = () => {
+        return fetch("/report-builder/save-wizard-step-7", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify({
+                ReportId: this.reportId(),
+                IsDistinct: this.isDistinct(),
+                RowLimit: this.rowLimit(),
+                EnumerationHandling: this.enumerationHandling(),
+                DeniedUserIds: this.deniedUserIds()
+            })
         })
-        .done(function (json) {
+        .then(response => response.json())
+        .then(json => {
             if (json.success) {
-                success = true;
+                return true;
             }
             else {
                 $.notify(json.message, "error");
                 console.log(json.message);
-                success = false;
+                return false;
             }
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.parent.translations.UpdateRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-            success = false;
+        .catch(error => {
+            $.notify(this.parent.parent.translations.updateRecordError, "error");
+            console.error('Error: ', error);
+            return false;
         });
-
-        return success;
     };
-};
+}

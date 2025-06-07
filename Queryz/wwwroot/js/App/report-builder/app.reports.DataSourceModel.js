@@ -1,16 +1,16 @@
-﻿var DataSourceModel = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class DataSourceModel {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.id = ko.observable(0);
-    self.name = ko.observable(null);
-    self.dataProvider = ko.observable(null);
-    self.connectionDetails = ko.observable(null);
+        this.id = ko.observable(0);
+        this.name = ko.observable(null);
+        this.dataProvider = ko.observable(null);
+        this.connectionDetails = ko.observable(null);
+        this.validator = false;
+    }
 
-    self.validator = false;
-
-    self.init = function () {
-        self.validator = $("#report-group-form-section-form").validate({
+    init = () => {
+        this.validator = $("#report-group-form-section-form").validate({
             rules: {
                 DataSource_Name: { required: true, maxlength: 255 }
             }
@@ -53,7 +53,7 @@
                         }
                     }
                 },
-                pageSize: self.parent.gridPageSize,
+                pageSize: this.parent.gridPageSize,
                 serverPaging: true,
                 serverFiltering: true,
                 serverSorting: true,
@@ -77,17 +77,16 @@
             scrollable: false,
             columns: [{
                 field: "Name",
-                title: self.parent.translations.columns.name,
+                title: this.parent.translations.columns.name,
                 filterable: true
             }, {
                 field: "Id",
                 title: " ",
-                template:
-                    '<div class="btn-group">' +
-                    '<a data-bind="click: dataSourceModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + self.parent.translations.edit + '">' +
+                template: '<div class="btn-group">' +
+                    '<a data-bind="click: dataSourceModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + this.parent.translations.edit + '">' +
                     '<i class="fas fa-edit"></i></a>' +
 
-                    '<a data-bind="click: dataSourceModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + self.parent.translations.delete + '">' +
+                    '<a data-bind="click: dataSourceModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + this.parent.translations.delete + '">' +
                     '<i class="fas fa-xmark"></i></a>',
                 attributes: { "class": "text-center" },
                 filterable: false,
@@ -95,182 +94,177 @@
             }]
         });
     };
-    
-    self.create = function () {
-        self.id(0);
-        self.name(null);
-        self.dataProvider(null);
-        self.connectionDetails(null);
 
-        self.cleanUpConnectionDetails();
-        
-        self.validator.resetForm();
+    create = () => {
+        this.id(0);
+        this.name(null);
+        this.dataProvider(null);
+        this.connectionDetails(null);
+
+        this.cleanUpConnectionDetails();
+
+        this.validator.resetForm();
         switchSection($("#dataSources-form-section"));
-        $("#dataSources-form-section-legend").html(self.parent.translations.create);
+        $("#dataSources-form-section-legend").html(this.parent.translations.create);
     };
-    self.edit = function (id) {
-        $.ajax({
-            url: `${dataSourceApiUrl}(${id})`,
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            self.id(json.Id);
-            self.name(json.Name);
-            
-            $.ajax({
-                url: `/report-builder/get-connection-details/${id}`,
-                type: "GET",
-                dataType: "json",
-                async: false
+
+    edit = (id) => {
+        fetch(`${dataSourceApiUrl}(${id})`)
+            .then(response => response.json())
+            .then(json => {
+                this.id(json.Id);
+                this.name(json.Name);
+
+                fetch(`/report-builder/get-connection-details/${id}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            this.connectionDetails(result.connectionDetails);
+                        }
+                        else {
+                            $.notify(result.message, "error");
+                            console.log(result.message);
+                        }
+
+                        switch (json.DataProvider) {
+                            case 'SqlServer': this.dataProvider(0); break;
+                            case 'PostgreSql': this.dataProvider(1); break;
+                            case 'MySql': this.dataProvider(2); break;
+                            //default: $.notify(`Unknown data provider: '${json.DataProvider}'`, "error");
+                        }
+
+                        this.validator.resetForm();
+                        switchSection($("#dataSources-form-section"));
+                        $("#dataSources-form-section-legend").html(this.parent.translations.edit);
+                    })
+                    .catch(error => {
+                        $.notify(this.parent.translations.getRecordError, "error");
+                        console.error('Error: ', error);
+                    });
             })
-            .done(function (json) {
+            .catch(error => {
+                $.notify(this.parent.translations.getRecordError, "error");
+                console.error('Error: ', error);
+            });
+    };
+
+    remove = (id) => {
+        if (confirm(this.parent.translations.deleteRecordConfirm)) {
+            fetch(`${dataSourceApiUrl}(${id})`, { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
+                        $('#DataSourceGrid').data('kendoGrid').dataSource.read();
+                        $('#DataSourceGrid').data('kendoGrid').refresh();
+
+                        $.notify(this.parent.translations.deleteRecordSuccess, "success");
+                        this.parent.reportModel.step1.reloadDataSources();
+                    } else {
+                        $.notify(this.parent.translations.deleteRecordError, "error");
+                    }
+                })
+                .catch(error => {
+                    $.notify(this.parent.translations.deleteRecordError, "error");
+                    console.error('Error: ', error);
+                });
+        }
+    };
+
+    save = () => {
+        // ensure the function exists before calling it...
+        if (typeof onBeforeSave == 'function') {
+            onBeforeSave(this);
+        }
+
+        if (!$("#dataSources-form-section-form").valid()) {
+            return false;
+        }
+
+        const record = {
+            Id: this.id(),
+            Name: this.name(),
+            DataProvider: this.dataProvider(),
+            ConnectionDetails: this.connectionDetails()
+        };
+
+        fetch(`${dataSourceApiUrl}/Default.Save`, {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify(record)
+        })
+        .then(response => {
+            if (response.ok) {
+                $('#DataSourceGrid').data('kendoGrid').dataSource.read();
+                $('#DataSourceGrid').data('kendoGrid').refresh();
+
+                switchSection($("#dataSources-grid-section"));
+
+                $.notify(this.parent.translations.insertRecordSuccess, "success");
+                this.parent.reportModel.step1.reloadDataSources();
+            } else {
+                $.notify(this.parent.translations.insertRecordError, "error");
+            }
+        })
+        .catch(error => {
+            $.notify(this.parent.translations.insertRecordError, "error");
+            console.error('Error: ', error);
+        });
+    };
+
+    onDataProviderChanged = () => {
+        const provider = this.dataProvider();
+
+        if (provider == -1) {
+            return false;
+        }
+
+        fetch(`/report-builder/get-connection-details-ui/${provider}`)
+            .then(response => response.json())
+            .then(json => {
                 if (json.success) {
-                    self.connectionDetails(json.connectionDetails);
+                    this.cleanUpConnectionDetails();
+
+                    const result = $(json.html);
+
+                    // Add new HTML
+                    const content = $(result.filter('#connection-details-content')[0]);
+                    const details = $('<div>').append(content.clone()).html();
+                    $("#connection-details").html(details);
+
+                    // Add new Scripts
+                    const scripts = result.filter('script');
+
+                    $.each(scripts, function () {
+                        const script = $(this);
+                        script.attr("data-settings-script", "true");
+                        script.appendTo('body');
+                    });
+
+                    // Update Bindings
+                    // Ensure the function exists before calling it...
+                    if (typeof updateModel == 'function') {
+                        const data = ko.toJS(ko.mapping.fromJSON(this.connectionDetails()));
+                        updateModel(this, data);
+                        const elementToBind = $("#connection-details")[0];
+                        ko.applyBindings(this.parent, elementToBind);
+                    }
                 }
                 else {
                     $.notify(json.message, "error");
                     console.log(json.message);
                 }
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.getRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
+            .catch(error => {
+                $.notify(this.parent.translations.getRecordError, "error");
+                console.error('Error: ', error);
             });
-
-            switch (json.DataProvider) {
-                case 'SqlServer': self.dataProvider(0); break;
-                case 'PostgreSql': self.dataProvider(1); break;
-                case 'MySql': self.dataProvider(2); break;
-                //default: $.notify(`Unknown data provider: '${json.DataProvider}'`, "error");
-            }
-            
-            self.validator.resetForm();
-            switchSection($("#dataSources-form-section"));
-            $("#dataSources-form-section-legend").html(self.parent.translations.edit);
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.translations.getRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-        });
-    };
-    self.remove = function (id) {
-        if (confirm(self.parent.translations.deleteRecordConfirm)) {
-            $.ajax({
-                url: `${dataSourceApiUrl}(${id})`,
-                type: "DELETE",
-                async: false
-            })
-            .done(function (json) {
-                $('#DataSourceGrid').data('kendoGrid').dataSource.read();
-                $('#DataSourceGrid').data('kendoGrid').refresh();
-
-                $.notify(self.parent.translations.deleteRecordSuccess, "success");
-                self.parent.reportModel.step1.reloadDataSources();
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $.notify(self.parent.translations.deleteRecordError, "error");
-                console.log(textStatus + ': ' + errorThrown);
-            });
-        }
-    };
-    self.save = function () {
-        // ensure the function exists before calling it...
-        if (typeof onBeforeSave == 'function') {
-            onBeforeSave(self);
-        }
-        
-        if (!$("#dataSources-form-section-form").valid()) {
-            return false;
-        }
-
-        const record = {
-            Id: self.id(),
-            Name: self.name(),
-            DataProvider: self.dataProvider(),
-            ConnectionDetails: self.connectionDetails()
-        };
-
-        $.ajax({
-            url: `${dataSourceApiUrl}/Default.Save`,
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(record),
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            $('#DataSourceGrid').data('kendoGrid').dataSource.read();
-            $('#DataSourceGrid').data('kendoGrid').refresh();
-
-            switchSection($("#dataSources-grid-section"));
-
-            $.notify(self.parent.translations.insertRecordSuccess, "success");
-            self.parent.reportModel.step1.reloadDataSources();
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.translations.insertRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-        });
     };
 
-    self.onDataProviderChanged = function () {
-        const provider = self.dataProvider();
-
-        if (provider == -1) {
-            return false;
-        }
-
-        $.ajax({
-            url: `/report-builder/get-connection-details-ui/${provider}`,
-            type: "GET",
-            dataType: "json",
-            async: false
-        })
-        .done(function (json) {
-            if (json.success) {
-                self.cleanUpConnectionDetails();
-
-                const result = $(json.html);
-
-                // Add new HTML
-                const content = $(result.filter('#connection-details-content')[0]);
-                const details = $('<div>').append(content.clone()).html();
-                $("#connection-details").html(details);
-
-                // Add new Scripts
-                const scripts = result.filter('script');
-
-                $.each(scripts, function () {
-                    const script = $(this);
-                    script.attr("data-settings-script", "true");
-                    script.appendTo('body');
-                });
-
-                // Update Bindings
-                // Ensure the function exists before calling it...
-                if (typeof updateModel == 'function') {
-                    const data = ko.toJS(ko.mapping.fromJSON(self.connectionDetails()));
-                    updateModel(self, data);
-                    const elementToBind = $("#connection-details")[0];
-                    ko.applyBindings(self.parent, elementToBind);
-                }
-            }
-            else {
-                $.notify(json.message, "error");
-                console.log(json.message);
-            }
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.translations.GetRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-        });
-    };
-    self.cleanUpConnectionDetails = function () {
+    cleanUpConnectionDetails = () => {
         // Clean up from previously injected html/scripts
         if (typeof cleanUp === 'function') {
-            cleanUp(self);
+            cleanUp(this);
         }
 
         // Remove Old Scripts
@@ -287,12 +281,13 @@
         $("#connection-details").html("");
     };
 
-    self.cancel = function () {
-        self.cleanUpConnectionDetails();
+    cancel = () => {
+        this.cleanUpConnectionDetails();
         switchSection($("#dataSources-grid-section"));
     };
-    self.goBack = function () {
-        self.cleanUpConnectionDetails();
+
+    goBack = () => {
+        this.cleanUpConnectionDetails();
         switchSection($("#grid-section"));
     };
-};
+}

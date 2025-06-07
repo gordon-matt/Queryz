@@ -241,13 +241,16 @@
     remove = (id) => {
         if (confirm("If there are still reports assigned to this group, then deleting the group will also delete the reports. Are you sure you want to do that?")) {
             fetch(`${reportGroupApiUrl}(${id})`, { method: 'DELETE' })
-                .then(response => response.json())
-                .then(json => {
-                    $('#Grid').data('kendoGrid').dataSource.read();
-                    $('#Grid').data('kendoGrid').refresh();
+                .then(response => {
+                    if (response.ok) {
+                        $('#Grid').data('kendoGrid').dataSource.read();
+                        $('#Grid').data('kendoGrid').refresh();
 
-                    $.notify(this.parent.translations.deleteRecordSuccess, "success");
-                    this.parent.reportModel.step1.reloadGroups();
+                        $.notify(this.parent.translations.deleteRecordSuccess, "success");
+                        this.parent.reportModel.step1.reloadGroups();
+                    } else {
+                        $.notify(this.parent.translations.deleteRecordError, "error");
+                    }
                 })
                 .catch(error => {
                     $.notify(this.parent.translations.deleteRecordError, "error");
@@ -277,18 +280,21 @@
                 },
                 body: JSON.stringify(record)
             })
-            .then(response => response.json())
-            .then(json => {
-                $('#Grid').data('kendoGrid').dataSource.read();
-                $('#Grid').data('kendoGrid').refresh();
+            .then(response => {
+                if (response.ok) {
+                    $('#Grid').data('kendoGrid').dataSource.read();
+                    $('#Grid').data('kendoGrid').refresh();
 
-                switchSection($("#grid-section"));
+                    switchSection($("#grid-section"));
 
-                this.id(json.Id);
-                this.setRoles();
+                    this.id(json.Id);
+                    this.setRoles();
 
-                $.notify(this.parent.translations.insertRecordSuccess, "success");
-                this.parent.reportModel.step1.reloadGroups();
+                    $.notify(this.parent.translations.insertRecordSuccess, "success");
+                    this.parent.reportModel.step1.reloadGroups();
+                } else {
+                    $.notify(this.parent.translations.insertRecordError, "error");
+                }
             })
             .catch(error => {
                 $.notify(this.parent.translations.insertRecordError, "error");
@@ -303,17 +309,20 @@
                 },
                 body: JSON.stringify(record)
             })
-            .then(response => response.json())
-            .then(json => {
-                $('#Grid').data('kendoGrid').dataSource.read();
-                $('#Grid').data('kendoGrid').refresh();
+            .then(response => {
+                if (response.ok) {
+                    $('#Grid').data('kendoGrid').dataSource.read();
+                    $('#Grid').data('kendoGrid').refresh();
 
-                switchSection($("#grid-section"));
+                    switchSection($("#grid-section"));
 
-                this.setRoles();
+                    this.setRoles();
 
-                $.notify(this.parent.translations.updateRecordSuccess, "success");
-                this.parent.reportModel.step1.reloadGroups();
+                    $.notify(this.parent.translations.updateRecordSuccess, "success");
+                    this.parent.reportModel.step1.reloadGroups();
+                } else {
+                    $.notify(this.parent.translations.updateRecordError, "error");
+                }
             })
             .catch(error => {
                 $.notify(this.parent.translations.updateRecordError, "error");
@@ -352,9 +361,12 @@
                 roles: this.roles()
             })
         })
-        .then(response => response.json())
-        .then(json => {
-            $.notify("Successfully saved roles for selected report group.", "success");
+        .then(response => {
+            if (response.ok) {
+                $.notify("Successfully saved roles for selected report group.", "success");
+            } else {
+                $.notify("Error when trying to save roles for selected report group.", "error");
+            }
         })
         .catch(error => {
             $.notify("Error when trying to save roles for selected report group.", "error");
