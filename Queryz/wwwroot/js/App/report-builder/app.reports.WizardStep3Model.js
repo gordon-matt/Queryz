@@ -1,38 +1,41 @@
-﻿var WizardStep3Model = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class WizardStep3Model {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.reportId = ko.observable(0);
-    self.availableColumns = ko.observableArray([]);
-    self.selectedColumns = ko.observableArray([]);
-    self.availableEnumerations = ko.observableArray([]);
-    self.availableTransformFunctions = ko.observableArray([]);
+        this.reportId = ko.observable(0);
+        this.availableColumns = ko.observableArray([]);
+        this.selectedColumns = ko.observableArray([]);
+        this.availableEnumerations = ko.observableArray([]);
+        this.availableTransformFunctions = ko.observableArray([]);
 
-    self.validator = $("#wizard-form-3").validate();
-    
-    self.addColumn = function () {
-        self.selectedColumns.push(new SelectedColumnModel(null, null, null, false, null, null, null, null, false));
-        const index = self.selectedColumns().length - 1;
-        self.column_onChange(index);
-    };
-    self.addLiteral = function () {
-        self.selectedColumns.push(new SelectedColumnModel(null, null, null, true, null, null, null, null, false));
-    };
-    self.removeColumn = function () {
-        self.selectedColumns.remove(this);
+        this.validator = $("#wizard-form-3").validate();
+    }
+
+    addColumn = () => {
+        this.selectedColumns.push(new SelectedColumnModel(null, null, null, false, null, null, null, null, false));
+        const index = this.selectedColumns().length - 1;
+        this.column_onChange(index);
     };
 
-    self.removeAllColumns = function () {
+    addLiteral = () => {
+        this.selectedColumns.push(new SelectedColumnModel(null, null, null, true, null, null, null, null, false));
+    };
+
+    removeColumn = () => {
+        this.selectedColumns.remove(this);
+    };
+
+    removeAllColumns = () => {
         if (confirm("Are you sure you want to remove ALL selected columns?")) {
-            self.selectedColumns([]);
+            this.selectedColumns([]);
         }
     };
 
-    self.column_onChange = function (index) {
-        const currentColumn = self.selectedColumns()[index];
+    column_onChange = (index) => {
+        const currentColumn = this.selectedColumns()[index];
 
         // Get column from availableColumns
-        const col = ko.utils.arrayFirst(self.availableColumns(), function (item) {
+        const col = ko.utils.arrayFirst(this.availableColumns(), function (item) {
             return item.name === currentColumn.columnName;
         });
 
@@ -41,7 +44,7 @@
         }
 
         currentColumn.type(col.type);
-        
+
         let alias = col.name;
         const periodIndex = alias.indexOf('.');
         alias = alias.substring(periodIndex + 1);
@@ -53,23 +56,23 @@
         select.hide();
 
         if (col.isForeignKey && col.availableParentColumns && col.availableParentColumns.length > 0) {
-            $(col.availableParentColumns).each(function (i, val) {
+            col.availableParentColumns.forEach(item => {
                 select.append($('<option>', {
-                    value: val,
-                    text: val
+                    value: item,
+                    text: item
                 }));
             });
             select.show();
         }
     };
 
-    self.save = function () {
+    save = () => {
         if (!$("#wizard-form-3").valid()) {
             return false;
         }
 
         // Ensure unique columns
-        const nonLiteralColumns = $.grep(self.selectedColumns(), function (element) { return element.isLiteral == false; })
+        const nonLiteralColumns = $.grep(this.selectedColumns(), function (element) { return element.isLiteral == false; });
         const selectedColumns = nonLiteralColumns.map(function (col) {
             return col.columnName;
         });
@@ -80,35 +83,31 @@
             return false;
         }
 
-        let success = false;
-
         const formData = form2js('wizard-form-3', '.', true);
 
-        $.ajax({
-            url: "/report-builder/save-wizard-step-3",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(formData),
-            dataType: "json",
-            async: false
+        return fetch("/report-builder/save-wizard-step-3", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify(formData)
         })
-        .done(function (json) {
+        .then(response => response.json())
+        .then(json => {
             if (json.success) {
-                self.parent.step4.init(json.model);
-                success = true;
+                this.parent.step4.init(json.model);
+                return true;
             }
             else {
                 $.notify(json.message, "error");
                 console.log(json.message);
-                success = false;
+                return false;
             }
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.parent.translations.UpdateRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-            success = false;
+        .catch(error => {
+            $.notify(this.parent.parent.translations.updateRecordError, "error");
+            console.error('Error: ', error);
+            return false;
         });
-
-        return success;
     };
-};
+}

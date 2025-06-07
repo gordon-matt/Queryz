@@ -1,25 +1,23 @@
 ﻿'use strict'
 
-const ViewModel = function () {
-    const self = this;
+class ViewModel {
+    constructor() {
+        this.reportId = ko.observable(0);
+        this.translations = false;
+    }
 
-    self.reportId = ko.observable(0);
-    
-    self.translations = false;
-    
-    self.init = function () {
+    init = () => {
         // Load translations first, else will have errors
-
         fetch("/report-builder/get-translations")
-        .then(response => response.json())
-        .then(json => {
-            self.translations = json;
-        })
-        .catch(error => {
-            console.error('Error: ', error);
-        });
+            .then(response => response.json())
+            .then(json => {
+                this.translations = json;
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+            });
 
-        self.reportId(model.ReportId);
+        this.reportId(model.ReportId);
 
         $('#query-builder').queryBuilder(model.JQQueryBuilderConfig);
 
@@ -34,10 +32,10 @@ const ViewModel = function () {
             $('#query-builder').queryBuilder('setRules', JSON.parse(model.Query));
         }
     };
-    
-    self.submit = function () {
+
+    submit = () => {
         const result = $('#query-builder').queryBuilder('getSQL', false);
-        
+
         $('#loading').show();
         $('#wizard').hide();
 
@@ -47,7 +45,7 @@ const ViewModel = function () {
                 "Content-Type": "application/json; charset=utf-8",
             },
             body: JSON.stringify({
-                ReportId: self.reportId(),
+                ReportId: this.reportId(),
                 Query: result?.sql
             })
         })
@@ -72,7 +70,7 @@ const ViewModel = function () {
             $('#wizard').show();
         });
     };
-};
+}
 
 var viewModel;
 let isProgrammaticStepChange = false; // prevent infinite loop on step change

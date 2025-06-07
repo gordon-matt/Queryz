@@ -1,98 +1,91 @@
-﻿var WizardStep6Model = function (parent) {
-    const self = this;
-    self.parent = parent;
+﻿class WizardStep6Model {
+    constructor(parent) {
+        this.parent = parent;
 
-    self.reportId = ko.observable(0);
-    self.availableColumns = ko.observableArray([]);
-    self.relationships = ko.observableArray([]);
+        this.reportId = ko.observable(0);
+        this.availableColumns = ko.observableArray([]);
+        this.relationships = ko.observableArray([]);
+    }
 
-    self.parentTable_onChange = function (index) {
-        const relationship = self.relationships()[index];
+    parentTable_onChange = (index) => {
+        const relationship = this.relationships()[index];
 
         if (relationship.parentTable) {
-            $.ajax({
-                url: `/report-builder/get-columns/${self.reportId()}/${relationship.parentTable}`,
-                type: "GET",
-                dataType: "json",
-                async: false
-            })
-            .done(function (json) {
-                if (json.success) {
-                    const select = $(`select[name="Relationships[${index}].PrimaryKey"]`);
-                    select.find('option').remove();
+            fetch(`/report-builder/get-columns/${this.reportId()}/${relationship.parentTable}`)
+                .then(response => response.json())
+                .then(json => {
+                    if (json.success) {
+                        const select = $(`select[name="Relationships[${index}].PrimaryKey"]`);
+                        select.find('option').remove();
 
-                    $(json.columns).each(function (i, val) {
-                        select.append($('<option>', {
-                            value: val,
-                            text: val,
-                            selected: (relationship.primaryKeyBackup && val == relationship.primaryKeyBackup)
-                        }));
-                    });
-                }
-                else {
-                    $.notify(json.message, "error");
-                    console.log(json.message);
-                }
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(textStatus + ': ' + errorThrown);
-            });
+                        json.columns.forEach(item => {
+                            select.append($('<option>', {
+                                value: val,
+                                text: val,
+                                selected: (item.primaryKeyBackup && val == item.primaryKeyBackup)
+                            }));
+                        });
+                    }
+                    else {
+                        $.notify(json.message, "error");
+                        console.log(json.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error: ', error);
+                });
         }
 
         //const element = $(event.currentTarget).next();
     };
 
-    self.save = function () {
-        let success = false;
-
+    save = () => {
         const formData = form2js('wizard-form-6', '.', true);
 
-        $.ajax({
-            url: "/report-builder/save-wizard-step-6",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(formData),
-            dataType: "json",
-            async: false
+        return fetch("/report-builder/save-wizard-step-6", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify(formData)
         })
-        .done(function (json) {
+        .then(response => response.json())
+        .then(json => {
             if (json.success) {
-                self.parent.step7.reportId(json.model.reportId);
-                self.parent.step7.isDistinct(json.model.isDistinct);
-                self.parent.step7.rowLimit(json.model.rowLimit);
-                self.parent.step7.enumerationHandling(json.model.enumerationHandling);
+                this.parent.step7.reportId(json.model.reportId);
+                this.parent.step7.isDistinct(json.model.isDistinct);
+                this.parent.step7.rowLimit(json.model.rowLimit);
+                this.parent.step7.enumerationHandling(json.model.enumerationHandling);
 
-                self.parent.step7.availableUsers([]);
-                self.parent.step7.deniedUserIds([]);
+                this.parent.step7.availableUsers([]);
+                this.parent.step7.deniedUserIds([]);
 
                 const hasAvailableUsers = json.model.availableUsers && json.model.availableUsers.length > 0;
 
                 if (hasAvailableUsers > 0) {
-                    $.each(json.model.availableUsers, function () {
-                        self.parent.step7.availableUsers.push(this);
+                    json.model.availableUsers.forEach(item => {
+                        this.parent.step7.availableUsers.push(item);
                     });
                 }
 
                 if (json.model.deniedUserIds && json.model.deniedUserIds.length > 0) {
-                    $.each(json.model.deniedUserIds, function () {
-                        self.parent.step7.deniedUserIds.push(this);
+                    json.model.deniedUserIds.forEach(item => {
+                        this.parent.step7.deniedUserIds.push(item);
                     });
                 }
 
-                success = true;
+                return true;
             }
             else {
                 $.notify(json.message, "error");
                 console.log(json.message);
-                success = false;
+                return false;
             }
         })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $.notify(self.parent.parent.translations.UpdateRecordError, "error");
-            console.log(textStatus + ': ' + errorThrown);
-            success = false;
+        .catch(error => {
+            $.notify(this.parent.parent.translations.updateRecordError, "error");
+            console.error('Error: ', error);
+            return false;
         });
-
-        return success;
     };
-};
+}
