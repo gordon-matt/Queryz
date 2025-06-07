@@ -1,6 +1,8 @@
 using Extenso.AspNetCore.Mvc.ExtensoUI;
 using Extenso.AspNetCore.Mvc.ExtensoUI.Providers;
+using Extenso.AspNetCore.OData;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using OfficeOpenXml;
@@ -28,8 +30,21 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 .AddDefaultTokenProviders()
 .AddDefaultUI();
 
+builder.Services.AddDistributedMemoryCache(); // Required for session state
+builder.Services.AddSession();
+
 builder.Services
     .AddControllersWithViews()
+    .AddNewtonsoftJson()
+    .AddOData((options, serviceProvider) =>
+    {
+        options.Select().Expand().Filter().OrderBy().SetMaxTop(null).Count();
+        var registrars = serviceProvider.GetRequiredService<IEnumerable<IODataRegistrar>>();
+        foreach (var registrar in registrars)
+        {
+            registrar.Register(options);
+        }
+    })
     .AddQueryz<ApplicationUser, ApplicationRole>(connectionString)
     .AddRazorRuntimeCompilation();
 
@@ -53,6 +68,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

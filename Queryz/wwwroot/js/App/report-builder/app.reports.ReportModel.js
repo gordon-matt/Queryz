@@ -12,6 +12,12 @@
         this.step7 = new WizardStep7Model(this);
     }
 
+    init = () => {
+        this.step1.init();
+        this.step3.init();
+        this.step5.init();
+    }
+
     create = (groupId) => {
         this.step1.id(0);
         this.step1.name(null);

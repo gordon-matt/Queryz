@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="EPPlus" Version="8.0.5" />
     <PackageReference Include="Extenso.AspNetCore.OData" Version="9.3.0" />
     <PackageReference Include="Extenso.Core" Version="9.3.0" />

@@ -29,6 +29,7 @@ class ViewModel {
                 this.dataSourceModel.init();
                 this.enumerationModel.init();
                 this.reportGroupModel.init();
+                this.reportModel.init();
             })
             .catch(error => {
                 console.error('Error: ', error);

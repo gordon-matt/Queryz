@@ -6,6 +6,10 @@
         this.availableColumns = ko.observableArray([]);
         this.sortings = ko.observableArray([]);
 
+        this.validator = false;
+    }
+
+    init = () => {
         this.validator = $("#wizard-form-5").validate();
     }
 
