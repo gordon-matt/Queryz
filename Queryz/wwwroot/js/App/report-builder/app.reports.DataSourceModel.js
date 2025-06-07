@@ -32,11 +32,9 @@
                 field: "Id",
                 title: " ",
                 template: '<div class="btn-group">' +
-                    '<a data-bind="click: dataSourceModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + this.parent.translations.edit + '">' +
-                    '<i class="fas fa-edit"></i></a>' +
-
-                    '<a data-bind="click: dataSourceModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + this.parent.translations.delete + '">' +
-                    '<i class="fas fa-xmark"></i></a>',
+                    GridHelper.actionIconButton("dataSourceModel.edit", 'fas fa-edit', this.parent.translations.edit, 'secondary', `#=Id#`) +
+                    GridHelper.actionIconButton("dataSourceModel.remove", 'fas fa-xmark', this.parent.translations.delete, 'danger', `#=Id#`) +
+                    '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
                 width: 150

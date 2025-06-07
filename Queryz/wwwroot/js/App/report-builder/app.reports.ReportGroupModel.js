@@ -35,14 +35,10 @@
                     '<div class="btn-group">' +
                     (
                         !isAdminUser ? ' ' :
-                            '<a data-bind="click: reportGroupModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + this.parent.translations.edit + '">' +
-                            '<i class="fas fa-edit"></i></a>' +
-
-                            '<a data-bind="click: reportGroupModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + this.parent.translations.delete + '">' +
-                            '<i class="fas fa-xmark"></i></a>'
+                            GridHelper.actionIconButton("reportGroupModel.edit", 'fas fa-edit', this.parent.translations.edit, 'secondary', `#=Id#`) +
+                            GridHelper.actionIconButton("reportGroupModel.remove", 'fas fa-xmark', this.parent.translations.delete, 'danger', `#=Id#`)
                     ) +
-                    '<a data-bind="click: reportModel.create.bind($data,#=Id#)" class="btn btn-dark text-white" title="Create Report">' +
-                    '<i class="fas fa-plus"></i></a>' +
+                    GridHelper.actionIconButton("reportModel.create", 'fas fa-plus', 'Create Report', 'secondary', `#=Id#`) +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
@@ -85,19 +81,16 @@
                 title: " ",
                 template: !allowEdit ?
                     '<div class="btn-group">' +
-                    '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
+                    '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success btn-sm" title="Run Report">' +
                     '<i class="fas fa-play"></i></a>' +
                     '</div>' :
 
                     '<div class="btn-group">' +
-                    '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success" title="Run Report">' +
+                    '<a href="/report-builder/run-report/#=Id#" target="_blank" class="btn btn-success btn-sm" title="Run Report">' +
                     '<i class="fas fa-play"></i></a>' +
 
-                    '<a data-bind="click: reportModel.edit.bind($data,#=Id#)" class="btn btn-secondary" title="' + this.parent.translations.edit + '">' +
-                    '<i class="fas fa-edit"></i></a>' +
-
-                    '<a data-bind="click: reportModel.remove.bind($data,#=Id#)" class="btn btn-danger" title="' + this.parent.translations.delete + '">' +
-                    '<i class="fas fa-xmark"></i></a>' +
+                    GridHelper.actionIconButton("reportModel.edit", 'fas fa-edit', this.parent.translations.edit, 'secondary', `#=Id#`) +
+                    GridHelper.actionIconButton("reportModel.remove", 'fas fa-xmark', this.parent.translations.delete, 'danger', `#=Id#`) +
                     '</div>',
                 attributes: { "class": "text-center" },
                 filterable: false,
