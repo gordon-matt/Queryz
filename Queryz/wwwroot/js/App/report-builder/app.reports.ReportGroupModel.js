@@ -155,8 +155,7 @@
             fetch(`${reportGroupApiUrl}(${id})`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
-                        $('#Grid').data('kendoGrid').dataSource.read();
-                        $('#Grid').data('kendoGrid').refresh();
+                        GridHelper.refreshGrid();
 
                         $.notify(this.parent.translations.deleteRecordSuccess, "success");
                         this.parent.reportModel.step1.reloadGroups();
@@ -194,8 +193,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    $('#Grid').data('kendoGrid').dataSource.read();
-                    $('#Grid').data('kendoGrid').refresh();
+                    GridHelper.refreshGrid();
 
                     switchSection($("#grid-section"));
 
@@ -223,8 +221,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    $('#Grid').data('kendoGrid').dataSource.read();
-                    $('#Grid').data('kendoGrid').refresh();
+                    GridHelper.refreshGrid();
 
                     switchSection($("#grid-section"));
 

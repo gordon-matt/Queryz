@@ -71,7 +71,7 @@
             }
 
             try {
-                const response = fetch("/report-builder/get-databases", {
+                fetch("/report-builder/get-databases", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json; charset=utf-8",
@@ -132,31 +132,28 @@
         var dataSourceId = viewModel.id();
 
         if (dataSourceId > 0) {
-            (function() {
-                try {
-                    const response = fetch(`/report-builder/get-custom-properties/${dataSourceId}`)
-                        .then(response => {
-                            if (!response.ok) throw new Error("Network response was not ok");
-                            return response.json();
-                        })
-                        .then(json => {
-                            if (json.success) {
-                                customProperties = json.customProperties;
+             try {
+                fetch(`/report-builder/get-custom-properties/${dataSourceId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Network response was not ok");
+                        return response.json();
+                    })
+                    .then(json => {
+                        if (json.success) {
+                            customProperties = json.customProperties;
+                            if (customProperties && customProperties["Schema"]) {
+                                viewModel.schema(customProperties["Schema"]);
                             }
-                            else {
-                                $.notify(json.message, "error");
-                                console.log(json.message);
-                            }
-                        });
-                } catch (error) {
-                    $.notify("Could not load custom properties", "error");
-                    console.log('Error:', error);
-                }
-
-                if (customProperties && customProperties["Schema"]) {
-                    viewModel.schema(customProperties["Schema"]);
-                }
-            })();
+                        }
+                        else {
+                            $.notify(json.message, "error");
+                            console.log(json.message);
+                        }
+                    });
+            } catch (error) {
+                $.notify("Could not load custom properties", "error");
+                console.log('Error:', error);
+            }
         }
     };
 

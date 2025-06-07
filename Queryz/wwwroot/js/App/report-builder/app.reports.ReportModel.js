@@ -66,8 +66,7 @@
             fetch(`${reportApiUrl}(${id})`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
-                        $('#Grid').data('kendoGrid').dataSource.read();
-                        $('#Grid').data('kendoGrid').refresh();
+                        GridHelper.refreshGrid();
 
                         $.notify(translations.deleteRecordSuccess, "success");
                     } else {

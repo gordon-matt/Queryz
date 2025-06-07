@@ -92,8 +92,7 @@
             fetch(`${enumerationApiUrl}(${id})`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
-                        $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
-                        $('#EnumerationsGrid').data('kendoGrid').refresh();
+                        GridHelper.refreshGrid('EnumerationsGrid');
 
                         $.notify(this.parent.translations.deleteRecordSuccess, "success");
                     } else {
@@ -133,8 +132,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
-                    $('#EnumerationsGrid').data('kendoGrid').refresh();
+                    GridHelper.refreshGrid('EnumerationsGrid');
 
                     switchSection($("#enumerations-grid-section"));
 
@@ -158,8 +156,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    $('#EnumerationsGrid').data('kendoGrid').dataSource.read();
-                    $('#EnumerationsGrid').data('kendoGrid').refresh();
+                    GridHelper.refreshGrid('EnumerationsGrid');
 
                     switchSection($("#enumerations-grid-section"));
 

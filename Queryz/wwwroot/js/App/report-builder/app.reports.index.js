@@ -79,8 +79,7 @@ $(document).ready(function () {
             return viewModel.reportModel.step7.save();
         },
         onFinished: function (event, currentIndex) {
-            $('#Grid').data('kendoGrid').dataSource.read();
-            $('#Grid').data('kendoGrid').refresh();
+            GridHelper.refreshGrid();
             switchSection($("#grid-section"));
         }
     });

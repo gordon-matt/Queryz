@@ -101,8 +101,7 @@
             fetch(`${dataSourceApiUrl}(${id})`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
-                        $('#DataSourceGrid').data('kendoGrid').dataSource.read();
-                        $('#DataSourceGrid').data('kendoGrid').refresh();
+                        GridHelper.refreshGrid('DataSourceGrid');
 
                         $.notify(this.parent.translations.deleteRecordSuccess, "success");
                         this.parent.reportModel.step1.reloadDataSources();
@@ -143,8 +142,7 @@
         })
         .then(response => {
             if (response.ok) {
-                $('#DataSourceGrid').data('kendoGrid').dataSource.read();
-                $('#DataSourceGrid').data('kendoGrid').refresh();
+                GridHelper.refreshGrid('DataSourceGrid');
 
                 switchSection($("#dataSources-grid-section"));
 
