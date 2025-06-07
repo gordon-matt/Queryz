@@ -3,9 +3,11 @@ using Queryz.Data.Entities;
 
 namespace Queryz.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+public class QueryzDbContext<TUser, TRole> : IdentityDbContext<TUser, TRole, string>
+    where TUser : IdentityUser
+    where TRole : IdentityRole
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public QueryzDbContext(DbContextOptions<QueryzDbContext<TUser, TRole>> options)
         : base(options)
     {
     }

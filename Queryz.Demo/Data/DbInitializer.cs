@@ -1,6 +1,7 @@
-﻿using Queryz.Data.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using Queryz.Demo.Data.Entities;
 
-namespace Queryz.Data;
+namespace Queryz.Demo.Data;
 
 public static class DbInitializer
 {

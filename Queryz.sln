@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queryz", "Queryz\Queryz.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queryz.Shared", "Queryz.Shared\Queryz.Shared.csproj", "{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queryz.Demo", "Queryz.Demo\Queryz.Demo.csproj", "{D3F46B9F-D6EA-49A1-BB66-6893B99BBD97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF483189-60FB-45BA-BDCE-FD6DC8FEA984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F46B9F-D6EA-49A1-BB66-6893B99BBD97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F46B9F-D6EA-49A1-BB66-6893B99BBD97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F46B9F-D6EA-49A1-BB66-6893B99BBD97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F46B9F-D6EA-49A1-BB66-6893B99BBD97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

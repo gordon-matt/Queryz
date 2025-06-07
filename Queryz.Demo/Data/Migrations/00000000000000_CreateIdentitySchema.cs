@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Queryz.Data.Migrations;
-
+namespace Queryz.Demo.Data.Migrations;
 public partial class CreateIdentitySchema : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,10 @@ public partial class CreateIdentitySchema : Migration
                 NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
                 ConcurrencyStamp = table.Column<string>(nullable: true)
             },
-            constraints: table => table.PrimaryKey("PK_AspNetRoles", x => x.Id));
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+            });
 
         migrationBuilder.CreateTable(
             name: "AspNetUsers",
@@ -38,7 +41,10 @@ public partial class CreateIdentitySchema : Migration
                 LockoutEnabled = table.Column<bool>(nullable: false),
                 AccessFailedCount = table.Column<int>(nullable: false)
             },
-            constraints: table => table.PrimaryKey("PK_AspNetUsers", x => x.Id));
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+            });
 
         migrationBuilder.CreateTable(
             name: "AspNetRoleClaims",

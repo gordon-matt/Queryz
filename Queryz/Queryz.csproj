@@ -1,37 +1,76 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-Queryz-1D4386CB-E058-48E4-AAFE-79538672DFB8</UserSecretsId>
-    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
 
-  <ItemGroup>
-    <PackageReference Include="Autofac" Version="8.3.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
-    <PackageReference Include="Extenso.AspNetCore.Mvc" Version="9.3.0" />
-    <PackageReference Include="Extenso.AspNetCore.Mvc.ExtensoUI" Version="9.3.0" />
-    <PackageReference Include="JQQueryBuilderHelpers" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.OData" Version="9.3.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+		
+		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+		<EmbedAllSources>true</EmbedAllSources>
+		<EnableDefaultEmbeddedResourceItems>true</EnableDefaultEmbeddedResourceItems>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Queryz.Shared\Queryz.Shared.csproj" />
-  </ItemGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="wwwroot\**\*" Pack="true" PackagePath="wwwroot\" />
+		
+		<Content Include="Views\ReportBuilder\Index.cshtml" />
+		<Content Include="Views\ReportBuilder\Preview.cshtml" />
+		<Content Include="Views\ReportBuilder\RunReport.cshtml" />
+		<Content Include="Views\ReportBuilder\_ConnectionBuilderMySql.cshtml" />
+		<Content Include="Views\ReportBuilder\_ConnectionBuilderPostgreSql.cshtml" />
+		<Content Include="Views\ReportBuilder\_ConnectionBuilderSqlServer.cshtml" />
+		<Content Include="Views\ReportBuilder\_EnumerationValuesTable.cshtml" />
+		<Content Include="Views\ReportBuilder\_WizardStep1.cshtml" />
+		<Content Include="Views\ReportBuilder\_WizardStep2.cshtml" />
+		<Content Include="Views\ReportBuilder\_WizardStep3.cshtml" />
+		<Content Include="Views\ReportBuilder\_WizardStep4.cshtml" />
+		<Content Include="Views\ReportBuilder\_WizardStep5.cshtml" />
+		<Content Include="Views\ReportBuilder\_WizardStep6.cshtml" />
+		<Content Include="Views\ReportBuilder\_WizardStep7.cshtml" />
+		<Content Include="Views\Shared\CssPartial.cshtml" />
+		<Content Include="Views\Shared\JsPartial.cshtml" />
+		<Content Include="Views\_ViewImports.cshtml" />
+
+		<EmbeddedResource Include="wwwroot\**\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Views\Shared\CssPartial.cshtml" />
+	  <None Remove="Views\Shared\JsPartial.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Extenso.AspNetCore.Mvc" Version="9.3.0" />
+		<PackageReference Include="Extenso.AspNetCore.Mvc.ExtensoUI" Version="9.3.0" />
+		<PackageReference Include="JQQueryBuilderHelpers" Version="1.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Queryz.Shared\Queryz.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="Views\**\*.cshtml" Pack="true" PackagePath="Views" />
+	</ItemGroup>
+
+	<!--<ItemGroup>
+		<Content Include="wwwroot\**" Pack="true" PackagePath="wwwroot" />
+	</ItemGroup>-->
 
 </Project>

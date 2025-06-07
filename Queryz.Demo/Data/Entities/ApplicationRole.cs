@@ -1,4 +1,6 @@
-﻿namespace Queryz.Data.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Queryz.Demo.Data.Entities;
 
 public class ApplicationRole : IdentityRole
 {
