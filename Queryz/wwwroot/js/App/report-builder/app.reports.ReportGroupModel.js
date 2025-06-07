@@ -16,66 +16,15 @@
             }
         });
 
-        $("#Grid").kendoGrid({
-            data: null,
-            dataSource: {
-                type: "odata",
-                transport: {
-                    read: {
-                        url: reportGroupApiUrl,
-                        dataType: "json"
-                    },
-                    parameterMap: function (options, operation) {
-                        let paramMap = kendo.data.transports.odata.parameterMap(options);
-                        if (paramMap.$inlinecount) {
-                            if (paramMap.$inlinecount == "allpages") {
-                                paramMap.$count = true;
-                            }
-                            delete paramMap.$inlinecount;
-                        }
-                        if (paramMap.$filter) {
-                            paramMap.$filter = paramMap.$filter.replace(/substringof\((.+),(.*?)\)/, "contains($2,$1)");
-                        }
-                        return paramMap;
-                    }
-                },
-                schema: {
-                    data: function (data) {
-                        return data.value;
-                    },
-                    total: function (data) {
-                        return data["@odata.count"];
-                    },
-                    model: {
-                        id: "Id",
-                        fields: {
-                            Name: { type: "string" }
-                        }
-                    }
-                },
-                pageSize: this.parent.gridPageSize,
-                serverPaging: true,
-                serverFiltering: true,
-                serverSorting: true,
-                sort: { field: "Name", dir: "asc" }
-            },
-            dataBound: function (e) {
-                let body = this.element.find("tbody")[0];
-                if (body) {
-                    ko.cleanNode(body);
-                    ko.applyBindings(ko.dataFor(body), body);
+        GridHelper.initKendoDetailGrid(
+            "Grid",
+            reportGroupApiUrl,
+            {
+                id: "Id",
+                fields: {
+                    Name: { type: "string" }
                 }
-                this.expandRow(this.tbody.find("tr.k-master-row").first());
-            },
-            filterable: true,
-            sortable: {
-                allowUnsort: false
-            },
-            pageable: {
-                refresh: true
-            },
-            scrollable: false,
-            columns: [{
+            }, [{
                 field: "Name",
                 title: this.parent.translations.columns.name,
                 filterable: true
@@ -99,9 +48,11 @@
                 filterable: false,
                 width: 180
             }],
-            detailTemplate: kendo.template($("#reports-template").html()),
-            detailInit: this.detailInit
-        });
+            this.parent.gridPageSize,
+            { field: "Name", dir: "asc" },
+            null,
+            kendo.template($("#reports-template").html()),
+            this.detailInit);
     };
 
     detailInit = (e) => {
@@ -115,69 +66,17 @@
             }
         });
 
-        detailRow.find(".reports-grid").kendoGrid({
-            data: null,
-            dataSource: {
-                type: "odata",
-                transport: {
-                    read: {
-                        url: function (data) {
-                            return `${reportGroupApiUrl}/Default.GetReports(groupId=${groupId})`;
-                        },
-                        dataType: "json"
-                    },
-                    parameterMap: function (options, operation) {
-                        if (operation === "read") {
-                            let paramMap = kendo.data.transports.odata.parameterMap(options, operation);
-
-                            if (paramMap.$inlinecount) {
-                                if (paramMap.$inlinecount == "allpages") {
-                                    paramMap.$count = true;
-                                }
-                                delete paramMap.$inlinecount;
-                            }
-                            if (paramMap.$filter) {
-                                paramMap.$filter = paramMap.$filter.replace(/substringof\((.+),(.*?)\)/, "contains($2,$1)");
-                            }
-                            return paramMap;
-                        }
-                        else {
-                            return kendo.data.transports.odata.parameterMap(options, operation);
-                        }
-                    }
-                },
-                schema: {
-                    data: function (data) {
-                        return data.value;
-                    },
-                    total: function (data) {
-                        return data["@odata.count"];
-                    },
-                    model: {
-                        id: "Id",
-                        fields: {
-                            Name: { type: "string" }
-                        }
-                    }
-                },
-                pageSize: this.parent.gridPageSize,
-                serverPaging: true,
-                serverFiltering: true,
-                serverSorting: true,
-                sort: { field: "Name", dir: "asc" },
+        GridHelper.initKendoGridByElement(
+            detailRow.find(".reports-grid"),
+            function (data) {
+                return `${reportGroupApiUrl}/Default.GetReports(groupId=${groupId})`;
             },
-            dataBound: function (e) {
-                let body = this.element.find("tbody")[0];
-                if (body) {
-                    ko.cleanNode(body);
-                    ko.applyBindings(ko.dataFor(body), body);
+            {
+                id: "Id",
+                fields: {
+                    Name: { type: "string" }
                 }
-            },
-            pageable: {
-                refresh: true
-            },
-            scrollable: false,
-            columns: [{
+            }, [{
                 field: "Name",
                 title: this.parent.translations.columns.name,
                 filterable: true
@@ -203,8 +102,28 @@
                 attributes: { "class": "text-center" },
                 filterable: false,
                 width: 180
-            }]
-        });
+            }],
+            this.parent.gridPageSize,
+            { field: "Name", dir: "asc" },
+            function (options, operation) {
+                if (operation === "read") {
+                    let paramMap = kendo.data.transports.odata.parameterMap(options, operation);
+
+                    if (paramMap.$inlinecount) {
+                        if (paramMap.$inlinecount == "allpages") {
+                            paramMap.$count = true;
+                        }
+                        delete paramMap.$inlinecount;
+                    }
+                    if (paramMap.$filter) {
+                        paramMap.$filter = paramMap.$filter.replace(/substringof\((.+),(.*?)\)/, "contains($2,$1)");
+                    }
+                    return paramMap;
+                }
+                else {
+                    return kendo.data.transports.odata.parameterMap(options, operation);
+                }
+            });
     };
 
     create = () => {

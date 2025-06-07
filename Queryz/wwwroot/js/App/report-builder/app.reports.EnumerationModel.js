@@ -19,66 +19,15 @@
             }
         });
 
-        $("#EnumerationsGrid").kendoGrid({
-            data: null,
-            dataSource: {
-                type: "odata",
-                transport: {
-                    read: {
-                        url: enumerationApiUrl,
-                        dataType: "json"
-                    },
-                    parameterMap: function (options, operation) {
-                        let paramMap = kendo.data.transports.odata.parameterMap(options);
-                        if (paramMap.$inlinecount) {
-                            if (paramMap.$inlinecount == "allpages") {
-                                paramMap.$count = true;
-                            }
-                            delete paramMap.$inlinecount;
-                        }
-                        if (paramMap.$filter) {
-                            paramMap.$filter = paramMap.$filter.replace(/substringof\((.+),(.*?)\)/, "contains($2,$1)");
-                        }
-                        return paramMap;
-                    }
-                },
-                schema: {
-                    data: function (data) {
-                        return data.value;
-                    },
-                    total: function (data) {
-                        return data["@odata.count"];
-                    },
-                    model: {
-                        id: "Id",
-                        fields: {
-                            Name: { type: "string" }
-                        }
-                    }
-                },
-                pageSize: this.parent.gridPageSize,
-                serverPaging: true,
-                serverFiltering: true,
-                serverSorting: true,
-                sort: { field: "Name", dir: "asc" }
-            },
-            dataBound: function (e) {
-                let body = this.element.find("tbody")[0];
-                if (body) {
-                    ko.cleanNode(body);
-                    ko.applyBindings(ko.dataFor(body), body);
+        GridHelper.initKendoGrid(
+            "EnumerationsGrid",
+            enumerationApiUrl,
+            {
+                id: "Id",
+                fields: {
+                    Name: { type: "string" }
                 }
-                this.expandRow(this.tbody.find("tr.k-master-row").first());
-            },
-            filterable: true,
-            sortable: {
-                allowUnsort: false
-            },
-            pageable: {
-                refresh: true
-            },
-            scrollable: false,
-            columns: [{
+            }, [{
                 field: "Name",
                 title: this.parent.translations.columns.name,
                 filterable: true
@@ -95,8 +44,9 @@
                 attributes: { "class": "text-center" },
                 filterable: false,
                 width: 150
-            }]
-        });
+            }],
+            this.parent.gridPageSize,
+            { field: "Name", dir: "asc" });
     };
 
     create = () => {
