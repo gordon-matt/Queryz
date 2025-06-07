@@ -7,6 +7,8 @@ public interface IUserService
     Task<IList<IdentityUser>> GetUsersInRoleAsync(string roleName);
 
     Task<IList<string>> GetRolesAsync(IdentityUser user);
+
+    Task<IList<IdentityUser>> GetUsersByIds(IEnumerable<string> userIds);
 }
 
 public class UserService<TUser> : IUserService
@@ -27,4 +29,7 @@ public class UserService<TUser> : IUserService
 
     public async Task<IList<string>> GetRolesAsync(IdentityUser user) =>
         await userManager.GetRolesAsync(user as TUser);
+
+    public async Task<IList<IdentityUser>> GetUsersByIds(IEnumerable<string> userIds) =>
+        (await userManager.Users.Where(x => userIds.Contains(x.Id)).ToListAsync()).Select(x => x as IdentityUser).ToList();
 }

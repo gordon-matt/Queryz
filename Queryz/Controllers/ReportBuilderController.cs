@@ -11,6 +11,7 @@ public class ReportBuilderController : Controller
 
     private readonly IDbContextFactory dbContextFactory;
     private readonly IUserService userService;
+    private readonly IRoleService roleService;
     private readonly IDataSourceService dataSourceService;
     private readonly IEnumerationService enumerationService;
     private readonly IRazorViewRenderService razorViewRenderService;
@@ -30,6 +31,7 @@ public class ReportBuilderController : Controller
     public ReportBuilderController(
         IDbContextFactory dbContextFactory,
         IUserService userService,
+        IRoleService roleService,
         IRazorViewRenderService razorViewRenderService,
         IDataSourceService dataSourceService,
         IEnumerationService enumerationService,
@@ -44,6 +46,7 @@ public class ReportBuilderController : Controller
     {
         this.dbContextFactory = dbContextFactory;
         this.userService = userService;
+        this.roleService = roleService;
         this.razorViewRenderService = razorViewRenderService;
 
         this.dataSourceService = dataSourceService;
@@ -1352,55 +1355,29 @@ public class ReportBuilderController : Controller
         }
     }
 
-    //private async Task<IEnumerable<IdNamePair<string>>> GetAvailableUsersAsync(int reportGroupId)
-    //{
-    //    using var context = dbContextFactory.GetContext();
-    //    string[] roleIds = context.Set<ReportGroupRole>()
-    //        .Where(x => x.ReportGroupId == reportGroupId)
-    //        .Select(x => x.RoleId)
-    //        .ToArray();
-
-    //    //var roles = context.Roles.Where(x => roleIds.Contains(x.Id)).ToList();
-
-    //    var availableUsers = new List<IdNamePair<string>>();
-    //    foreach (string roleId in roleIds)
-    //    {
-    //        var role = await roleManager.Roles.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == roleId);
-    //        var userIds = role.Users.Select(x => x.Id).ToList();
-    //        var users = await userManager.Users.Where(x => userIds.Contains(x.Id)).ToHashSetAsync();
-
-    //        foreach (var user in users)
-    //        {
-    //            if (!availableUsers.Any(x => x.Id == user.Id))
-    //            {
-    //                availableUsers.Add(new IdNamePair<string> { Id = user.Id, Name = user.UserName });
-    //            }
-    //        }
-    //    }
-
-    //    return availableUsers.OrderBy(x => x.Name);
-    //}
-
     private async Task<IEnumerable<IdNamePair<string>>> GetAvailableUsersAsync(int reportGroupId)
     {
-        using var context = dbContextFactory.GetContext() as IdentityDbContext;
-
-        // Get role names for the report group in one query
-        var roleNames = await context.Set<ReportGroupRole>()
+        using var context = dbContextFactory.GetContext();
+        string[] roleIds = context.Set<ReportGroupRole>()
             .Where(x => x.ReportGroupId == reportGroupId)
-            .Join(context.Roles,
-                gr => gr.RoleId,
-                r => r.Id,
-                (gr, r) => r.Name)
-            .ToListAsync();
+            .Select(x => x.RoleId)
+            .ToArray();
 
-        var availableUsers = new HashSet<IdNamePair<string>>(new UserIdComparer());
+        //var roles = context.Roles.Where(x => roleIds.Contains(x.Id)).ToList();
 
-        foreach (string roleName in roleNames)
+        var availableUsers = new List<IdNamePair<string>>();
+        foreach (string roleId in roleIds)
         {
-            var usersInRole = await userService.GetUsersInRoleAsync(roleName);
-            availableUsers.UnionWith(usersInRole.Select(u =>
-                new IdNamePair<string> { Id = u.Id, Name = u.UserName }));
+            var role = (await roleService.GetRolesByIdAsync([roleId])).FirstOrDefault();
+            var users = await userService.GetUsersInRoleAsync(role.Name);
+
+            foreach (var user in users)
+            {
+                if (!availableUsers.Any(x => x.Id == user.Id))
+                {
+                    availableUsers.Add(new IdNamePair<string> { Id = user.Id, Name = user.UserName });
+                }
+            }
         }
 
         return availableUsers.OrderBy(x => x.Name);

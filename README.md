@@ -6,8 +6,6 @@
 
 Queryz is a report building tool that allows you to quickly connect to databases and run queries against them, while giving you the option to download the results as an xlsx file or a delimited file, such as a CSV.
 
-It's a work-in-progress. The tool currently works, but more work should be done to polish it off, such as packaging it as a reusable UI (Razor Class Library).
-
 ## Donate
 If you find this project helpful, consider buying me a cup of coffee.
 

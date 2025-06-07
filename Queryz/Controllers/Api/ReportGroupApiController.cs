@@ -175,18 +175,18 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
 
         var reportGroup = await Repository.FindOneAsync(reportGroupId);
 
-        using (var context = dbContextFactory.GetContext() as IdentityDbContext)
+        using (var context = dbContextFactory.GetContext())
         {
-            var currentRoleIds = from rgr in context.Set<ReportGroupRole>()
-                                 join r in context.Roles on rgr.RoleId equals r.Id
-                                 where rgr.ReportGroupId == reportGroupId
-                                 select rgr.RoleId;
+            var currentRoleIds = context.Set<ReportGroupRole>()
+                .Where(rgr => rgr.ReportGroupId == reportGroupId)
+                .Select(rgr => rgr.RoleId)
+                .ToList();
 
-            var toDelete = from rgr in context.Set<ReportGroupRole>()
-                           join r in context.Roles on rgr.RoleId equals r.Id
-                           where rgr.ReportGroupId == reportGroupId
-                           && !roleIds.Contains(rgr.RoleId)
-                           select rgr;
+            var toDelete = context.Set<ReportGroupRole>()
+                .Where(rgr =>
+                    rgr.ReportGroupId == reportGroupId &&
+                    !roleIds.Contains(rgr.RoleId))
+                .ToList();
 
             var toAdd = roleIds.Where(x => !currentRoleIds.Contains(x)).Select(x => new ReportGroupRole
             {

@@ -15,7 +15,7 @@ public class Queryz<TModel>
         this.html = html;
     }
 
-    public async Task<IHtmlContent> RolesCheckBoxList(
+    public async Task<IHtmlContent> RolesCheckBoxListAsync(
         IRoleService roleService,
         string name,
         IEnumerable<string> selectedRoleIds,

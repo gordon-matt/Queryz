@@ -212,7 +212,7 @@
             });
         }
         else {
-            fetch(reportGroupApiUrl, {
+            fetch(`${reportGroupApiUrl}(${this.id()})`, {
                 method: "PUT",
                 headers: {
                     'Content-type': 'application/json; charset=utf-8'
