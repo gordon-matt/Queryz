@@ -32,6 +32,7 @@
 		<Content Include="Views\ReportBuilder\_WizardStep7.cshtml" />
 		<Content Include="Views\Shared\CssPartial.cshtml" />
 		<Content Include="Views\Shared\JsPartial.cshtml" />
+		<Content Include="Views\Shared\_QueryzLayout.cshtml" />
 		<Content Include="Views\_ViewImports.cshtml" />
 
 		<EmbeddedResource Include="wwwroot\**\*" />
@@ -53,6 +54,13 @@
 
 	<ItemGroup>
 		<Content Update="Views\**\*.cshtml" Pack="true" PackagePath="Views" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="Views\Shared\_QueryzLayout.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<!--<ItemGroup>

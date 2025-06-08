@@ -1,28 +1,14 @@
-﻿@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
-@* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+﻿<environment include="Development">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
 
-<environment include="Development">
     <script type="text/javascript" src="~/lib/jszip/dist/jszip.js"></script>
     <script type="text/javascript" src="~/lib/moment/min/moment.min.js"></script>
     <script type="text/javascript" src="~/lib/jquery-ui-dist/jquery-ui.js"></script>
     <script type="text/javascript" src="~/lib/knockout/build/output/knockout-latest.debug.js"></script>
-</environment>
-<environment exclude="Development">
-    @* JSZip: Used for both Kendo and DevExtreme *@
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.2.2/dist/jszip.min.js"
-            integrity="sha256-gy5W5/rXWluWXFRvMWFFMVhocfpBe7Tf4SW2WMfjs4E="
-            crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.13.3/jquery-ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/knockout@3.4.0/build/output/knockout-latest.min.js"></script>
-</environment>
 
-<script type="text/javascript" src="~/kendo-sdk/js/kendo.all.min.js"></script>
-
-<script type="text/javascript" src="~/js/jquery.steps.js"></script> @* Customized with "reset" function *@
-
-<environment include="Development">
     <script type="text/javascript" src="~/lib/notifyjs-browser/dist/notify.js"></script>
     <script type="text/javascript" src="~/lib/bootbox/dist/bootbox.js"></script>
     <script type="text/javascript" src="~/lib/moment/moment.js"></script>
@@ -34,10 +20,27 @@
     <script type="text/javascript" src="~/lib/bootstrap-select/dist/js/bootstrap-select.js"></script>
     <script type="text/javascript" src="~/lib/sql-parser-mistic/browser/sql-parser.js"></script>
     <script type="text/javascript" src="~/lib/interactjs/dist/interact.js"></script>
-    @*<script type="text/javascript" src="~/lib/jQuery-QueryBuilder/dist/js/query-builder.standalone.js"></script>*@
     <script type="text/javascript" src="~/jQuery-QueryBuilder/js/query-builder.standalone.js"></script>
+
+    <script type="text/javascript" src="~/lib/form2js/src/form2js.js"></script>
+    <script type="text/javascript" src="~/lib/knockout-mapping/dist/knockout.mapping.js"></script>
+    <script type="text/javascript" src="~/lib/knockout-sortable/build/knockout-sortable.js"></script>
 </environment>
 <environment exclude="Development">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @* JSZip: Used for Kendo *@
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.2.2/dist/jszip.min.js"
+            integrity="sha256-gy5W5/rXWluWXFRvMWFFMVhocfpBe7Tf4SW2WMfjs4E="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.13.3/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/knockout@3.4.0/build/output/knockout-latest.min.js"></script>
+
     <script src="//cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/bootbox@6.0.4/dist/bootbox.min.js" integrity="sha256-C2urY+OqJLSraqtjdlohfbUASWG6sat9dP/r+jPvtcQ=" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
@@ -49,6 +52,12 @@
     <script src="//cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js" integrity="sha256-49+cFFN14Ib7A61zjYlhc4UnmbAPQ0uImp4Sj4JO8TU=" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sql-parser-mistic@1.2.3/browser/sql-parser.min.js" integrity="sha256-WHOrlrLCzeTbo0faeJhWjQo1MvxPalPq8JzvDDw47Qo=" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/interactjs@1.10.27/dist/interact.min.js" integrity="sha256-3kMC7IKSk8Dg0LQ4jbvuFU6hslmD6FCBtikpICo3rXQ=" crossorigin="anonymous"></script>
-    @*<script src="//cdn.jsdelivr.net/npm/jQuery-QueryBuilder@2.5.2/dist/js/query-builder.standalone.min.js" integrity="sha256-4rWMoTWg5M29tfAmyIL4/Jpi8yN7ea+1/r//9lDrjcQ=" crossorigin="anonymous"></script>*@
     <script type="text/javascript" src="~/jQuery-QueryBuilder/js/query-builder.standalone.min.js"></script>
+
+    <script type="text/javascript" src="~/lib/form2js/src/form2js.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/knockout-mapping@2.6.0/dist/knockout.mapping.min.js" integrity="sha256-AncdToI5RBc9J0Mpz1KE/BW2R9LRwGW6LStEUa4MxCU=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/knockout-sortable@1.1.1/build/knockout-sortable.min.js" integrity="sha256-taysS/xTzY/sODk/x/Jz/NCqUvBD6RMomzCGUjHbVNQ=" crossorigin="anonymous"></script>
 </environment>
+
+<script type="text/javascript" src="~/kendo-sdk/js/kendo.all.min.js"></script>
+<script type="text/javascript" src="~/js/jquery.steps.js"></script> @* Customized with "reset" function *@

@@ -1,13 +1,11 @@
 ﻿@inject IRoleService RoleService
 
 @{
+    Layout = string.IsNullOrWhiteSpace(QueryzOptions.Value.Layout) ? "~/Views/Shared/_QueryzLayout.cshtml" : QueryzOptions.Value.Layout;
+
     string rtlClass = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft ? "k-rtl" : string.Empty;
     bool isAdminUser = User.IsInRole(SharedConstants.Roles.Administrators);
     bool isEditor = User.IsInRole(SharedConstants.Roles.ReportBuilderEditors);
-}
-
-@section Styles {
-    @await Html.PartialAsync("CssPartial")
 }
 
 @Html.Hidden("GridPageSize", 10)
@@ -284,23 +282,7 @@
 </script>
 
 @section Scripts {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-
-    @await Html.PartialAsync("JsPartial")
-
-    <script type="text/javascript" src="~/lib/form2js/src/form2js.min.js"></script>
-
-    <environment include="Development">
-        @*<script type="text/javascript" src="~/lib/form2js/src/form2js.js"></script>*@
-        <script type="text/javascript" src="~/lib/knockout-mapping/dist/knockout.mapping.js"></script>
-        <script type="text/javascript" src="~/lib/knockout-sortable/build/knockout-sortable.js"></script>
-    </environment>
-    <environment exclude="Development">
-        @*<script src="//cdn.jsdelivr.net/npm/form2js@1.0.0/src/form2js.min.js"></script>*@
-        <script src="//cdn.jsdelivr.net/npm/knockout-mapping@2.6.0/dist/knockout.mapping.min.js" integrity="sha256-AncdToI5RBc9J0Mpz1KE/BW2R9LRwGW6LStEUa4MxCU=" crossorigin="anonymous"></script>
-        <script src="//cdn.jsdelivr.net/npm/knockout-sortable@1.1.1/build/knockout-sortable.min.js" integrity="sha256-taysS/xTzY/sODk/x/Jz/NCqUvBD6RMomzCGUjHbVNQ=" crossorigin="anonymous"></script>
-    </environment>
+    
 
     <script type="text/javascript">
         var currentSection = $("#grid-section");

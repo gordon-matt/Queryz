@@ -1,13 +1,10 @@
-﻿@* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
-<link rel="stylesheet" href="~/lib/fortawesome/fontawesome-free/css/all.min.css" />
-
-<!-- Kendo -->
-<link rel="stylesheet" type="text/css" media="screen" href="~/kendo-sdk/styles/kendo.common.min.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="~/kendo-sdk/styles/kendo.bootstrap-v4.min.css" />
-
-<link rel="stylesheet" href="~/css/site.css" />
+﻿@{
+    bool isRTL = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
+}
 
 <environment include="Development">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/fortawesome/fontawesome-free/css/all.css" />
     <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.css" />
     <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-slider/dist/css/bootstrap-slider.css" />
     <link rel="stylesheet" type="text/css" href="~/lib/selectize/dist/css/selectize.bootstrap3.css" />
@@ -15,6 +12,9 @@
     <link rel="stylesheet" type="text/css" href="~/jQuery-QueryBuilder/css/query-builder.default.css" />
 </environment>
 <environment exclude="Development">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/fortawesome/fontawesome-free/css/all.min.css" />
+
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker3.standalone.min.css"
           integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U="
           crossorigin="anonymous" />
@@ -39,3 +39,14 @@
 <link rel="stylesheet" type="text/css" href="~/css/jquery.steps.css" />
 <link rel="stylesheet" type="text/css" href="~/css/jquery.steps.customizations.css" />
 <link rel="stylesheet" type="text/css" href="~/css/query-builder-custom.css" />
+
+<!-- Kendo -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/kendo-sdk/styles/kendo.common.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/kendo-sdk/styles/kendo.bootstrap-v4.min.css" />
+
+@if (isRTL)
+{
+    <link rel="stylesheet" type="text/css" media="screen" href="~/kendo-sdk/styles/kendo.rtl.min.css" />
+}
+
+<link rel="stylesheet" href="~/css/site.css" />

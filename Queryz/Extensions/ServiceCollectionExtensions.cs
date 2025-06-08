@@ -1,14 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Queryz.Infrastructure;
 
 namespace Queryz.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    internal static IServiceCollection AddQueryz<TUser, TRole>(this IServiceCollection services, string connectionString)
+    internal static IServiceCollection AddQueryz<TUser, TRole>(this IServiceCollection services, IConfiguration configuration, string connectionString)
         where TUser : IdentityUser
         where TRole : IdentityRole
     {
+        services.Configure<QueryzOptions>(configuration.GetSection("Queryz"));
+
         services.AddDbContext<QueryzDbContext<TUser, TRole>>(options =>
             options.UseSqlServer(connectionString));
 

@@ -45,7 +45,7 @@ builder.Services
             registrar.Register(options);
         }
     })
-    .AddQueryz<ApplicationUser, ApplicationRole>(connectionString)
+    .AddQueryz<ApplicationUser, ApplicationRole>(builder.Configuration, connectionString)
     .AddRazorRuntimeCompilation();
 
 var app = builder.Build();

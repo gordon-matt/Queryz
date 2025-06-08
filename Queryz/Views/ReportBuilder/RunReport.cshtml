@@ -1,11 +1,8 @@
 ﻿@model RunReportModel
 
 @{
+    Layout = string.IsNullOrWhiteSpace(QueryzOptions.Value.Layout) ? "~/Views/Shared/_QueryzLayout.cshtml" : QueryzOptions.Value.Layout;
     string rtlClass = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft ? "k-rtl" : string.Empty;
-}
-
-@section Styles {
-    @await Html.PartialAsync("CssPartial")
 }
 
 @Html.Hidden("GridPageSize", 10)
@@ -49,8 +46,6 @@
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("JsPartial")
-
     <script type="text/javascript" src="~/js/App/report-builder/app.reports.run.js"></script>
 
     <script type="text/javascript">
