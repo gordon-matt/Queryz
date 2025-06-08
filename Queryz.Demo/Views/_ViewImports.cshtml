@@ -1,3 +1,7 @@
-﻿@using Queryz.Demo
+﻿@using Microsoft.Extensions.Options
+@using Queryz.Demo
 @using Queryz.Demo.Models
+@using Queryz.Infrastructure
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject IOptions<QueryzOptions> QueryzOptions

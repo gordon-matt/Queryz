@@ -1,11 +1,11 @@
 ﻿@model RunReportModel
 
 @{
-    Layout = string.IsNullOrWhiteSpace(QueryzOptions.Value.Layout) ? "~/Views/Shared/_QueryzLayout.cshtml" : QueryzOptions.Value.Layout;
+    Layout = string.IsNullOrWhiteSpace(QueryzOptions.Value.Layout) ? "~/Views/Shared/_QueryzDefaultLayout.cshtml" : QueryzOptions.Value.Layout;
     string rtlClass = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft ? "k-rtl" : string.Empty;
 }
 
-@Html.Hidden("GridPageSize", 10)
+@Html.Hidden("GridPageSize", QueryzOptions.Value.GridPageSize)
 
 <div class="row">
     <div class="col-12">

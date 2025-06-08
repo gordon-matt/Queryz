@@ -24,4 +24,11 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Shared\_QueryzLayout.cshtml">
+      <PackagePath>Views</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+  </ItemGroup>
+
 </Project>

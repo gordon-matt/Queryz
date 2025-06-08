@@ -32,7 +32,7 @@
 		<Content Include="Views\ReportBuilder\_WizardStep7.cshtml" />
 		<Content Include="Views\Shared\CssPartial.cshtml" />
 		<Content Include="Views\Shared\JsPartial.cshtml" />
-		<Content Include="Views\Shared\_QueryzLayout.cshtml" />
+		<Content Include="Views\Shared\_QueryzDefaultLayout.cshtml" />
 		<Content Include="Views\_ViewImports.cshtml" />
 
 		<EmbeddedResource Include="wwwroot\**\*" />
@@ -57,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="Views\Shared\_QueryzLayout.cshtml">
+	  <Content Update="Views\Shared\_QueryzDefaultLayout.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </Content>

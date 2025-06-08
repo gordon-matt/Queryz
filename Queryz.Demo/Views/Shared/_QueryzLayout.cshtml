@@ -1,0 +1,151 @@
+﻿@{
+    bool isRTL = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @QueryzOptions.Value.AppName</title>
+    <script type="importmap"></script>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/fortawesome/fontawesome-free/css/all.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-slider/dist/css/bootstrap-slider.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/selectize/dist/css/selectize.bootstrap3.css" />
+        <link rel="stylesheet" type="text/css" href="~/lib/bootstrap-select/dist/css/bootstrap-select.css" />
+        <link rel="stylesheet" type="text/css" href="~/_content/Queryz/jQuery-QueryBuilder/css/query-builder.default.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" integrity="sha256-oxqX0LQclbvrsJt8IymkxnISn4Np2Wy2rY9jjoQlDEg=" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker3.standalone.min.css" integrity="sha256-MFsy7OcRacVrncoa+2aQclzs5r/sjhsbNsH5uBqOXhU=" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-slider@11.0.2/dist/css/bootstrap-slider.min.css" integrity="sha256-lqhgI/DR+R+Tp+u5QlmEkloSWMs2jra2XYV0NM0nu8U=" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/css/selectize.bootstrap3.css" integrity="sha256-9xc5FBFR3TnnIx/G9SEbdMm0BWyGNRDH1XITfATut8Q=" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/css/bootstrap-select.min.css" integrity="sha256-wiMI7buOV5UBzdWN4s4kXqE/LZ794hx5oJOOIQlDBaM=" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="~/_content/Queryz/jQuery-QueryBuilder/css/query-builder.default.min.css" />
+    </environment>
+
+    <link rel="stylesheet" type="text/css" href="~/_content/Queryz/css/jquery.steps.css" />
+    <link rel="stylesheet" type="text/css" href="~/_content/Queryz/css/jquery.steps.customizations.css" />
+    <link rel="stylesheet" type="text/css" href="~/_content/Queryz/css/query-builder-custom.css" />
+
+    <!-- Kendo -->
+    <link rel="stylesheet" type="text/css" href="~/_content/Queryz/css/kendo/2014.1.318/kendo.common.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/_content/Queryz/css/kendo/2014.1.318/kendo.bootstrap.min.css" />
+
+    @if (isRTL)
+    {
+        <link rel="stylesheet" type="text/css" media="screen" href="~/_content/Queryz/css/kendo/2014.1.318/kendo.rtl.min.css" />
+    }
+
+    <link rel="stylesheet" href="~/_content/Queryz/css/queryz.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Queryz.Demo.styles.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@QueryzOptions.Value.AppName</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/report-builder">Report Builder</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            @QueryzOptions.Value.FooterText - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+        <script type="text/javascript" src="~/lib/jszip/dist/jszip.js"></script>
+        <script type="text/javascript" src="~/lib/moment/moment.js"></script>
+        <script type="text/javascript" src="~/lib/jquery-ui-dist/jquery-ui.js"></script>
+        <script type="text/javascript" src="~/lib/knockout/build/output/knockout-latest.debug.js"></script>
+
+        <script type="text/javascript" src="~/lib/notifyjs-browser/dist/notify.js"></script>
+        <script type="text/javascript" src="~/lib/bootbox/dist/bootbox.js"></script>
+        <script type="text/javascript" src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+        <script type="text/javascript" src="~/lib/bootstrap-slider/dist/bootstrap-slider.js"></script>
+        <script type="text/javascript" src="~/lib/microplugin/src/microplugin.js"></script>
+        <script type="text/javascript" src="~/lib/sifter/sifter.js"></script>
+        <script type="text/javascript" src="~/lib/selectize/dist/js/selectize.js"></script>
+        <script type="text/javascript" src="~/lib/bootstrap-select/dist/js/bootstrap-select.js"></script>
+        <script type="text/javascript" src="~/lib/sql-parser-mistic/browser/sql-parser.js"></script>
+        <script type="text/javascript" src="~/lib/interactjs/dist/interact.js"></script>
+        <script type="text/javascript" src="~/_content/Queryz/jQuery-QueryBuilder/js/query-builder.standalone.js"></script>
+
+        <script type="text/javascript" src="~/lib/form2js/src/form2js.js"></script>
+        <script type="text/javascript" src="~/lib/knockout-mapping/dist/knockout.mapping.js"></script>
+        <script type="text/javascript" src="~/lib/knockout-sortable/build/knockout-sortable.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js" integrity="sha256-umbTaFxP31Fv6O1itpLS/3+v5fOAWDLOUzlmvOGaKV4=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js" integrity="sha256-RFWFWIIPsjB4DucR4jqwxTWw13ZmtI+s6tVR2LJmZXk=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha256-y3ibfOyBqlgBd+GzwFYQEVOZdNJD06HeDXihongBXKs=" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" integrity="sha256-rMfkFFWoB2W1/Zx+4bgHim0WC7vKRVrq6FTeZclH1Z4=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/min/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.13.3/jquery-ui.min.js" integrity="sha256-sw0iNNXmOJbQhYFuC9OF2kOlD5KQKe1y5lfBn4C9Sjg=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/knockout@3.4.0/build/output/knockout-latest.js" integrity="sha256-ly8TiTtwVsBWdjekTqTJlLGz3Rsg4YXr80eK6QhtdMs=" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/notifyjs-browser@0.4.2/dist/notify.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootbox@6.0.4/dist/bootbox.min.js" integrity="sha256-W2iP7SjuXnp9ucWfX4zQOxOVG9TEeOFqVz1j9FWcF8M=" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js" integrity="sha256-iZp9dyOMJKPFdn1UMra9ZMhPZAlSGZUzdhqqEgijE+Q=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-slider@11.0.2/dist/bootstrap-slider.min.js" integrity="sha256-8VbJDPttkSKrdS3+sy6jiz6f1pu+ncMbcV5nnLN/suU=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/microplugin@0.0.3/src/microplugin.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sifter@0.5.4/sifter.min.js" integrity="sha256-2STHIODWsr4Lx5bV9GU33FzxCNuOyCk1EnB67L9xwpQ=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/js/selectize.min.js" integrity="sha256-zwkv+PhVN/CSaFNLrcQ/1vQd3vviSPiOEDvu2GxYxQc=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js" integrity="sha256-qo0Cam4XJ0QQ06XnCiCFYBh3GDXU45j3lpUp+em2yBU=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@@spryker/sql-parser-mistic@1.2.3/browser/sql-parser.min.js" integrity="sha256-WHOrlrLCzeTbo0faeJhWjQo1MvxPalPq8JzvDDw47Qo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.27/dist/interact.min.js" integrity="sha256-mbK9O9BSYbD9/9uBHmA1oo2AuLgeZ8+aIo53go9GwyY=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="~/_content/Queryz/jQuery-QueryBuilder/js/query-builder.standalone.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/form2js@1.0.0/src/form2js.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/knockout-mapping@2.6.0/dist/knockout.mapping.min.js" integrity="sha256-AncdToI5RBc9J0Mpz1KE/BW2R9LRwGW6LStEUa4MxCU=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/knockout-sortable@1.1.1/build/knockout-sortable.min.js" integrity="sha256-taysS/xTzY/sODk/x/Jz/NCqUvBD6RMomzCGUjHbVNQ=" crossorigin="anonymous"></script>
+    </environment>
+
+    <script type="text/javascript" src="~/_content/Queryz/js/kendo/2014.1.318/kendo.web.min.js"></script>
+    <script type="text/javascript" src="~/_content/Queryz/js/jquery.steps.js"></script> @* Customized with "reset" function *@
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
