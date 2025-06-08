@@ -191,20 +191,17 @@
                 },
                 body: JSON.stringify(record)
             })
-            .then(response => {
-                if (response.ok) {
-                    GridHelper.refreshGrid();
+            .then(response => response.json())
+            .then(json => {
+                GridHelper.refreshGrid();
 
-                    switchSection($("#grid-section"));
+                switchSection($("#grid-section"));
 
-                    this.id(json.Id);
-                    this.setRoles();
+                this.id(json.Id);
+                this.setRoles();
 
-                    $.notify(this.parent.translations.insertRecordSuccess, "success");
-                    this.parent.reportModel.step1.reloadGroups();
-                } else {
-                    $.notify(this.parent.translations.insertRecordError, "error");
-                }
+                $.notify(this.parent.translations.insertRecordSuccess, "success");
+                this.parent.reportModel.step1.reloadGroups();
             })
             .catch(error => {
                 $.notify(this.parent.translations.insertRecordError, "error");
@@ -212,7 +209,7 @@
             });
         }
         else {
-            fetch(reportGroupApiUrl, {
+            fetch(`${reportGroupApiUrl}(${this.id()})`, {
                 method: "PUT",
                 headers: {
                     'Content-type': 'application/json; charset=utf-8'

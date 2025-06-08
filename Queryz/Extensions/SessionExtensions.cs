@@ -1,4 +1,6 @@
-﻿namespace Queryz.Extensions;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Queryz.Extensions;
 
 public static class SessionExtensions
 {

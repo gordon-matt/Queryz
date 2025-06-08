@@ -8,6 +8,10 @@
         this.availableEnumerations = ko.observableArray([]);
         this.availableTransformFunctions = ko.observableArray([]);
 
+        this.validator = false;
+    }
+
+    init = () => {
         this.validator = $("#wizard-form-3").validate();
     }
 

@@ -9,10 +9,14 @@
         this.enabled = ko.observable(false);
         this.emailEnabled = ko.observable(false);
 
-        this.validator = $("#wizard-form-1").validate();
+        this.validator = false;
 
         this.availableGroups = ko.observableArray([]);
         this.availableDataSources = ko.observableArray([]);
+    }
+
+    init = () => {
+        this.validator = $("#wizard-form-1").validate();
     }
 
     save = () => {

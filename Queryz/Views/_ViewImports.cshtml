@@ -3,11 +3,16 @@
 @using Extenso.AspNetCore.Mvc.ExtensoUI
 @using Extenso.AspNetCore.Mvc.Rendering
 @using Extenso.Collections
+@using Microsoft.Extensions.Options
 @using Queryz
 @using Queryz.Data.Entities
 @using Queryz.Extensions
+@using Queryz.Infrastructure
 @using Queryz.Models
+@using Queryz.Services
 @using Microsoft.AspNetCore.Identity
 @using WebEnumExtensions = Extenso.AspNetCore.Mvc.EnumExtensions
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @*@inject Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration TelemetryConfiguration*@
+
+@inject IOptions<QueryzOptions> QueryzOptions

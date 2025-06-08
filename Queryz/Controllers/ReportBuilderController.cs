@@ -1,4 +1,7 @@
-﻿namespace Queryz.Controllers;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+namespace Queryz.Controllers;
 
 [Authorize]
 [Route("report-builder")]
@@ -7,8 +10,8 @@ public class ReportBuilderController : Controller
     #region Private Members
 
     private readonly IDbContextFactory dbContextFactory;
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly RoleManager<ApplicationRole> roleManager;
+    private readonly IUserService userService;
+    private readonly IRoleService roleService;
     private readonly IDataSourceService dataSourceService;
     private readonly IEnumerationService enumerationService;
     private readonly IRazorViewRenderService razorViewRenderService;
@@ -27,8 +30,8 @@ public class ReportBuilderController : Controller
 
     public ReportBuilderController(
         IDbContextFactory dbContextFactory,
-        UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager,
+        IUserService userService,
+        IRoleService roleService,
         IRazorViewRenderService razorViewRenderService,
         IDataSourceService dataSourceService,
         IEnumerationService enumerationService,
@@ -42,8 +45,8 @@ public class ReportBuilderController : Controller
         IReportBuilderService reportBuilderService)
     {
         this.dbContextFactory = dbContextFactory;
-        this.userManager = userManager;
-        this.roleManager = roleManager;
+        this.userService = userService;
+        this.roleService = roleService;
         this.razorViewRenderService = razorViewRenderService;
 
         this.dataSourceService = dataSourceService;
@@ -72,7 +75,10 @@ public class ReportBuilderController : Controller
         set => HttpContext.Session.SetObjectAsJson("ReportFilters", value);
     }
 
-    #region Action Methods
+    #region Action 
+
+    [Route("")]
+    public IActionResult Index() => View();
 
     [HttpPost]
     [Route("download/{id}")]
@@ -413,9 +419,6 @@ public class ReportBuilderController : Controller
             }
         });
 
-    [Route("")]
-    public IActionResult Index() => View();
-
     [HttpPost]
     [Route("preview")]
     public async Task<JsonResult> Preview([FromBody] ReportQueryModel model)
@@ -490,7 +493,7 @@ public class ReportBuilderController : Controller
     [Route("run-report/{id}")]
     public async Task<IActionResult> RunReport(int id)
     {
-        var user = await userManager.FindByNameAsync(HttpContext.User.Identity.Name);
+        var user = await userService.FindByNameAsync(HttpContext.User.Identity.Name);
         bool canView = await CheckUserHasAccessToReportAsync(id, user.Id);
         if (!canView)
         {
@@ -1354,8 +1357,8 @@ public class ReportBuilderController : Controller
 
     private async Task<IEnumerable<IdNamePair<string>>> GetAvailableUsersAsync(int reportGroupId)
     {
-        using var context = (ApplicationDbContext)dbContextFactory.GetContext();
-        string[] roleIds = context.ReportGroupRoles
+        using var context = dbContextFactory.GetContext();
+        string[] roleIds = context.Set<ReportGroupRole>()
             .Where(x => x.ReportGroupId == reportGroupId)
             .Select(x => x.RoleId)
             .ToArray();
@@ -1365,9 +1368,8 @@ public class ReportBuilderController : Controller
         var availableUsers = new List<IdNamePair<string>>();
         foreach (string roleId in roleIds)
         {
-            var role = await roleManager.Roles.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == roleId);
-            var userIds = role.Users.Select(x => x.Id).ToList();
-            var users = await userManager.Users.Where(x => userIds.Contains(x.Id)).ToHashSetAsync();
+            var role = (await roleService.GetRolesByIdAsync([roleId])).FirstOrDefault();
+            var users = await userService.GetUsersInRoleAsync(role.Name);
 
             foreach (var user in users)
             {
@@ -1379,6 +1381,13 @@ public class ReportBuilderController : Controller
         }
 
         return availableUsers.OrderBy(x => x.Name);
+    }
+
+    // Helper comparer for HashSet
+    private class UserIdComparer : IEqualityComparer<IdNamePair<string>>
+    {
+        public bool Equals(IdNamePair<string> x, IdNamePair<string> y) => x?.Id == y?.Id;
+        public int GetHashCode(IdNamePair<string> obj) => obj.Id?.GetHashCode() ?? 0;
     }
 
     #endregion Wizard

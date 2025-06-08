@@ -15,8 +15,8 @@ public class Queryz<TModel>
         this.html = html;
     }
 
-    public IHtmlContent RolesCheckBoxList(
-        RoleManager<ApplicationRole> roleManager,
+    public async Task<IHtmlContent> RolesCheckBoxListAsync(
+        IRoleService roleService,
         string name,
         IEnumerable<string> selectedRoleIds,
         object labelHtmlAttributes = null,
@@ -25,7 +25,7 @@ public class Queryz<TModel>
         bool wrapInDiv = true,
         object wrapperHtmlAttributes = null)
     {
-        var selectList = roleManager.Roles
+        var selectList = (await roleService.GetRoles())
             .ToSelectList(value => value.Id, text => text.Name);
 
         return html.CheckBoxList(

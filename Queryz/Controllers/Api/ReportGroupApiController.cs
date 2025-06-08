@@ -6,8 +6,8 @@ namespace Queryz.Controllers.Api;
 public class ReportGroupApiController : GenericODataController<ReportGroup, int>
 {
     private readonly IDbContextFactory dbContextFactory;
-    private readonly UserManager<ApplicationUser> userManager;
-    private readonly RoleManager<ApplicationRole> roleManager;
+    private readonly IUserService userService;
+    private readonly IRoleService roleService;
     private readonly IReportService reportService;
     private readonly IReportGroupRoleService reportGroupRoleService;
     private readonly IReportSortingService reportSortingService;
@@ -18,8 +18,8 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
     public ReportGroupApiController(
         IAuthorizationService authorizationService,
         IDbContextFactory dbContextFactory,
-        UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager,
+        IUserService userService,
+        IRoleService roleService,
         IRepository<ReportGroup> repository,
         IReportService reportService,
         IReportGroupRoleService reportGroupRoleService,
@@ -30,8 +30,8 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
         : base(authorizationService, repository)
     {
         this.dbContextFactory = dbContextFactory;
-        this.userManager = userManager;
-        this.roleManager = roleManager;
+        this.userService = userService;
+        this.roleService = roleService;
         this.reportService = reportService;
         this.reportGroupRoleService = reportGroupRoleService;
         this.reportSortingService = reportSortingService;
@@ -55,14 +55,16 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
         if (!User.IsInRole(SharedConstants.Roles.Administrators))
         {
             query = query.Include(x => x.ReportGroupRoles);
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
-            var roles = await userManager.Users.Include(x => x.Roles).Where(x => x.Id == user.Id).ToListAsync();
-            string[] roleIds = roles.Select(x => x.Id).ToArray();
+            var user = await userService.FindByNameAsync(User.Identity.Name);
+
+            // Get user's roles via UserManager instead of navigation property
+            var roleNames = await userService.GetRolesAsync(user);
+            var roleIds = (await roleService.GetRolesByNameAsync(roleNames)).Select(x => x.Id).ToArray();
+
             query = query.Where(x => x.ReportGroupRoles.Any(y => roleIds.Contains(y.RoleId)));
         }
 
         var results = options.ApplyTo(query, IgnoreQueryOptions);
-
         var response = await Task.FromResult((results as IQueryable<ReportGroup>).ToHashSet());
         return Ok(response);
     }
@@ -128,7 +130,7 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
 
         if (!User.IsInRole(SharedConstants.Roles.Administrators))
         {
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var user = await userService.FindByNameAsync(User.Identity.Name);
             int[] deniedReportIds = (await GetUserDeniedReportIdsAsync(user.Id)).ToArray();
             query = query.Where(x => x.Enabled && !deniedReportIds.Contains(x.Id));
         }
@@ -150,7 +152,7 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
             Query = x => x.ReportGroupId == id
         });
         var roleIds = reportGroupRoles.Select(x => x.RoleId).ToList();
-        var roles = await roleManager.Roles.Where(x => roleIds.Contains(x.Id)).ToListAsync();
+        var roles = await roleService.GetRolesByIdAsync(roleIds);
         var results = roles.Select(x => new EdmRole
         {
             Id = x.Id,
@@ -172,18 +174,18 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
 
         var reportGroup = await Repository.FindOneAsync(reportGroupId);
 
-        using (var context = dbContextFactory.GetContext() as ApplicationDbContext)
+        using (var context = dbContextFactory.GetContext())
         {
-            var currentRoleIds = from rgr in context.ReportGroupRoles
-                                 join r in context.Roles on rgr.RoleId equals r.Id
-                                 where rgr.ReportGroupId == reportGroupId
-                                 select rgr.RoleId;
+            var currentRoleIds = context.Set<ReportGroupRole>()
+                .Where(rgr => rgr.ReportGroupId == reportGroupId)
+                .Select(rgr => rgr.RoleId)
+                .ToList();
 
-            var toDelete = from rgr in context.ReportGroupRoles
-                           join r in context.Roles on rgr.RoleId equals r.Id
-                           where rgr.ReportGroupId == reportGroupId
-                           && !roleIds.Contains(rgr.RoleId)
-                           select rgr;
+            var toDelete = context.Set<ReportGroupRole>()
+                .Where(rgr =>
+                    rgr.ReportGroupId == reportGroupId &&
+                    !roleIds.Contains(rgr.RoleId))
+                .ToList();
 
             var toAdd = roleIds.Where(x => !currentRoleIds.Contains(x)).Select(x => new ReportGroupRole
             {
@@ -193,12 +195,12 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
 
             if (toDelete.Any())
             {
-                context.ReportGroupRoles.RemoveRange(toDelete);
+                context.Set<ReportGroupRole>().RemoveRange(toDelete);
             }
 
             if (toAdd.Any())
             {
-                context.ReportGroupRoles.AddRange(toAdd);
+                context.Set<ReportGroupRole>().AddRange(toAdd);
             }
 
             await context.SaveChangesAsync();
