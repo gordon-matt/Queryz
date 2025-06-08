@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Queryz.Data;
 using Queryz.Demo.Data.Entities;
 
 namespace Queryz.Demo.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+public class ApplicationDbContext : QueryzDbContext<ApplicationUser, ApplicationRole>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public ApplicationDbContext(DbContextOptions<QueryzDbContext<ApplicationUser, ApplicationRole>> options)
         : base(options)
     {
     }

@@ -2,7 +2,7 @@
 
 namespace Queryz;
 
-public static class Constants
+internal static class Constants
 {
     public const State DefaultExtensoUIState = State.Inverse;
 }

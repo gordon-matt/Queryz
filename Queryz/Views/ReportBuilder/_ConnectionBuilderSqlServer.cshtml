@@ -28,11 +28,11 @@
     <div class="row g-3 mb-3">
         <div class="col-12 col-sm-6 col-md-6 col-lg-6">
             <label for="Report_UserId" class="form-label">User ID</label>
-            @Html.TextBox("Report_UserId", null, new { @class = "form-control", data_bind = "value: dataSourceModel.userId, enable: dataSourceModel.integratedSecurity() == false, event: { blur: dataSourceModel.getDatabases }" })
+            @Html.TextBox("Report_UserId", null, new { @class = "form-control", autocomplete = "off", data_bind = "value: dataSourceModel.userId, enable: dataSourceModel.integratedSecurity() == false, event: { blur: dataSourceModel.getDatabases }" })
         </div>
         <div class="col-12 col-sm-6 col-md-6 col-lg-6">
             <label for="Report_Password" class="form-label">Password</label>
-            @Html.Password("Report_Password", null, new { @class = "form-control", data_bind = "value: dataSourceModel.password, enable: dataSourceModel.integratedSecurity() == false, event: { blur: dataSourceModel.getDatabases }" })
+            @Html.Password("Report_Password", null, new { @class = "form-control", autocomplete = "off", data_bind = "value: dataSourceModel.password, enable: dataSourceModel.integratedSecurity() == false, event: { blur: dataSourceModel.getDatabases }" })
         </div>
     </div>
 </div>

@@ -18,11 +18,11 @@
     <div class="row mb-3">
         <div class="mb-3 col-12 col-sm-6 col-md-6 col-lg-6">
             @Html.Label("Report_UserId", "User ID", new { @class = "form-label" })
-            @Html.TextBox("Report_UserId", null, new { @class = "form-control", data_bind = "value: dataSourceModel.userId, event: { blur: dataSourceModel.getDatabases }", required = "required" })
+            @Html.TextBox("Report_UserId", null, new { @class = "form-control", autocomplete = "off", data_bind = "value: dataSourceModel.userId, event: { blur: dataSourceModel.getDatabases }", required = "required" })
         </div>
         <div class="mb-3 col-12 col-sm-6 col-md-6 col-lg-6">
             @Html.Label("Report_Password", "Password", new { @class = "form-label" })
-            @Html.Password("Report_Password", null, new { @class = "form-control", data_bind = "value: dataSourceModel.password, event: { blur: dataSourceModel.getDatabases }", required = "required" })
+            @Html.Password("Report_Password", null, new { @class = "form-control", autocomplete = "off", data_bind = "value: dataSourceModel.password, event: { blur: dataSourceModel.getDatabases }", required = "required" })
         </div>
     </div>
 </div>

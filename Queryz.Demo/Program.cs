@@ -1,12 +1,14 @@
 using Extenso.AspNetCore.Mvc.ExtensoUI;
 using Extenso.AspNetCore.Mvc.ExtensoUI.Providers;
 using Extenso.AspNetCore.OData;
+using Extenso.Data.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using OfficeOpenXml;
 using Queryz;
+using Queryz.Data;
 using Queryz.Demo.Data;
 using Queryz.Demo.Data.Entities;
 using Queryz.Extensions;
@@ -47,6 +49,9 @@ builder.Services
     })
     .AddQueryz<ApplicationUser, ApplicationRole>(builder.Configuration, connectionString)
     .AddRazorRuntimeCompilation();
+
+// Override the default IDbContextFactory registered when calling AddQueryz()
+builder.Services.AddSingleton<IDbContextFactory, ApplicationDbContextFactory>();
 
 var app = builder.Build();
 
@@ -90,8 +95,6 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseExtensoUI<Bootstrap5UIProvider>();
 
-app.Run();
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -111,3 +114,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 ExcelPackage.License.SetNonCommercialPersonal("Queryz");
+
+app.Run();
