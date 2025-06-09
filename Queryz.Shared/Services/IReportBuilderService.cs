@@ -51,8 +51,8 @@ public class ReportBuilderService : IReportBuilderService
                 }
                 else
                 {
-                    string tableName = column.Name.LeftOf('.');
-                    string columnName = column.Name.RightOf('.');
+                    string tableName = column.Name.LeftOfLastIndexOf('.');
+                    string columnName = column.Name.RightOfLastIndexOf('.');
 
                     query.SelectAs(tableName, columnName, column.Alias);
                 }
@@ -142,8 +142,8 @@ public class ReportBuilderService : IReportBuilderService
             {
                 if (sorting.ColumnName.Contains('.'))
                 {
-                    string tableName = sorting.ColumnName.LeftOf('.');
-                    string columnName = sorting.ColumnName.RightOf('.');
+                    string tableName = sorting.ColumnName.LeftOfLastIndexOf('.');
+                    string columnName = sorting.ColumnName.RightOfLastIndexOf('.');
                     query = query.OrderBy(tableName, columnName, sorting.SortDirection);
                 }
                 else
@@ -189,7 +189,7 @@ public class ReportBuilderService : IReportBuilderService
                 continue;
             }
 
-            string columnName = column.Name.RightOf('.');
+            string columnName = column.Name.RightOfLastIndexOf('.');
             if (!string.IsNullOrEmpty(column.Alias) && dataTable.Columns.Contains(column.Alias))
             {
                 columnName = column.Alias;

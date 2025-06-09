@@ -39,12 +39,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Views\Shared\CssPartial.cshtml" />
-	  <None Remove="Views\Shared\JsPartial.cshtml" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Extenso.AspNetCore.Mvc.ExtensoUI" Version="9.3.0" />
+		<PackageReference Include="Extenso.WebAssets.KendoUI" Version="1.0.0" />
 		<PackageReference Include="JQQueryBuilderHelpers" Version="1.0.0" />
 	</ItemGroup>
 

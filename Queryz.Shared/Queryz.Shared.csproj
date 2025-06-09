@@ -8,15 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="8.0.5" />
-    <PackageReference Include="Extenso.AspNetCore.OData" Version="9.3.0" />
+    <PackageReference Include="Extenso.AspNetCore.OData" Version="9.3.1" />
     <PackageReference Include="Extenso.Core" Version="9.3.0" />
-    <PackageReference Include="Extenso.Data" Version="9.3.0" />
-    <PackageReference Include="Extenso.Data.Entity" Version="9.3.0" />
+    <PackageReference Include="Extenso.Data" Version="9.3.1" />
+    <PackageReference Include="Extenso.Data.Entity" Version="9.3.2" />
     <PackageReference Include="Extenso.Data.MySql" Version="9.3.0" />
-    <PackageReference Include="Extenso.Data.Npgsql" Version="9.3.0" />
-    <PackageReference Include="Extenso.Data.QueryBuilder" Version="9.3.0" />
-    <PackageReference Include="Extenso.Data.QueryBuilder.MySql" Version="9.3.0" />
-    <PackageReference Include="Extenso.Data.QueryBuilder.Npgsql" Version="9.3.0" />
+    <PackageReference Include="Extenso.Data.Npgsql" Version="9.3.1" />
+    <PackageReference Include="Extenso.Data.QueryBuilder" Version="9.3.1" />
+    <PackageReference Include="Extenso.Data.QueryBuilder.MySql" Version="9.3.1" />
+    <PackageReference Include="Extenso.Data.QueryBuilder.Npgsql" Version="9.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
-namespace Queryz.Controllers;
+﻿namespace Queryz.Controllers;
 
 [Authorize]
 [Route("report-builder")]
@@ -75,7 +72,7 @@ public class ReportBuilderController : Controller
         set => HttpContext.Session.SetObjectAsJson("ReportFilters", value);
     }
 
-    #region Action 
+    #region Action
 
     [Route("")]
     public IActionResult Index() => View();
@@ -103,9 +100,18 @@ public class ReportBuilderController : Controller
             report.Filters = filters;
         }
 
-        if (report.DataSource.DataProvider == DataProvider.MySql)
+        switch (report.DataSource.DataProvider)
         {
-            report.Filters = report.Filters.Replace("\"", "`");
+            case DataProvider.MySql:
+                report.Filters = report.Filters.Replace("\"", "`");
+                break;
+            case DataProvider.SqlServer:
+                // TODO: Does this need to be done for MySql as well?
+                report.Filters = report.Filters
+                    .Replace(" = true", " = 1")
+                    .Replace(" = false", " = 0");
+                break;
+            default: break;
         }
 
         var result = reportBuilderService.ExecuteReport(report);
@@ -439,9 +445,18 @@ public class ReportBuilderController : Controller
             report.Filters = model.Query;
             if (!string.IsNullOrWhiteSpace(report.Filters))
             {
-                if (report.DataSource.DataProvider == DataProvider.MySql)
+                switch (report.DataSource.DataProvider)
                 {
-                    report.Filters = report.Filters.Replace("\"", "`");
+                    case DataProvider.MySql:
+                        report.Filters = report.Filters.Replace("\"", "`");
+                        break;
+                    case DataProvider.SqlServer:
+                        // TODO: Does this need to be done for MySql as well?
+                        report.Filters = report.Filters
+                            .Replace(" = true", " = 1")
+                            .Replace(" = false", " = 0");
+                        break;
+                    default: break;
                 }
             }
 
@@ -535,7 +550,7 @@ public class ReportBuilderController : Controller
 
         string[] tableNames = report.Columns
             .Where(x => !x.IsLiteral)
-            .Select(x => x.Name.LeftOf('.'))
+            .Select(x => x.Name.LeftOfLastIndexOf('.'))
             .Distinct()
             .ToArray();
 
@@ -809,9 +824,9 @@ public class ReportBuilderController : Controller
                     {
                         ColumnName = x.ColumnName,
                         Type = x.Type,
-                        Alias = x.ColumnName.Contains(" ")
-                            ? x.ColumnName.RightOf('.').Trim().Replace("  ", " ")
-                            : x.ColumnName.RightOf('.').SplitPascal().Trim()
+                        Alias = x.ColumnName.Contains(' ')
+                            ? x.ColumnName.RightOfLastIndexOf('.').Trim().Replace("  ", " ")
+                            : x.ColumnName.RightOfLastIndexOf('.').SplitPascal().Trim()
                     })
                     .ToArray();
             }
@@ -1013,7 +1028,7 @@ public class ReportBuilderController : Controller
             {
                 string[] tableNames = report.Columns
                     .Where(x => !x.IsLiteral)
-                    .Select(x => x.Name.LeftOf('.'))
+                    .Select(x => x.Name.LeftOfLastIndexOf('.'))
                     .Distinct()
                     .ToArray();
 
@@ -1387,12 +1402,13 @@ public class ReportBuilderController : Controller
     private class UserIdComparer : IEqualityComparer<IdNamePair<string>>
     {
         public bool Equals(IdNamePair<string> x, IdNamePair<string> y) => x?.Id == y?.Id;
+
         public int GetHashCode(IdNamePair<string> obj) => obj.Id?.GetHashCode() ?? 0;
     }
 
     #endregion Wizard
 
-    #endregion Action Methods
+    #endregion Action
 
     #region Non-Public Methods
 
@@ -1408,7 +1424,7 @@ public class ReportBuilderController : Controller
 
         string[] tableNames = report.Columns
             .Where(x => !x.IsLiteral)
-            .Select(x => x.Name.LeftOf('.'))
+            .Select(x => x.Name.LeftOfLastIndexOf('.'))
             .Distinct()
             .ToArray();
 
@@ -1442,11 +1458,11 @@ public class ReportBuilderController : Controller
             }
             else
             {
-                string tableName = column.Name.LeftOf('.');
-                string columnName = column.Name.RightOf('.');
+                string tableName = column.Name.LeftOfLastIndexOf('.');
+                string columnName = column.Name.RightOfLastIndexOf('.');
 
-                string id = $"{tableName.ToLowerInvariant()}-{columnName.ToLowerInvariant()}";
-                string field = $"{tableName.EnquoteDouble()}.{columnName.EnquoteDouble()}";
+                string id = string.Join("-", column.Name.Split('.').Select(x => x.ToLowerInvariant()));
+                string field = string.Join(".", column.Name.Split('.').Select(x => x.EnquoteDouble()));
 
                 fieldIdMappings.Add($"{tableName}_{columnName}", id);
 

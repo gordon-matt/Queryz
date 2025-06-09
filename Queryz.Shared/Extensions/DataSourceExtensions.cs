@@ -11,8 +11,8 @@ public static class DataSourceExtensions
             case DataProvider.SqlServer: return new SqlServerSelectQueryBuilder();
             case DataProvider.PostgreSql:
                 {
-                    var customProperties = dataSource.SafeGetCustomProperties();
-                    return new NpgsqlSelectQueryBuilder(customProperties["Schema"]);
+                    //var customProperties = dataSource.SafeGetCustomProperties();
+                    return new NpgsqlSelectQueryBuilder();
                 }
             case DataProvider.MySql: return new MySqlSelectQueryBuilder();
             default: throw new NotSupportedException();

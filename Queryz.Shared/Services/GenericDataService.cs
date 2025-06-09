@@ -180,29 +180,13 @@ public class GenericDataService<TEntity> : IGenericDataService<TEntity> where TE
 
     #region Update
 
-    public virtual int Update(TEntity entity)
-    {
-        int rowsAffected = repository.Update(entity);
-        return rowsAffected;
-    }
+    public virtual TEntity Update(TEntity entity) => repository.Update(entity);
 
-    public virtual int Update(IEnumerable<TEntity> entities)
-    {
-        int rowsAffected = repository.Update(entities);
-        return rowsAffected;
-    }
+    public virtual IEnumerable<TEntity> Update(IEnumerable<TEntity> entities) => repository.Update(entities);
 
-    public virtual async Task<int> UpdateAsync(TEntity entity)
-    {
-        int rowsAffected = await repository.UpdateAsync(entity);
-        return rowsAffected;
-    }
+    public virtual async Task<TEntity> UpdateAsync(TEntity entity) => await repository.UpdateAsync(entity);
 
-    public virtual async Task<int> UpdateAsync(IEnumerable<TEntity> entities)
-    {
-        int rowsAffected = await repository.UpdateAsync(entities);
-        return rowsAffected;
-    }
+    public virtual async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities) => await repository.UpdateAsync(entities);
 
     #endregion Update
 
