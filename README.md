@@ -27,7 +27,7 @@ public class ApplicationDbContext : QueryzDbContext<ApplicationUser, Application
 ```csharp
 public class ApplicationDbContextFactory : IDbContextFactory
 {
-	// see Query.Demo project for example implementation
+    // see Query.Demo project for example implementation
 }
 ```
 
@@ -116,31 +116,31 @@ See the Query.Demo project in this repo for a full working example, including ho
 
 The main screen with many Reports under each Report Group. You can make as many groups as you like - one for each of your clients and/or one for each internal department and so forth.
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/01 - Main.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/01 - Main.PNG" alt="Main Screen" />
 
 Setting up a data source:
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/02 - Data Source.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/02 - Data Source.PNG" alt="Data Source" />
 
 If you have enum values in your report and want them to be displayed as text, you can setup an enumeration:
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/03 - Enums.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/03 - Enums.PNG" alt="Enum Setup" />
 
 .. which will then allow you to select that enumeration when choosing columns:
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/04 - Enum column selection.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/04 - Enum column selection.png" alt="Enum column selection" />
 
 .. and the end result will be as follows:
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/05 - Enum result.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/05 - Enum result.PNG" alt="Enum result" />
 
 There are also transform functions available for making JSON columns easier to read or for converting the timezone of a date/time field:
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/06 - Other Functions.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/06 - Other Functions.PNG" alt="Other Functions" />
 
 The convert timezone function will work based on the timezone you've setup for your report group (if any):
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/09 - Report Group Setup" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/09 - Report Group Setup.PNG" alt="Report Group Setup" />
 
 You can create your own transforms by implementing `ITransformFunction` and registering it with dependency injection:
 
@@ -168,11 +168,11 @@ services.AddSingleton<ITransformFunction, ConvertTimeZoneFunction>();
 
 You can setup default query filters, including hidden filters:
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/07 - QueryBuilder - Setup.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/07 - QueryBuilder - Setup.PNG" alt="QueryBuilder - Setup" />
 
 Notice the open/closed eye icons. If you setup a filter here as being hidden, it will still be applied when the report is run, but not show for the user when they select other filters. This is useful when there is some data they should not see (other tenants, other users, confidential records, etc). The above example is in design mode and the screenshot below is in "run report" mode:
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/08 - QueryBuilder - Run.PNG" alt="Main Screen" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Screenshots/08 - QueryBuilder - Run.PNG" alt="QueryBuilder - Run" />
 
 ## Donate
 If you find this project helpful, consider buying me a cup of coffee.
