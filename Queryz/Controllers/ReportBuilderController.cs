@@ -98,20 +98,20 @@ public class ReportBuilderController : Controller
         if (filters != null)
         {
             report.Filters = filters;
-        }
 
-        switch (report.DataSource.DataProvider)
-        {
-            case DataProvider.MySql:
-                report.Filters = report.Filters.Replace("\"", "`");
-                break;
-            case DataProvider.SqlServer:
-                // TODO: Does this need to be done for MySql as well?
-                report.Filters = report.Filters
-                    .Replace(" = true", " = 1")
-                    .Replace(" = false", " = 0");
-                break;
-            default: break;
+            switch (report.DataSource.DataProvider)
+            {
+                case DataProvider.MySql:
+                    report.Filters = report.Filters.Replace("\"", "`");
+                    break;
+                case DataProvider.SqlServer:
+                    // TODO: Does this need to be done for MySql as well?
+                    report.Filters = report.Filters
+                        .Replace(" = true", " = 1")
+                        .Replace(" = false", " = 0");
+                    break;
+                default: break;
+            }
         }
 
         var result = reportBuilderService.ExecuteReport(report);

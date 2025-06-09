@@ -25,8 +25,8 @@
         this.selectedColumns.push(new SelectedColumnModel(null, null, null, true, null, null, null, null, false));
     };
 
-    removeColumn = () => {
-        this.selectedColumns.remove(this);
+    removeColumn = (item) => {
+        this.selectedColumns.remove(item);
     };
 
     removeAllColumns = () => {

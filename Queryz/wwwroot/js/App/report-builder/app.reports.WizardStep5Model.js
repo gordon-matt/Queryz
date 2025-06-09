@@ -20,8 +20,8 @@
         });
     };
 
-    removeSorting = () => {
-        this.sortings.remove(this);
+    removeSorting = (item) => {
+        this.sortings.remove(item);
     };
 
     save = () => {

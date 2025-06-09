@@ -185,7 +185,7 @@
         this.newValueId++;
     };
 
-    removeEnumerationValue = () => {
-        this.values.remove(this);
+    removeEnumerationValue = (item) => {
+        this.values.remove(item);
     };
 }

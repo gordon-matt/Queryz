@@ -72,7 +72,7 @@
                         </div>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: $root.reportModel.step3.removeColumn">
+                        <button type="button" class="btn btn-sm btn-danger" data-bind="click: () => $root.reportModel.step3.removeColumn($data)">
                             <i class="fas fa-xmark"></i>
                         </button>
                     </td>
