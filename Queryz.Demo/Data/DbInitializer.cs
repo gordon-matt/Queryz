@@ -12,13 +12,13 @@ public static class DbInitializer
     {
         await context.Database.EnsureCreatedAsync();
 
-        await EnsureRoleExistsAsync(roleManager, SharedConstants.Roles.Administrators);
-        await EnsureRoleExistsAsync(roleManager, SharedConstants.Roles.ReportBuilderEditors);
-        await EnsureRoleExistsAsync(roleManager, SharedConstants.Roles.ReportBuilderUsers);
+        await EnsureRoleExistsAsync(roleManager, QueryzConstants.Roles.Administrators);
+        await EnsureRoleExistsAsync(roleManager, QueryzConstants.Roles.ReportBuilderEditors);
+        await EnsureRoleExistsAsync(roleManager, QueryzConstants.Roles.ReportBuilderUsers);
 
-        await EnsureUserExistsAsync(userManager, "admin@queryz.com", "Admin@123!", SharedConstants.Roles.Administrators);
-        await EnsureUserExistsAsync(userManager, "editor@queryz.com", "Editor@123!", SharedConstants.Roles.ReportBuilderEditors);
-        await EnsureUserExistsAsync(userManager, "user@queryz.com", "User@123!", SharedConstants.Roles.ReportBuilderUsers);
+        await EnsureUserExistsAsync(userManager, "admin@queryz.com", "Admin@123!", QueryzConstants.Roles.Administrators);
+        await EnsureUserExistsAsync(userManager, "editor@queryz.com", "Editor@123!", QueryzConstants.Roles.ReportBuilderEditors);
+        await EnsureUserExistsAsync(userManager, "user@queryz.com", "User@123!", QueryzConstants.Roles.ReportBuilderUsers);
     }
 
     private static async Task EnsureRoleExistsAsync(RoleManager<ApplicationRole> roleManager, string role)

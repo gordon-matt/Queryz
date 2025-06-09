@@ -1,6 +1,6 @@
 ﻿namespace Queryz;
 
-public static class SharedConstants
+public static class QueryzConstants
 {
     public static class Roles
     {

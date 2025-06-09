@@ -52,7 +52,7 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
         var query = connection.Query();
         query = await ApplyMandatoryFilterAsync(query);
 
-        if (!User.IsInRole(SharedConstants.Roles.Administrators))
+        if (!User.IsInRole(QueryzConstants.Roles.Administrators))
         {
             query = query.Include(x => x.ReportGroupRoles);
             var user = await userService.FindByNameAsync(User.Identity.Name);
@@ -128,7 +128,7 @@ public class ReportGroupApiController : GenericODataController<ReportGroup, int>
             }))
             .AsQueryable();
 
-        if (!User.IsInRole(SharedConstants.Roles.Administrators))
+        if (!User.IsInRole(QueryzConstants.Roles.Administrators))
         {
             var user = await userService.FindByNameAsync(User.Identity.Name);
             int[] deniedReportIds = (await GetUserDeniedReportIdsAsync(user.Id)).ToArray();

@@ -4,8 +4,8 @@
     Layout = string.IsNullOrWhiteSpace(QueryzOptions.Value.Layout) ? "~/Views/Shared/_QueryzDefaultLayout.cshtml" : QueryzOptions.Value.Layout;
 
     string rtlClass = System.Globalization.CultureInfo.CurrentCulture.TextInfo.IsRightToLeft ? "k-rtl" : string.Empty;
-    bool isAdminUser = User.IsInRole(SharedConstants.Roles.Administrators);
-    bool isEditor = User.IsInRole(SharedConstants.Roles.ReportBuilderEditors);
+    bool isAdminUser = User.IsInRole(QueryzConstants.Roles.Administrators);
+    bool isEditor = User.IsInRole(QueryzConstants.Roles.ReportBuilderEditors);
 }
 
 @Html.Hidden("GridPageSize", QueryzOptions.Value.GridPageSize)

@@ -1,5 +1,3 @@
-using Extenso.AspNetCore.Mvc.ExtensoUI;
-using Extenso.AspNetCore.Mvc.ExtensoUI.Providers;
 using Extenso.AspNetCore.OData;
 using Extenso.Data.Entity;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using OfficeOpenXml;
 using Queryz;
-using Queryz.Data;
 using Queryz.Demo.Data;
 using Queryz.Demo.Data.Entities;
 using Queryz.Extensions;
@@ -93,7 +90,7 @@ app.UseStaticFiles(new StaticFileOptions
             baseNamespace: "Queryz.wwwroot")) // Must match your RCL's root namespace
 });
 
-app.UseExtensoUI<Bootstrap5UIProvider>();
+app.UseQueryz();
 
 using (var scope = app.Services.CreateScope())
 {
