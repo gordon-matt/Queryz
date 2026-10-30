@@ -1,4 +1,5 @@
 using System.Data;
+using System.Globalization;
 using QueryKrafter.Models;
 using QueryKrafter.Sql;
 
@@ -18,7 +19,10 @@ public interface IReportService
 
     Task<Result<ReportResultDto>> RunAsync(int id, bool preview, string? rulesJson = null, CancellationToken cancellationToken = default);
 
-    QueryBuilderConfig Filters(IReadOnlyList<SchemaColumnDto> columns);
+    QueryBuilderConfig Filters(
+        IReadOnlyList<SchemaColumnDto> columns,
+        IReadOnlyList<ReportColumnInput>? selected = null,
+        IEnumerable<EnumerationDto>? enumerations = null);
 }
 
 /// <summary>The filter step shown before a report runs.</summary>
@@ -242,7 +246,9 @@ public sealed class ReportService(
             {
                 ReportId = report.Id,
                 Name = column.Name.Trim(),
-                Alias = column.Alias.Trim(),
+                Alias = column.IsLiteral || !string.IsNullOrWhiteSpace(column.Alias)
+                    ? column.Alias.Trim()
+                    : ReportSql.AliasFor(column.Name),
                 IsLiteral = column.IsLiteral,
                 IsHidden = column.IsHidden,
                 Format = column.Format.Trim(),
@@ -345,11 +351,16 @@ public sealed class ReportService(
         }
 
         var offered = ColumnsFor(schemaResult.Value);
+        var selected = report.Columns.Select(ToInput).ToList();
         var filterColumns = offered
-            .Where(item => report.Columns.Any(column => !column.IsLiteral && string.Equals(column.Name, item.Name, StringComparison.OrdinalIgnoreCase)))
+            .Where(item => selected.Any(column => !column.IsLiteral && string.Equals(column.Name, item.Name, StringComparison.OrdinalIgnoreCase)))
             .ToList();
+        var enumerationLookup = await LoadEnumerationsAsync(selected, cancellationToken);
         var rules = ReportRules.ForRunner(report.RulesJson, report.Columns);
-        var config = ReportRules.Picker(Filters(filterColumns) with { AllowEmpty = true }, rules, report.Columns);
+        var config = ReportRules.Picker(
+            Filters(filterColumns, selected, enumerationLookup.Values) with { AllowEmpty = true },
+            rules,
+            report.Columns);
         return Result.Success(new ReportRunSetup(report.Name, config, rules));
     }
 
@@ -412,16 +423,7 @@ public sealed class ReportService(
         }
 
         var offered = ColumnsFor(schemaTables);
-        var columnInputs = report.Columns.Select(column => new ReportColumnInput
-        {
-            Name = column.Name,
-            Alias = column.Alias,
-            IsLiteral = column.IsLiteral,
-            IsHidden = column.IsHidden,
-            Format = column.Format,
-            EnumerationId = column.EnumerationId ?? 0,
-            TransformFunction = column.TransformFunction,
-        }).ToList();
+        var columnInputs = report.Columns.Select(ToInput).ToList();
 
         bool known(ReportColumnInput column) =>
             column.IsLiteral || offered.Any(item => string.Equals(item.Name, column.Name, StringComparison.OrdinalIgnoreCase));
@@ -470,6 +472,12 @@ public sealed class ReportService(
         {
             using var connection = ReportSql.Open(source.Provider, source.ConnectionString);
             using var command = connection.CreateCommand();
+            command.CommandTimeout = 300;
+            if (source.Provider == ReportProvider.SqlServer)
+            {
+                sql = "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; BEGIN TRANSACTION; " + sql + "; COMMIT TRANSACTION;";
+            }
+
             command.CommandText = sql;
             ReportSql.AddParameters(command, where.Value);
 
@@ -538,7 +546,7 @@ public sealed class ReportService(
     {
         foreach (var column in visible)
         {
-            string header = string.IsNullOrWhiteSpace(column.Alias) ? column.Name : column.Alias;
+            string header = ReportSql.OutputName(column);
             enumerationLookup.TryGetValue(column.EnumerationId, out EnumerationDto? enumeration);
             if (enumeration is not null && handling == EnumerationHandling.ShowBoth)
             {
@@ -557,14 +565,55 @@ public sealed class ReportService(
                 column.DataType)))
             .ToList();
 
-    public QueryBuilderConfig Filters(IReadOnlyList<SchemaColumnDto> columns) => new()
+    public QueryBuilderConfig Filters(
+        IReadOnlyList<SchemaColumnDto> columns,
+        IReadOnlyList<ReportColumnInput>? selected = null,
+        IEnumerable<EnumerationDto>? enumerations = null)
     {
-        Filters = columns.Select(column => new QueryFilter
+        var enumerationLookup = enumerations?.ToDictionary(item => item.Id) ?? [];
+        var filters = new List<QueryFilter>();
+        foreach (var column in columns)
         {
-            Id = column.Name,
-            Label = column.Name,
-            Type = ReportSql.ValueType(column.DataType),
-        }).ToList(),
+            var match = selected?.FirstOrDefault(item =>
+                !item.IsLiteral && string.Equals(item.Name, column.Name, StringComparison.OrdinalIgnoreCase));
+            int dot = column.Name.LastIndexOf('.');
+            var filter = new QueryFilter
+            {
+                Id = column.Name,
+                Label = match is null ? ReportSql.AliasFor(column.Name) : ReportSql.OutputName(match),
+                Group = dot > 0 ? column.Name[..dot] : null,
+                Type = ReportSql.ValueType(column.DataType),
+                ValueSeparator = ReportSql.ValueType(column.DataType) == QueryValueType.String ? ";" : null,
+            };
+
+            if (match is { EnumerationId: > 0 }
+                && enumerationLookup.TryGetValue(match.EnumerationId, out EnumerationDto? enumeration)
+                && enumeration.Values.Count > 0)
+            {
+                filter = filter with
+                {
+                    Input = QueryInputType.Checkbox,
+                    Values = enumeration.Values
+                        .Select(value => new QueryFilterOption(value.Id.ToString(CultureInfo.InvariantCulture), value.Name))
+                        .ToList(),
+                };
+            }
+
+            filters.Add(filter);
+        }
+
+        return new QueryBuilderConfig { Filters = filters };
+    }
+
+    private static ReportColumnInput ToInput(ReportColumnDto column) => new()
+    {
+        Name = column.Name,
+        Alias = column.Alias,
+        IsLiteral = column.IsLiteral,
+        IsHidden = column.IsHidden,
+        Format = column.Format,
+        EnumerationId = column.EnumerationId ?? 0,
+        TransformFunction = column.TransformFunction,
     };
 
     private static ReportDefinitionDto ToDefinition(

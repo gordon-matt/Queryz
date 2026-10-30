@@ -19,7 +19,7 @@ public static class ReportPresentation
         string? timeZoneId)
     {
         object? value = ReportTransforms.Apply(raw, column.TransformFunction, timeZoneId);
-        string header = string.IsNullOrWhiteSpace(column.Alias) ? column.Name : column.Alias;
+        string header = ReportSql.OutputName(column);
         bool lookup = enumeration is not null && handling != EnumerationHandling.ShowNumericValue;
 
         if (lookup && handling == EnumerationHandling.ShowBoth)

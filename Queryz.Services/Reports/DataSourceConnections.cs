@@ -19,6 +19,7 @@ public static class DataSourceConnections
                     InitialCatalog = connection.Database.Trim(),
                     IntegratedSecurity = connection.IntegratedSecurity,
                     TrustServerCertificate = true,
+                    ConnectTimeout = 300,
                 };
 
                 if (!connection.IntegratedSecurity)
@@ -38,6 +39,7 @@ public static class DataSourceConnections
                     Database = connection.Database.Trim(),
                     Username = connection.UserId.Trim(),
                     Password = connection.Password,
+                    CommandTimeout = 60,
                 };
 
                 if (!string.IsNullOrWhiteSpace(connection.Schema))

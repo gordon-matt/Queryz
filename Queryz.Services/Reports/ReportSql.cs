@@ -175,6 +175,21 @@ public static class ReportSql
         return spaced.ToString();
     }
 
+    /// <summary>
+    /// The name written into the result. A blank alias uses the bare column name, split the way
+    /// the old wizard did when a column was chosen, so the output is <c>Category Id</c> rather than
+    /// <c>dbo.Transactions.CategoryId</c>. A typed alias is kept. A literal still needs one.
+    /// </summary>
+    public static string OutputName(ReportColumnInput column)
+    {
+        if (!string.IsNullOrWhiteSpace(column.Alias))
+        {
+            return column.Alias.Trim();
+        }
+
+        return column.IsLiteral ? column.Name.Trim() : AliasFor(column.Name);
+    }
+
     public static string Select(
         SqlDialect dialect,
         string masterTable,
@@ -251,12 +266,12 @@ public static class ReportSql
     private static string Project(SqlDialect dialect, ReportColumnInput column)
     {
         string expression = column.IsLiteral ? column.Name.Trim() : dialect.QuoteIdentifier(column.Name);
-        if (string.IsNullOrWhiteSpace(column.Alias))
+        if (column.IsLiteral && string.IsNullOrWhiteSpace(column.Alias))
         {
             return expression;
         }
 
-        return expression + " AS " + dialect.QuoteIdentifier(column.Alias);
+        return expression + " AS " + dialect.QuoteIdentifier(OutputName(column));
     }
 
     private static string JoinKeyword(ReportJoinType joinType) => joinType switch

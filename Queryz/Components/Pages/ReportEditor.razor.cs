@@ -117,7 +117,9 @@ public partial class ReportEditor
                 Columns = found.Value.Columns.Select(column => new ReportColumnInput
                 {
                     Name = column.Name,
-                    Alias = column.Alias,
+                    Alias = column.IsLiteral || !string.IsNullOrWhiteSpace(column.Alias)
+                        ? column.Alias
+                        : ReportSql.AliasFor(column.Name),
                     IsLiteral = column.IsLiteral,
                     IsHidden = column.IsHidden,
                     Format = column.Format,
@@ -267,6 +269,14 @@ public partial class ReportEditor
             return Task.FromResult(false);
         }
 
+        foreach (var column in form.Columns)
+        {
+            if (!column.IsLiteral && string.IsNullOrWhiteSpace(column.Alias))
+            {
+                column.Alias = ReportSql.AliasFor(column.Name);
+            }
+        }
+
         SyncColumns();
         return Task.FromResult(true);
     }
@@ -403,6 +413,11 @@ public partial class ReportEditor
             if (exact is not null)
             {
                 column.Name = exact;
+                if (string.IsNullOrWhiteSpace(column.Alias))
+                {
+                    column.Alias = ReportSql.AliasFor(exact);
+                }
+
                 aligned.Add(column);
                 continue;
             }
@@ -423,7 +438,7 @@ public partial class ReportEditor
         return aligned;
     }
 
-    private void SyncColumns() => filterConfig = ReportsService.Filters(CurrentColumns);
+    private void SyncColumns() => filterConfig = ReportsService.Filters(CurrentColumns, form.Columns, enumerations);
 
     private void AddColumn()
     {
@@ -531,15 +546,37 @@ public partial class ReportEditor
         form.Sorts.RemoveAt(index);
     }
 
-    private void MoveSort(int index, int delta)
+    private int? draggedSort;
+
+    private int? dragOverSort;
+
+    private void BeginSortDrag(int index) => draggedSort = index;
+
+    private void DragSortOver(int index)
     {
-        int target = index + delta;
-        if (target < 0 || target >= form.Sorts.Count)
+        if (draggedSort is not null)
         {
-            return;
+            dragOverSort = index;
+        }
+    }
+
+    private void DropSort(int index)
+    {
+        if (draggedSort is int from && from != index && from >= 0 && from < form.Sorts.Count)
+        {
+            var sort = form.Sorts[from];
+            form.Sorts.RemoveAt(from);
+            int target = index > form.Sorts.Count ? form.Sorts.Count : index;
+            form.Sorts.Insert(target, sort);
         }
 
-        (form.Sorts[index], form.Sorts[target]) = (form.Sorts[target], form.Sorts[index]);
+        EndSortDrag();
+    }
+
+    private void EndSortDrag()
+    {
+        draggedSort = null;
+        dragOverSort = null;
     }
 
     private string ColumnType(string name) =>

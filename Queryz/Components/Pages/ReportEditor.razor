@@ -175,6 +175,7 @@ else
             <table class="nf-table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Column</th>
                         <th>Direction</th>
                         <th></th>
@@ -184,7 +185,16 @@ else
                     @for (int index = 0; index < form.Sorts.Count; index++)
                     {
                         int sortIndex = index;
-                        <tr>
+                        <tr class="@(dragOverSort == sortIndex ? "queryz-drop" : null)"
+                            @ondragover:preventDefault
+                            @ondragover="() => DragSortOver(sortIndex)"
+                            @ondrop="() => DropSort(sortIndex)">
+                            <td>
+                                <span class="queryz-drag" draggable="true" title="Drag to reorder" aria-label="Drag to reorder"
+                                      @ondragstart="() => BeginSortDrag(sortIndex)" @ondragend="EndSortDrag">
+                                    <Icon Name="grip" />
+                                </span>
+                            </td>
                             <td>
                                 <select class="nf-input" @bind="form.Sorts[sortIndex].ColumnName">
                                     <option value="">Choose a column</option>
@@ -201,8 +211,6 @@ else
                                 </InputSelect>
                             </td>
                             <td>
-                                <button type="button" class="nf-button" disabled="@(sortIndex == 0)" @onclick="() => MoveSort(sortIndex, -1)">Up</button>
-                                <button type="button" class="nf-button" disabled="@(sortIndex == form.Sorts.Count - 1)" @onclick="() => MoveSort(sortIndex, 1)">Down</button>
                                 <button type="button" class="nf-button" @onclick="() => RemoveSortAsync(sortIndex)">Remove</button>
                             </td>
                         </tr>
