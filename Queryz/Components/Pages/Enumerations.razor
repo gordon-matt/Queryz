@@ -45,7 +45,13 @@ else if (editing)
                 <tr>
                     <td><input type="number" class="nf-input" @bind="value.Id" /></td>
                     <td><input class="nf-input" @bind="value.Name" /></td>
-                    <td><button type="button" class="nf-button" @onclick="() => values.Remove(value)">Remove</button></td>
+                    <td class="queryz-actions">
+                        <div class="queryz-row-actions">
+                            <button type="button" class="nf-icon-button nf-danger-hover" title="Remove" aria-label="Remove" @onclick="() => RemoveValueAsync(value)">
+                                <Icon Name="trash" />
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -91,9 +97,15 @@ else
                     <tr>
                         <td>@item.Name</td>
                         <td>@item.Values.Count</td>
-                        <td>
-                            <button type="button" class="nf-button" @onclick="() => Edit(item)">Edit</button>
-                            <button type="button" class="nf-button" @onclick="() => DeleteAsync(item.Id)">Delete</button>
+                        <td class="queryz-actions">
+                            <div class="queryz-row-actions">
+                                <button type="button" class="nf-icon-button" title="Edit" aria-label="Edit" @onclick="() => Edit(item)">
+                                    <Icon Name="edit" />
+                                </button>
+                                <button type="button" class="nf-icon-button nf-danger-hover" title="Delete" aria-label="Delete" @onclick="() => DeleteAsync(item)">
+                                    <Icon Name="trash" />
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 }

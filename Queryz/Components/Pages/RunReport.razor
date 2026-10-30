@@ -5,6 +5,10 @@
 
 <PageHeader Title="@(result?.Name ?? "Run report")" Description="The page shows the first rows. Download the file for the full report.">
     <Actions>
+        @if (result is not null)
+        {
+            <button type="button" class="nf-button nf-button-primary" @onclick="OpenDownload">Download</button>
+        }
         @if (canManage)
         {
             <a class="nf-button" href="@($"/reports/{Id}/edit")">Edit</a>
@@ -23,38 +27,41 @@ else if (error is not null)
 }
 else if (result is not null)
 {
-    <p class="nf-muted">This is a preview of the first @(result.AppliedLimit ?? result.Rows.Count) rows. Download the file for the full report. A row limit saved on the report still applies to the download.</p>
+    <p class="nf-muted">This is a preview of the first @(result.AppliedLimit ?? result.Rows.Count) rows.</p>
 
-    <form method="post" action="@($"/reports/{Id}/export")" class="queryz-fields" target="_blank">
-        <Field Label="File format" For="download-format">
-            <select id="download-format" name="FileFormat" class="nf-input" @bind="fileFormat">
-                <option value="@DownloadFileFormat.Delimited">Delimited</option>
-                <option value="@DownloadFileFormat.Xlsx">Excel (.xlsx)</option>
-            </select>
-        </Field>
-        @if (fileFormat == DownloadFileFormat.Delimited)
-        {
-            <Field Label="Delimiter" For="download-delimiter">
-                <select id="download-delimiter" name="Delimiter" class="nf-input" @bind="delimiter">
-                    <option value="@DownloadFileDelimiter.Comma">Comma (,)</option>
-                    <option value="@DownloadFileDelimiter.Tab">Tab</option>
-                    <option value="@DownloadFileDelimiter.VerticalBar">Vertical bar (|)</option>
-                    <option value="@DownloadFileDelimiter.Semicolon">Semicolon (;)</option>
+    <Drawer Title="Download" Open="downloadOpen" Scrim="true" OnClose="CloseDownload">
+        <p class="nf-muted">The file includes the full report. A row limit saved on the report still applies.</p>
+        <form method="post" action="@($"/reports/{Id}/export")" class="queryz-fields is-stack" target="_blank">
+            <Field Label="File format" For="download-format">
+                <select id="download-format" name="FileFormat" class="nf-input" @bind="fileFormat">
+                    <option value="@DownloadFileFormat.Delimited">Delimited</option>
+                    <option value="@DownloadFileFormat.Xlsx">Excel (.xlsx)</option>
                 </select>
             </Field>
-            <label class="nf-check">
-                <input type="checkbox" name="AlwaysEnquote" value="true" @bind="alwaysEnquote" />
-                <span>Always enquote</span>
-            </label>
-            <label class="nf-check">
-                <input type="checkbox" name="OutputColumnNames" value="true" @bind="outputColumnNames" />
-                <span>Output column names</span>
-            </label>
-        }
-        <div>
-            <button type="submit" class="nf-button nf-button-primary">Download</button>
-        </div>
-    </form>
+            @if (fileFormat == DownloadFileFormat.Delimited)
+            {
+                <Field Label="Delimiter" For="download-delimiter">
+                    <select id="download-delimiter" name="Delimiter" class="nf-input" @bind="delimiter">
+                        <option value="@DownloadFileDelimiter.Comma">Comma (,)</option>
+                        <option value="@DownloadFileDelimiter.Tab">Tab</option>
+                        <option value="@DownloadFileDelimiter.VerticalBar">Vertical bar (|)</option>
+                        <option value="@DownloadFileDelimiter.Semicolon">Semicolon (;)</option>
+                    </select>
+                </Field>
+                <label class="nf-check">
+                    <input type="checkbox" name="AlwaysEnquote" value="true" @bind="alwaysEnquote" />
+                    <span>Always enquote</span>
+                </label>
+                <label class="nf-check">
+                    <input type="checkbox" name="OutputColumnNames" value="true" @bind="outputColumnNames" />
+                    <span>Output column names</span>
+                </label>
+            }
+            <div>
+                <button type="submit" class="nf-button nf-button-primary">Download</button>
+            </div>
+        </form>
+    </Drawer>
 
     <p class="nf-hint">@result.Rows.Count rows in this preview.</p>
     <table class="nf-table">

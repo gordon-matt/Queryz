@@ -19,6 +19,9 @@ public partial class Groups
     [Inject]
     private ToastService Toasts { get; set; } = default!;
 
+    [Inject]
+    private DialogService Dialogs { get; set; } = default!;
+
     private bool loading = true;
     private bool forbidden;
     private bool saving;
@@ -144,9 +147,19 @@ public partial class Groups
         await ReloadAsync();
     }
 
-    private async Task DeleteAsync(int id)
+    private async Task DeleteAsync(ReportGroupDto group)
     {
-        var deleted = await GroupsService.DeleteAsync(id);
+        bool confirmed = await Dialogs.ConfirmAsync(
+            "Delete group",
+            $"Delete \"{group.Name}\"?",
+            "Delete",
+            isDestructive: true);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        var deleted = await GroupsService.DeleteAsync(group.Id);
         if (!deleted.IsSuccess)
         {
             Toasts.ShowFailure(deleted);

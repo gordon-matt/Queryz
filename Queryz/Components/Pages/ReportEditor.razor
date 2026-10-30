@@ -145,7 +145,7 @@ else
                             <td>
                                 <button type="button" class="nf-button" disabled="@(columnIndex == 0)" @onclick="() => MoveColumn(columnIndex, -1)">Up</button>
                                 <button type="button" class="nf-button" disabled="@(columnIndex == form.Columns.Count - 1)" @onclick="() => MoveColumn(columnIndex, 1)">Down</button>
-                                <button type="button" class="nf-button" @onclick="() => RemoveColumn(columnIndex)">Remove</button>
+                                <button type="button" class="nf-button" @onclick="() => RemoveColumnAsync(columnIndex)">Remove</button>
                             </td>
                         </tr>
                     }
@@ -195,7 +195,7 @@ else
                             <td>
                                 <button type="button" class="nf-button" disabled="@(sortIndex == 0)" @onclick="() => MoveSort(sortIndex, -1)">Up</button>
                                 <button type="button" class="nf-button" disabled="@(sortIndex == form.Sorts.Count - 1)" @onclick="() => MoveSort(sortIndex, 1)">Down</button>
-                                <button type="button" class="nf-button" @onclick="() => form.Sorts.RemoveAt(sortIndex)">Remove</button>
+                                <button type="button" class="nf-button" @onclick="() => RemoveSortAsync(sortIndex)">Remove</button>
                             </td>
                         </tr>
                     }

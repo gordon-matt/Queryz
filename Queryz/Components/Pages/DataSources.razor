@@ -139,10 +139,18 @@ else
                     <tr>
                         <td>@source.Name</td>
                         <td>@ProviderLabel(source.Provider)</td>
-                        <td>
-                            <button type="button" class="nf-button" @onclick="() => TestAsync(source.Id)">Test</button>
-                            <button type="button" class="nf-button" @onclick="() => EditAsync(source.Id)">Edit</button>
-                            <button type="button" class="nf-button" @onclick="() => DeleteAsync(source.Id)">Delete</button>
+                        <td class="queryz-actions">
+                            <div class="queryz-row-actions">
+                                <button type="button" class="nf-icon-button" title="Test" aria-label="Test" @onclick="() => TestAsync(source.Id)">
+                                    <Icon Name="check-circle" />
+                                </button>
+                                <button type="button" class="nf-icon-button" title="Edit" aria-label="Edit" @onclick="() => EditAsync(source.Id)">
+                                    <Icon Name="edit" />
+                                </button>
+                                <button type="button" class="nf-icon-button nf-danger-hover" title="Delete" aria-label="Delete" @onclick="() => DeleteAsync(source)">
+                                    <Icon Name="trash" />
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 }

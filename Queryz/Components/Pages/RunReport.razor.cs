@@ -16,6 +16,9 @@ public partial class RunReport
     [Inject]
     private ToastService Toasts { get; set; } = default!;
 
+    [Inject]
+    private DialogService Dialogs { get; set; } = default!;
+
     [Parameter]
     public int Id { get; set; }
 
@@ -27,6 +30,11 @@ public partial class RunReport
     private DownloadFileDelimiter delimiter = DownloadFileDelimiter.Comma;
     private bool alwaysEnquote = true;
     private bool outputColumnNames = true;
+    private bool downloadOpen;
+
+    private void OpenDownload() => downloadOpen = true;
+
+    private void CloseDownload() => downloadOpen = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -48,6 +56,17 @@ public partial class RunReport
 
     private async Task DeleteAsync()
     {
+        string name = result?.Name ?? "this report";
+        bool confirmed = await Dialogs.ConfirmAsync(
+            "Delete report",
+            $"Delete \"{name}\"?",
+            "Delete",
+            isDestructive: true);
+        if (!confirmed)
+        {
+            return;
+        }
+
         var deleted = await ReportsService.DeleteAsync(Id);
         if (!deleted.IsSuccess)
         {

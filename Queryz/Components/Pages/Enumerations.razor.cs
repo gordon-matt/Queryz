@@ -15,6 +15,9 @@ public partial class Enumerations
     [Inject]
     private ToastService Toasts { get; set; } = default!;
 
+    [Inject]
+    private DialogService Dialogs { get; set; } = default!;
+
     private bool loading = true;
     private bool forbidden;
     private bool saving;
@@ -93,6 +96,17 @@ public partial class Enumerations
         values.Add(new EnumerationValueInput { Id = next });
     }
 
+    private async Task RemoveValueAsync(EnumerationValueInput value)
+    {
+        bool confirmed = await Dialogs.ConfirmAsync("Remove value", "Remove this value?", "Remove", isDestructive: true);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        values.Remove(value);
+    }
+
     private static int NextFlag(int current)
     {
         if (current < 1)
@@ -132,9 +146,19 @@ public partial class Enumerations
         await ReloadAsync();
     }
 
-    private async Task DeleteAsync(int id)
+    private async Task DeleteAsync(EnumerationDto item)
     {
-        var deleted = await EnumerationsService.DeleteAsync(id);
+        bool confirmed = await Dialogs.ConfirmAsync(
+            "Delete enumeration",
+            $"Delete \"{item.Name}\"?",
+            "Delete",
+            isDestructive: true);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        var deleted = await EnumerationsService.DeleteAsync(item.Id);
         if (!deleted.IsSuccess)
         {
             Toasts.ShowFailure(deleted);

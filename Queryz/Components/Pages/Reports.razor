@@ -52,12 +52,14 @@ else
                     <td>@report.Name</td>
                     <td>@report.GroupName</td>
                     <td>@report.DataSourceName</td>
-                    <td>
+                    <td class="queryz-actions">
                         <div class="queryz-row-actions">
                             <a class="nf-button nf-button-primary" href="@($"/reports/{report.Id}")">Run</a>
                             @if (canManage)
                             {
-                                <a class="nf-button" href="@($"/reports/{report.Id}/edit")">Edit</a>
+                                <a class="nf-icon-button" href="@($"/reports/{report.Id}/edit")" title="Edit" aria-label="Edit">
+                                    <Icon Name="edit" />
+                                </a>
                             }
                         </div>
                     </td>

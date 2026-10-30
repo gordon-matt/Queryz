@@ -13,6 +13,9 @@ public partial class DataSources
     [Inject]
     private ToastService Toasts { get; set; } = default!;
 
+    [Inject]
+    private DialogService Dialogs { get; set; } = default!;
+
     private bool loading = true;
     private bool forbidden;
     private bool loadingDatabases;
@@ -167,9 +170,19 @@ public partial class DataSources
         Toasts.ShowFailure(tested);
     }
 
-    private async Task DeleteAsync(int id)
+    private async Task DeleteAsync(DataSourceDto source)
     {
-        var deleted = await DataSourcesService.DeleteAsync(id);
+        bool confirmed = await Dialogs.ConfirmAsync(
+            "Delete data source",
+            $"Delete \"{source.Name}\"?",
+            "Delete",
+            isDestructive: true);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        var deleted = await DataSourcesService.DeleteAsync(source.Id);
         if (!deleted.IsSuccess)
         {
             Toasts.ShowFailure(deleted);

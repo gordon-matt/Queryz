@@ -27,10 +27,20 @@
     height: 52px;
 }
 
+.queryz-fields.is-stack {
+    grid-template-columns: 1fr;
+}
+
 .queryz-row-actions {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.15rem;
     justify-content: flex-end;
+}
+
+.nf-table td.queryz-actions {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
 }
 
 /* QueryKrafter keeps its own palette. Theme="host" lets these win over its light and dark sets. */

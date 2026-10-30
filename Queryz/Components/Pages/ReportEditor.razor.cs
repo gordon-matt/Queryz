@@ -467,8 +467,14 @@ public partial class ReportEditor
         columnsCustomized = true;
     }
 
-    private void RemoveColumn(int index)
+    private async Task RemoveColumnAsync(int index)
     {
+        bool confirmed = await Dialogs.ConfirmAsync("Remove column", "Remove this column?", "Remove", isDestructive: true);
+        if (!confirmed)
+        {
+            return;
+        }
+
         form.Columns.RemoveAt(index);
         columnsCustomized = true;
     }
@@ -486,6 +492,17 @@ public partial class ReportEditor
     }
 
     private void AddSort() => form.Sorts.Add(new ReportSortInput());
+
+    private async Task RemoveSortAsync(int index)
+    {
+        bool confirmed = await Dialogs.ConfirmAsync("Remove sort", "Remove this sort?", "Remove", isDestructive: true);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        form.Sorts.RemoveAt(index);
+    }
 
     private void MoveSort(int index, int delta)
     {

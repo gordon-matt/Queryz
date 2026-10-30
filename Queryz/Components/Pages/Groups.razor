@@ -90,9 +90,15 @@ else
                     <tr>
                         <td>@group.Name</td>
                         <td>@TimeZoneLabel(group.TimeZoneId)</td>
-                        <td>
-                            <button type="button" class="nf-button" @onclick="() => Edit(group)">Edit</button>
-                            <button type="button" class="nf-button" @onclick="() => DeleteAsync(group.Id)">Delete</button>
+                        <td class="queryz-actions">
+                            <div class="queryz-row-actions">
+                                <button type="button" class="nf-icon-button" title="Edit" aria-label="Edit" @onclick="() => Edit(group)">
+                                    <Icon Name="edit" />
+                                </button>
+                                <button type="button" class="nf-icon-button nf-danger-hover" title="Delete" aria-label="Delete" @onclick="() => DeleteAsync(group)">
+                                    <Icon Name="trash" />
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 }
