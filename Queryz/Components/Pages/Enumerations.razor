@@ -3,7 +3,11 @@
 
 <PageTitle>Enumerations - Queryz</PageTitle>
 
-@if (editing)
+@if (forbidden)
+{
+    <AccessDenied HomeLabel="Back to reports" />
+}
+else if (editing)
 {
     <PageHeader Title="@(editingId is null ? "New enumeration" : "Edit enumeration")" Description="A column can show these names instead of the stored number.">
         <Actions>

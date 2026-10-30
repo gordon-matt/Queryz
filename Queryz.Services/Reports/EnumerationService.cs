@@ -12,11 +12,17 @@ public interface IEnumerationService
 public sealed class EnumerationService(
     ILogger<EnumerationService> logger,
     IUserContextService userContext,
+    IQueryzAuthorization access,
     IRepository<Enumeration> enumerations,
     IRepository<ReportColumn> columns) : IEnumerationService
 {
     public async Task<Result<IReadOnlyList<EnumerationDto>>> ListAsync(CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<IReadOnlyList<EnumerationDto>>.Forbidden();
+        }
+
         var rows = await enumerations.FindAsync(new SearchOptions<Enumeration>
         {
             OrderBy = query => query.OrderBy(item => item.Name),
@@ -31,6 +37,11 @@ public sealed class EnumerationService(
         SaveEnumerationRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<EnumerationDto>.Forbidden();
+        }
+
         if (string.IsNullOrWhiteSpace(request.Name))
         {
             return Result<EnumerationDto>.Invalid(new ValidationError("The name is required."));
@@ -88,6 +99,11 @@ public sealed class EnumerationService(
 
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result.Forbidden();
+        }
+
         int used = await columns.CountAsync(column => column.EnumerationId == id);
         if (used > 0)
         {

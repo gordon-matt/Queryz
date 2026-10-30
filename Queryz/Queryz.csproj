@@ -1,11 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+		<RootNamespace>Queryz</RootNamespace>
+		<Description>Blazor report builder. Host it from an app that calls AddQueryz and supplies an IQueryzAuthorizationFilter.</Description>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="Controllers\**" />
@@ -15,7 +20,6 @@
 		<Compile Remove="IQueryzAssemblyMarker.cs" />
 		<Content Remove="Views\**" />
 		<None Remove="Views\**" />
-		<ScopedCss Remove="Views\**" />
 		<Content Remove="wwwroot\js\**" />
 		<Content Remove="wwwroot\jQuery-QueryBuilder\**" />
 	</ItemGroup>
@@ -23,16 +27,6 @@
 	<ItemGroup>
 		<PackageReference Include="Ardalis.Result" Version="10.1.0" />
 		<PackageReference Include="Heroicsoft.NetForge.Authentication" Version="1.1.0" />
-		<PackageReference Include="LogVue" Version="1.1.1" />
-		<PackageReference Include="LogVue.Providers.Serilog" Version="1.1.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.13" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

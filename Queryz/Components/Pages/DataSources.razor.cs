@@ -8,9 +8,13 @@ public partial class DataSources
     private IDataSourceService DataSourcesService { get; set; } = default!;
 
     [Inject]
+    private IQueryzAuthorization Access { get; set; } = default!;
+
+    [Inject]
     private ToastService Toasts { get; set; } = default!;
 
     private bool loading = true;
+    private bool forbidden;
     private bool loadingDatabases;
     private bool saving;
     private bool editing;
@@ -23,7 +27,17 @@ public partial class DataSources
 
     private bool SqlIntegrated => form.Provider == ReportProvider.SqlServer && form.Connection.IntegratedSecurity;
 
-    protected override async Task OnInitializedAsync() => await ReloadAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        if (!await Access.CanManageAsync())
+        {
+            forbidden = true;
+            loading = false;
+            return;
+        }
+
+        await ReloadAsync();
+    }
 
     private async Task ReloadAsync()
     {

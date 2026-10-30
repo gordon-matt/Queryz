@@ -20,11 +20,17 @@ public interface IDataSourceService
 public sealed class DataSourceService(
     ILogger<DataSourceService> logger,
     IUserContextService userContext,
+    IQueryzAuthorization access,
     IRepository<DataSource> dataSources,
     IRepository<Report> reports) : IDataSourceService
 {
     public async Task<Result<IReadOnlyList<DataSourceDto>>> ListAsync(CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<IReadOnlyList<DataSourceDto>>.Forbidden();
+        }
+
         var rows = await dataSources.FindAsync(new SearchOptions<DataSource>
         {
             OrderBy = query => query.OrderBy(source => source.Name),
@@ -36,6 +42,11 @@ public sealed class DataSourceService(
 
     public async Task<Result<DataSourceDto>> GetAsync(int id, CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<DataSourceDto>.Forbidden();
+        }
+
         var source = await dataSources.FindOneAsync(id);
         return source is null
             ? Result<DataSourceDto>.NotFound()
@@ -44,6 +55,11 @@ public sealed class DataSourceService(
 
     public async Task<Result<DataSourceDetailsDto>> GetDetailsAsync(int id, CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<DataSourceDetailsDto>.Forbidden();
+        }
+
         var source = await dataSources.FindOneAsync(id);
         if (source is null)
         {
@@ -63,6 +79,11 @@ public sealed class DataSourceService(
         SaveDataSourceRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<IReadOnlyList<string>>.Forbidden();
+        }
+
         if (request.Provider == ReportProvider.Sqlite)
         {
             return Result.Success<IReadOnlyList<string>>([]);
@@ -108,6 +129,11 @@ public sealed class DataSourceService(
         SaveDataSourceRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<DataSourceDto>.Forbidden();
+        }
+
         if (string.IsNullOrWhiteSpace(request.Name))
         {
             return Result<DataSourceDto>.Invalid(new ValidationError("The name is required."));
@@ -162,6 +188,11 @@ public sealed class DataSourceService(
 
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result.Forbidden();
+        }
+
         int used = await reports.CountAsync(report => report.DataSourceId == id);
         if (used > 0)
         {
@@ -180,6 +211,11 @@ public sealed class DataSourceService(
 
     public async Task<Result> TestAsync(int id, CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result.Forbidden();
+        }
+
         var source = await dataSources.FindOneAsync(id);
         if (source is null)
         {

@@ -12,6 +12,9 @@ public partial class ReportEditor
     private IReportService ReportsService { get; set; } = default!;
 
     [Inject]
+    private IQueryzAuthorization Access { get; set; } = default!;
+
+    [Inject]
     private IDataSourceService DataSources { get; set; } = default!;
 
     [Inject]
@@ -42,6 +45,7 @@ public partial class ReportEditor
     public int? Id { get; set; }
 
     private bool loading = true;
+    private bool forbidden;
     private bool missing;
     private bool saving;
     private string? error;
@@ -73,6 +77,13 @@ public partial class ReportEditor
 
     protected override async Task OnInitializedAsync()
     {
+        if (!await Access.CanManageAsync())
+        {
+            forbidden = true;
+            loading = false;
+            return;
+        }
+
         var sourceResult = await DataSources.ListAsync();
         var groupResult = await Groups.ListAsync();
         sources = sourceResult.IsSuccess ? [.. sourceResult.Value] : [];

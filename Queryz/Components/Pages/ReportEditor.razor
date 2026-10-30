@@ -4,6 +4,12 @@
 
 <PageTitle>@(Id is null ? "New report" : "Edit report") - Queryz</PageTitle>
 
+@if (forbidden)
+{
+    <AccessDenied HomeLabel="Back to reports" />
+}
+else
+{
 <PageHeader Title="@(Id is null ? "New report" : "Edit report")" Description="Work through the steps. Next checks the current step before it moves on. Previous always goes back.">
     <Actions>
         <a class="nf-button" href="/">Cancel</a>
@@ -299,4 +305,5 @@ else
             }
         </WizardStep>
     </Wizard>
+}
 }

@@ -43,8 +43,8 @@ public static class DbInitializer
 
         var roles = new (string Name, string Description)[]
         {
-            (WellKnownRoles.Administrator, "Manages the instance"),
-            (WellKnownRoles.User, "Runs and edits reports"),
+            (WellKnownRoles.Administrator, "Sets up reports, groups, and data sources"),
+            (WellKnownRoles.User, "Runs reports shared with this role"),
         };
 
         foreach (var (name, description) in roles)

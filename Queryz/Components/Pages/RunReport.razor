@@ -5,8 +5,11 @@
 
 <PageHeader Title="@(result?.Name ?? "Run report")" Description="The page shows the first rows. Download the file for the full report.">
     <Actions>
-        <a class="nf-button" href="@($"/reports/{Id}/edit")">Edit</a>
-        <button type="button" class="nf-button nf-button-danger" @onclick="DeleteAsync">Delete</button>
+        @if (canManage)
+        {
+            <a class="nf-button" href="@($"/reports/{Id}/edit")">Edit</a>
+            <button type="button" class="nf-button nf-button-danger" @onclick="DeleteAsync">Delete</button>
+        }
     </Actions>
 </PageHeader>
 

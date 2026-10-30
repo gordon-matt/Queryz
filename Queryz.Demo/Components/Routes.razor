@@ -1,0 +1,8 @@
+@using Heroicsoft.NetForge.Components.Layout
+@using Queryz.Components.Pages
+@namespace Queryz.Components
+
+<ForgeRouter AppAssembly="typeof(Program).Assembly"
+             AdditionalAssemblies="@( [typeof(Reports).Assembly] )"
+             NotFoundPage="typeof(NotFound)"
+             DefaultLayout="typeof(ShellLayout)" />

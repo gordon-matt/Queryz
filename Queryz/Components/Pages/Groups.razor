@@ -3,7 +3,11 @@
 
 <PageTitle>Groups - Queryz</PageTitle>
 
-@if (editing)
+@if (forbidden)
+{
+    <AccessDenied HomeLabel="Back to reports" />
+}
+else if (editing)
 {
     <PageHeader Title="@(editingId is null ? "New group" : "Edit group")" Description="Reports are listed under a group.">
         <Actions>
@@ -29,7 +33,7 @@
             }
         </InputSelect>
     </Field>
-    <p class="nf-muted">Roles decide who appears on a report's user blacklist. Convert Time Zone uses this time zone.</p>
+    <p class="nf-muted">People in these roles can run this group's reports. Administrators can always set them up and run them. With no roles selected, only administrators can see the reports. Convert Time Zone uses this time zone.</p>
     @if (roles.Count == 0)
     {
         <p class="nf-muted">No roles are defined.</p>

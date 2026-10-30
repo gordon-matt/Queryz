@@ -22,12 +22,14 @@ public interface IReportService
 public sealed class ReportService(
     ILogger<ReportService> logger,
     IUserContextService userContext,
+    IQueryzAuthorization access,
     TimeProvider time,
     IRepository<Report> reports,
     IRepository<ReportColumn> columns,
     IRepository<ReportTable> tables,
     IRepository<ReportSorting> sortings,
     IRepository<ReportUserBlacklistEntry> blacklist,
+    IRepository<ReportGroupRole> groupRoles,
     IRepository<Enumeration> enumerations,
     IRepository<DataSource> dataSources,
     IRepository<ReportGroup> groups,
@@ -35,18 +37,46 @@ public sealed class ReportService(
 {
     public async Task<Result<IReadOnlyList<ReportSummaryDto>>> ListAsync(CancellationToken cancellationToken = default)
     {
+        if (!await access.CanUseAsync())
+        {
+            return Result<IReadOnlyList<ReportSummaryDto>>.Forbidden();
+        }
+
         var rows = await reports.FindAsync(new SearchOptions<Report>
         {
             OrderBy = query => query.OrderBy(report => report.Name),
             CancellationToken = cancellationToken,
         });
 
+        bool manage = await access.CanManageAsync();
+        var rolesByGroup = await RolesByGroupAsync(cancellationToken);
+        var deniedByReport = await DeniedByReportAsync(cancellationToken);
+        IEnumerable<Report> listed = rows;
+        if (!manage)
+        {
+            var allowed = new List<Report>();
+            foreach (var report in rows)
+            {
+                if (!report.Enabled)
+                {
+                    continue;
+                }
+
+                if (await access.CanRunAsync(rolesByGroup.GetValueOrDefault(report.GroupId) ?? [], deniedByReport.GetValueOrDefault(report.Id) ?? []))
+                {
+                    allowed.Add(report);
+                }
+            }
+
+            listed = allowed;
+        }
+
         var sourceNames = (await dataSources.FindAsync(new SearchOptions<DataSource> { CancellationToken = cancellationToken }))
             .ToDictionary(source => source.Id, source => source.Name);
         var groupNames = (await groups.FindAsync(new SearchOptions<ReportGroup> { CancellationToken = cancellationToken }))
             .ToDictionary(group => group.Id, group => group.Name);
 
-        var summaries = rows.Select(report => new ReportSummaryDto(
+        var summaries = listed.Select(report => new ReportSummaryDto(
             report.Id,
             report.Name,
             groupNames.GetValueOrDefault(report.GroupId, string.Empty),
@@ -62,6 +92,11 @@ public sealed class ReportService(
         if (report is null)
         {
             return Result<ReportDefinitionDto>.NotFound();
+        }
+
+        if (!await MayViewAsync(report, cancellationToken))
+        {
+            return Result<ReportDefinitionDto>.Forbidden();
         }
 
         var selected = await columns.FindAsync(new SearchOptions<ReportColumn>
@@ -99,6 +134,11 @@ public sealed class ReportService(
         SaveReportRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<ReportDefinitionDto>.Forbidden();
+        }
+
         string? joinError = ReportSql.ValidateJoins(request.Tables);
         if (joinError is not null)
         {
@@ -258,6 +298,11 @@ public sealed class ReportService(
 
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result.Forbidden();
+        }
+
         await columns.DeleteAsync(column => column.ReportId == id);
         await tables.DeleteAsync(table => table.ReportId == id);
         await sortings.DeleteAsync(sort => sort.ReportId == id);
@@ -281,13 +326,7 @@ public sealed class ReportService(
         }
 
         var report = definition.Value;
-        if (!report.Enabled)
-        {
-            return Result<ReportResultDto>.Forbidden();
-        }
-
-        string? userId = userContext.GetCurrentUserId();
-        if (!string.IsNullOrEmpty(userId) && report.DeniedUserIds.Contains(userId))
+        if (!report.Enabled && !await access.CanManageAsync())
         {
             return Result<ReportResultDto>.Forbidden();
         }
@@ -301,7 +340,9 @@ public sealed class ReportService(
         var schemaResult = await schema.GetTablesAsync(source.Id, cancellationToken);
         if (!schemaResult.IsSuccess)
         {
-            return Result<ReportResultDto>.Error(new ErrorList(schemaResult.Errors));
+            return schemaResult.Status == ResultStatus.Forbidden
+                ? Result<ReportResultDto>.Forbidden()
+                : Result<ReportResultDto>.Error(new ErrorList(schemaResult.Errors));
         }
 
         var tableInputs = report.Tables.Select(table => new ReportTableInput
@@ -529,5 +570,41 @@ public sealed class ReportService(
                 column.Ordinal)).ToList(),
             sortRows.OrderBy(sort => sort.Ordinal).Select(sort => new ReportSortDto(sort.ColumnName, sort.SortDirection, sort.Ordinal)).ToList(),
             deniedUserIds);
+    }
+
+    private async Task<bool> MayViewAsync(Report report, CancellationToken cancellationToken)
+    {
+        if (!report.Enabled && !await access.CanManageAsync())
+        {
+            return false;
+        }
+
+        var roles = await groupRoles.FindAsync(new SearchOptions<ReportGroupRole>
+        {
+            Query = role => role.ReportGroupId == report.GroupId,
+            CancellationToken = cancellationToken,
+        });
+        var denied = await blacklist.FindAsync(new SearchOptions<ReportUserBlacklistEntry>
+        {
+            Query = entry => entry.ReportId == report.Id,
+            CancellationToken = cancellationToken,
+        });
+        return await access.CanRunAsync(roles.Select(role => role.RoleId).ToList(), denied.Select(entry => entry.UserId).ToList());
+    }
+
+    private async Task<Dictionary<int, IReadOnlyList<string>>> RolesByGroupAsync(CancellationToken cancellationToken)
+    {
+        var rows = await groupRoles.FindAsync(new SearchOptions<ReportGroupRole> { CancellationToken = cancellationToken });
+        return rows
+            .GroupBy(role => role.ReportGroupId)
+            .ToDictionary(group => group.Key, group => (IReadOnlyList<string>)group.Select(role => role.RoleId).ToList());
+    }
+
+    private async Task<Dictionary<int, IReadOnlyList<string>>> DeniedByReportAsync(CancellationToken cancellationToken)
+    {
+        var rows = await blacklist.FindAsync(new SearchOptions<ReportUserBlacklistEntry> { CancellationToken = cancellationToken });
+        return rows
+            .GroupBy(entry => entry.ReportId)
+            .ToDictionary(group => group.Key, group => (IReadOnlyList<string>)group.Select(entry => entry.UserId).ToList());
     }
 }

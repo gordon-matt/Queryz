@@ -6,6 +6,10 @@
     gap: 0 1rem;
 }
 
+.queryz-auth-logo {
+    height: 52px;
+}
+
 .queryz-row-actions {
     display: flex;
     gap: 0.4rem;

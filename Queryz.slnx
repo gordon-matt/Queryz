@@ -11,4 +11,5 @@
   <Project Path="Queryz.Data.MySql/Queryz.Data.MySql.csproj" />
   <Project Path="Queryz.Services/Queryz.Services.csproj" />
   <Project Path="Queryz/Queryz.csproj" />
+  <Project Path="Queryz.Demo/Queryz.Demo.csproj" />
 </Solution>

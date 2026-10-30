@@ -2,7 +2,6 @@ using LogVue;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Queryz.Components;
-using QueryKrafter;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,13 +21,12 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthorization();
 
 builder.Services.AddNetForgeComponents(ui =>
 {
-    ui.ThemeStorageKey = global::Queryz.Constants.ClientThemeLocalStorageKey;
+    ui.ThemeStorageKey = Queryz.Constants.ClientThemeLocalStorageKey;
     ui.DefaultColorScheme = "system";
     ui.AccentColor = "#0f766e";
     ui.AccentColorDark = "#2dd4bf";
@@ -39,22 +37,14 @@ builder.Services.Configure<ForgeShellOptions>(shell =>
     shell.Brand = "Queryz";
     shell.SearchPlaceholder = "Find a report";
 });
-builder.Services.AddScoped<IShellNavigation, QueryzNavigation>();
 
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddQueryKrafter();
-
-string databaseProvider = DatabaseProviders.Resolve(
-    builder.Configuration[DatabaseProviders.ConfigurationKey],
-    DatabaseProviders.Sqlite,
-    [.. DatabaseProviders.All]);
-
-builder.Services.AddQueryzDatabase(builder.Configuration);
-builder.Services.AddQueryzRepositories();
-
-var authProvider = builder.Services.AddQueryzAuthentication(builder.Configuration);
-builder.Services.AddQueryzServices();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+var authProvider = builder.Services.AddQueryz(builder.Configuration, options =>
+{
+    options.Authorization.Add(new AdministratorQueryzAuthorizationFilter());
+});
 
 var app = builder.Build();
 
@@ -93,7 +83,8 @@ app.MapLogVue().RequireAuthorization(new AuthorizeAttribute
 });
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AddAdditionalAssemblies(typeof(Reports).Assembly);
 
 app.MapControllers();
 
@@ -103,7 +94,7 @@ if (authProvider == AuthProvider.Identity)
 }
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
-app.MapReportExport();
+app.MapQueryz();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {
@@ -121,8 +112,8 @@ await using (var scope = app.Services.CreateAsyncScope())
 }
 
 Log.Information(
-    "Queryz started with the {DatabaseProvider} database provider and {AuthProvider} authentication",
-    databaseProvider,
+    "Queryz demo started with the {DatabaseProvider} database provider and {AuthProvider} authentication",
+    builder.Configuration["Database:Provider"],
     authProvider);
 
 app.Run();

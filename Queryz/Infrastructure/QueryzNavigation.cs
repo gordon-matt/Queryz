@@ -2,13 +2,14 @@ using Heroicsoft.NetForge.Abstractions.Navigation;
 
 namespace Queryz.Infrastructure;
 
-public sealed class QueryzNavigation(IReportGroupService groups) : IShellNavigation
+public sealed class QueryzNavigation(IReportGroupService groups, IQueryzAuthorization access) : IShellNavigation
 {
     public string? SearchUrlFormat => "/?q={0}";
 
     public async Task<IReadOnlyList<ForgeNavSection>> GetSectionsAsync(CancellationToken cancellationToken = default)
     {
         var listed = await groups.ListAsync(cancellationToken);
+        bool manage = await access.CanManageAsync();
         var items = new List<ForgeNavItem>
         {
             new()
@@ -35,9 +36,10 @@ public sealed class QueryzNavigation(IReportGroupService groups) : IShellNavigat
             }));
         }
 
-        return
-        [
-            new ForgeNavSection
+        var sections = new List<ForgeNavSection>();
+        if (manage)
+        {
+            sections.Add(new ForgeNavSection
             {
                 Items =
                 [
@@ -46,27 +48,29 @@ public sealed class QueryzNavigation(IReportGroupService groups) : IShellNavigat
                     new ForgeNavItem { Title = "Groups", Href = "/groups", Icon = "folder" },
                     new ForgeNavItem { Title = "Enumerations", Href = "/enumerations", Icon = "list" },
                 ],
-            },
-            new ForgeNavSection
-            {
-                Heading = "Groups",
-                Items = items,
-            },
-            new ForgeNavSection
-            {
-                Heading = "Administration",
-                Roles = WellKnownRoles.Administrator,
-                Items =
-                [
-                    new ForgeNavItem
-                    {
-                        Title = "Logs",
-                        Href = "/logvue",
-                        Icon = "logs",
-                        External = true,
-                    },
-                ],
-            },
-        ];
+            });
+        }
+
+        sections.Add(new ForgeNavSection
+        {
+            Heading = "Groups",
+            Items = items,
+        });
+        sections.Add(new ForgeNavSection
+        {
+            Heading = "Administration",
+            Roles = WellKnownRoles.Administrator,
+            Items =
+            [
+                new ForgeNavItem
+                {
+                    Title = "Logs",
+                    Href = "/logvue",
+                    Icon = "logs",
+                    External = true,
+                },
+            ],
+        });
+        return sections;
     }
 }

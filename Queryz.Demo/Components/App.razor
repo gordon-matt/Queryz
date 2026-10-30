@@ -1,0 +1,15 @@
+@using Heroicsoft.NetForge.Components
+@using Queryz.Components.Pages
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@namespace Queryz.Components
+
+<ForgeHostPage Title="Queryz"
+               IconHref="@Assets["_content/Queryz/img/Icon.png"]"
+               AppStylesheet="@Assets["_content/Queryz/css/queryz.css"]">
+    <AdditionalHead>
+        <link rel="stylesheet" href="@Assets["_content/QueryKrafter.Components/querykrafter.css"]" />
+    </AdditionalHead>
+    <ChildContent>
+        <Routes @rendermode="InteractiveServer" />
+    </ChildContent>
+</ForgeHostPage>

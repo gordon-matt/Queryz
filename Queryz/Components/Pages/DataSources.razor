@@ -3,7 +3,11 @@
 
 <PageTitle>Data sources - Queryz</PageTitle>
 
-@if (editing)
+@if (forbidden)
+{
+    <AccessDenied HomeLabel="Back to reports" />
+}
+else if (editing)
 {
     <PageHeader Title="@(editingId is null ? "New data source" : "Edit data source")" Description="Choose a provider, then the server and database. The connection string is built on the server.">
         <Actions>

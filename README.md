@@ -1,17 +1,44 @@
 # Queryz
 
-A Blazor Server app for saved SQL reports. Filters are built with [QueryKrafter](https://github.com/Heroicsoft/QueryKrafter) and turned into a parameterized WHERE clause on the server from the columns stored with the report.
+Queryz is a Blazor Razor Class Library for saved SQL reports. Filters are built with [QueryKrafter](https://github.com/Heroicsoft/QueryKrafter) and turned into a parameterized WHERE clause on the server from the columns stored with the report.
 
-The host follows the same shape as Snippetz: Interactive Server, NetForge shell, Identity (or Keycloak / none), Ardalis.Result services, and Extenso repositories. The app database is selected with `Database:Provider` (`Sqlite`, `SqlServer`, `Npgsql`, `MySql`). Report data sources are separate connections and can be any of those four as well.
-
-## Run
+`Queryz.Demo` is the sample host. Run it with:
 
 ```bash
-dotnet run --project Queryz
+dotnet run --project Queryz.Demo
 ```
 
-The development seed signs in as `admin` / `Admin@123`. Change that password before sharing the instance.
+The development seed signs in as `admin` / `Admin@123`. Change that password before sharing the instance. The demo database is `Queryz/queryz.db`.
+
+## Hosting
+
+```csharp
+builder.Services.AddQueryz(builder.Configuration, options =>
+{
+    options.Authorization.Add(new AdministratorQueryzAuthorizationFilter());
+});
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode()
+    .AddAdditionalAssemblies(typeof(Reports).Assembly);
+
+app.MapQueryz();
+```
+
+The router also needs Queryz's assembly:
+
+```razor
+<ForgeRouter AppAssembly="typeof(Program).Assembly"
+             AdditionalAssemblies="@( [typeof(Reports).Assembly] )"
+             NotFoundPage="typeof(NotFound)" />
+```
+
+`IQueryzAuthorizationFilter` is required. With an empty list, nobody can open Queryz. `AdministratorQueryzAuthorizationFilter` lets any signed-in person run reports and lets the Administrator role set them up. Replace it when the host uses different roles.
+
+## Who can see a report
+
+Administrators set up data sources, groups, enumerations, and reports, and they can run every report. A client sees a report when the group's roles include one of theirs. A group with no roles is visible only to administrators. The report blacklist still excludes a person who would otherwise be allowed.
 
 ## What a report stores
 
-A report is one table, the columns to select, and QueryKrafter rules JSON. Running it reads the live schema, keeps only columns that still exist, and generates SQL from that configuration. The `field` values posted with the rules are not used.
+A report selects columns from one or more joined tables and stores QueryKrafter rules JSON. Running it shows the first 10 rows. Download exports the full result, still honoring a row limit saved on the report.

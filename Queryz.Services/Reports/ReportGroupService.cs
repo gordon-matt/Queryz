@@ -12,12 +12,18 @@ public interface IReportGroupService
 public sealed class ReportGroupService(
     ILogger<ReportGroupService> logger,
     IUserContextService userContext,
+    IQueryzAuthorization access,
     IRepository<ReportGroup> groups,
     IRepository<ReportGroupRole> roles,
     IRepository<Report> reports) : IReportGroupService
 {
     public async Task<Result<IReadOnlyList<ReportGroupDto>>> ListAsync(CancellationToken cancellationToken = default)
     {
+        if (!await access.CanUseAsync())
+        {
+            return Result<IReadOnlyList<ReportGroupDto>>.Forbidden();
+        }
+
         var rows = await groups.FindAsync(new SearchOptions<ReportGroup>
         {
             OrderBy = query => query.OrderBy(group => group.Name),
@@ -33,13 +39,29 @@ public sealed class ReportGroupService(
             .GroupBy(role => role.ReportGroupId)
             .ToDictionary(group => group.Key, group => (IReadOnlyList<string>)group.Select(role => role.RoleId).ToList());
 
-        return Result.Success<IReadOnlyList<ReportGroupDto>>(rows
+        var listed = rows
             .Select(group => new ReportGroupDto(
                 group.Id,
                 group.Name,
                 group.TimeZoneId,
                 byGroup.GetValueOrDefault(group.Id) ?? []))
-            .ToList());
+            .ToList();
+
+        if (!await access.CanManageAsync())
+        {
+            var visible = new List<ReportGroupDto>();
+            foreach (var group in listed)
+            {
+                if (await access.CanRunAsync(group.RoleIds, []))
+                {
+                    visible.Add(group);
+                }
+            }
+
+            listed = visible;
+        }
+
+        return Result.Success<IReadOnlyList<ReportGroupDto>>(listed);
     }
 
     public async Task<Result<ReportGroupDto>> SaveAsync(
@@ -47,6 +69,11 @@ public sealed class ReportGroupService(
         SaveReportGroupRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result<ReportGroupDto>.Forbidden();
+        }
+
         if (string.IsNullOrWhiteSpace(request.Name))
         {
             return Result<ReportGroupDto>.Invalid(new ValidationError("The name is required."));
@@ -90,6 +117,11 @@ public sealed class ReportGroupService(
 
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync())
+        {
+            return Result.Forbidden();
+        }
+
         int used = await reports.CountAsync(report => report.GroupId == id);
         if (used > 0)
         {

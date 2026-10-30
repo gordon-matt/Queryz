@@ -8,6 +8,9 @@ public partial class RunReport
     private IReportService ReportsService { get; set; } = default!;
 
     [Inject]
+    private IQueryzAuthorization Access { get; set; } = default!;
+
+    [Inject]
     private NavigationManager Navigation { get; set; } = default!;
 
     [Inject]
@@ -17,6 +20,7 @@ public partial class RunReport
     public int Id { get; set; }
 
     private bool loading = true;
+    private bool canManage;
     private string? error;
     private ReportResultDto? result;
     private DownloadFileFormat fileFormat = DownloadFileFormat.Delimited;
@@ -27,6 +31,7 @@ public partial class RunReport
     protected override async Task OnParametersSetAsync()
     {
         loading = true;
+        canManage = await Access.CanManageAsync();
         var ran = await ReportsService.RunAsync(Id, preview: true);
         loading = false;
 

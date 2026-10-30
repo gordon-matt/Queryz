@@ -5,7 +5,10 @@
 
 <PageHeader Title="Reports" Description="Saved queries over the data sources you connect.">
     <Actions>
-        <a class="nf-button nf-button-primary" href="/reports/new">New report</a>
+        @if (canManage)
+        {
+            <a class="nf-button nf-button-primary" href="/reports/new">New report</a>
+        }
     </Actions>
 </PageHeader>
 
@@ -19,10 +22,17 @@ else if (loadError is not null)
 }
 else if (visible.Count == 0)
 {
-    <EmptyState Icon="search" Title="No reports yet">
-        <p>Add a data source, then build a report with QueryKrafter.</p>
-        <a class="nf-button nf-button-primary" href="/data-sources">Data sources</a>
-    </EmptyState>
+        <EmptyState Icon="search" Title="No reports yet">
+            @if (canManage)
+            {
+                <p>Add a data source, then build a report.</p>
+                <a class="nf-button nf-button-primary" href="/data-sources">Data sources</a>
+            }
+            else
+            {
+                <p>Reports shared with your roles will show up here.</p>
+            }
+        </EmptyState>
 }
 else
 {
@@ -45,7 +55,10 @@ else
                     <td>
                         <div class="queryz-row-actions">
                             <a class="nf-button nf-button-primary" href="@($"/reports/{report.Id}")">Run</a>
-                            <a class="nf-button" href="@($"/reports/{report.Id}/edit")">Edit</a>
+                            @if (canManage)
+                            {
+                                <a class="nf-button" href="@($"/reports/{report.Id}/edit")">Edit</a>
+                            }
                         </div>
                     </td>
                 </tr>

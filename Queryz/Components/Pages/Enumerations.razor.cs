@@ -10,9 +10,13 @@ public partial class Enumerations
     private IEnumerationService EnumerationsService { get; set; } = default!;
 
     [Inject]
+    private IQueryzAuthorization Access { get; set; } = default!;
+
+    [Inject]
     private ToastService Toasts { get; set; } = default!;
 
     private bool loading = true;
+    private bool forbidden;
     private bool saving;
     private bool editing;
     private bool isBitFlags;
@@ -27,7 +31,17 @@ public partial class Enumerations
     private IEnumerable<EnumerationDto> Page =>
         enumerations.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
-    protected override async Task OnInitializedAsync() => await ReloadAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        if (!await Access.CanManageAsync())
+        {
+            forbidden = true;
+            loading = false;
+            return;
+        }
+
+        await ReloadAsync();
+    }
 
     private async Task ReloadAsync()
     {

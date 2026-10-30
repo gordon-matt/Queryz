@@ -11,12 +11,16 @@ public partial class Groups
     private IReportGroupService GroupsService { get; set; } = default!;
 
     [Inject]
+    private IQueryzAuthorization Access { get; set; } = default!;
+
+    [Inject]
     private RoleManager<ApplicationRole> RoleManager { get; set; } = default!;
 
     [Inject]
     private ToastService Toasts { get; set; } = default!;
 
     private bool loading = true;
+    private bool forbidden;
     private bool saving;
     private bool editing;
     private int? editingId;
@@ -35,6 +39,13 @@ public partial class Groups
 
     protected override async Task OnInitializedAsync()
     {
+        if (!await Access.CanManageAsync())
+        {
+            forbidden = true;
+            loading = false;
+            return;
+        }
+
         roles = RoleManager.Roles.OrderBy(role => role.Name).ToList();
         await ReloadAsync();
     }

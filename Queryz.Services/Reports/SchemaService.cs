@@ -9,12 +9,21 @@ public interface ISchemaService
 
 public sealed class SchemaService(
     ILogger<SchemaService> logger,
-    IRepository<DataSource> dataSources) : ISchemaService
+    IQueryzAuthorization access,
+    IRepository<DataSource> dataSources,
+    IRepository<Report> reports,
+    IRepository<ReportGroupRole> groupRoles,
+    IRepository<ReportUserBlacklistEntry> blacklist) : ISchemaService
 {
     public async Task<Result<IReadOnlyList<SchemaTableDto>>> GetTablesAsync(
         int dataSourceId,
         CancellationToken cancellationToken = default)
     {
+        if (!await access.CanManageAsync() && !await CanReadForRunAsync(dataSourceId, cancellationToken))
+        {
+            return Result<IReadOnlyList<SchemaTableDto>>.Forbidden();
+        }
+
         var source = await dataSources.FindOneAsync(dataSourceId);
         if (source is null)
         {
@@ -67,6 +76,53 @@ public sealed class SchemaService(
             logger.LogWarning(ex, "Schema for data source {DataSourceId} could not be read", dataSourceId);
             return Result<IReadOnlyList<SchemaTableDto>>.Error(ex.Message);
         }
+    }
+
+    private async Task<bool> CanReadForRunAsync(int dataSourceId, CancellationToken cancellationToken)
+    {
+        if (!await access.CanUseAsync())
+        {
+            return false;
+        }
+
+        var owned = await reports.FindAsync(new SearchOptions<Report>
+        {
+            Query = report => report.DataSourceId == dataSourceId && report.Enabled,
+            CancellationToken = cancellationToken,
+        });
+        if (owned.Count == 0)
+        {
+            return false;
+        }
+
+        var groupIds = owned.Select(report => report.GroupId).Distinct().ToList();
+        var reportIds = owned.Select(report => report.Id).ToList();
+        var roles = await groupRoles.FindAsync(new SearchOptions<ReportGroupRole>
+        {
+            Query = role => groupIds.Contains(role.ReportGroupId),
+            CancellationToken = cancellationToken,
+        });
+        var denied = await blacklist.FindAsync(new SearchOptions<ReportUserBlacklistEntry>
+        {
+            Query = entry => reportIds.Contains(entry.ReportId),
+            CancellationToken = cancellationToken,
+        });
+        var rolesByGroup = roles.GroupBy(role => role.ReportGroupId)
+            .ToDictionary(group => group.Key, group => (IReadOnlyList<string>)group.Select(role => role.RoleId).ToList());
+        var deniedByReport = denied.GroupBy(entry => entry.ReportId)
+            .ToDictionary(group => group.Key, group => (IReadOnlyList<string>)group.Select(entry => entry.UserId).ToList());
+
+        foreach (var report in owned)
+        {
+            if (await access.CanRunAsync(
+                rolesByGroup.GetValueOrDefault(report.GroupId) ?? [],
+                deniedByReport.GetValueOrDefault(report.Id) ?? []))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static string?[] SchemaRestrictions(string? schema, string table) =>

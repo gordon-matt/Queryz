@@ -7,6 +7,9 @@ public partial class Reports
     [Inject]
     private IReportService ReportsService { get; set; } = default!;
 
+    [Inject]
+    private IQueryzAuthorization Access { get; set; } = default!;
+
     [SupplyParameterFromQuery(Name = "group")]
     public string? Group { get; set; }
 
@@ -14,12 +17,14 @@ public partial class Reports
     public string? Query { get; set; }
 
     private bool loading = true;
+    private bool canManage;
     private string? loadError;
     private List<ReportSummaryDto> visible = [];
 
     protected override async Task OnParametersSetAsync()
     {
         loading = true;
+        canManage = await Access.CanManageAsync();
         var listed = await ReportsService.ListAsync();
         if (!listed.IsSuccess)
         {
