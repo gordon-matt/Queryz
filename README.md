@@ -1,6 +1,8 @@
-# Queryz
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=gordon_matt%40live%2ecom&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 
-Queryz is a Blazor Razor Class Library for saved SQL reports. Filters are built with [QueryKrafter](https://github.com/Heroicsoft/QueryKrafter) and turned into a parameterized WHERE clause on the server from the columns stored with the report.
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Logo.png" alt="Logo" width="350" />
+
+Queryz is a Blazor Razor Class Library for saved SQL reports. Filters are built with [QueryKrafter](https://github.com/gordon-matt/QueryKrafter) and turned into a parameterized WHERE clause on the server from the columns stored with the report.
 
 `Queryz.Demo` is the sample host. Run it with:
 
@@ -42,3 +44,34 @@ Administrators set up data sources, groups, enumerations, and reports, and they 
 ## What a report stores
 
 A report selects columns from one or more joined tables and stores QueryKrafter rules JSON. Running it shows the first 10 rows. Download exports the full result, still honoring a row limit saved on the report.
+
+## Support
+
+If you find this project useful, consider supporting its development.
+
+<p align="center">
+  <a href="https://buymeacoffee.com/vnmatt">
+    <img src="https://github.com/gordon-matt/MyResume/blob/gh-pages/assets/images/BuyMeACoffee_Logo.png"
+         alt="Buy Me a Coffee"
+         height="40">
+  </a>&nbsp;&nbsp;&nbsp;
+  <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=gordon_matt%40live%2ecom&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted">
+    <img src="https://github.com/gordon-matt/MyResume/blob/gh-pages/assets/images/PayPal_Logo.png"
+         alt="Donate with PayPal"
+         height="40">
+  </a>
+</p>
+
+<p align="center">
+  Prefer using your phone? Scan the QR code:
+</p>
+
+<p align="center">
+  <a href="https://buymeacoffee.com/vnmatt">
+    <img src="https://github.com/gordon-matt/MyResume/blob/gh-pages/assets/images/BuyMeACoffee_QR.png"
+         alt="Buy Me a Coffee QR Code"
+         width="180">
+  </a>
+</p>
+
+<img src="https://komarev.com/ghpvc/?username=gordon-matt&label=GitHub%20Hits%20Since%202025-06-01%3A%20&color=ff0000&style=flat" alt="gordon-matt" />
