@@ -113,9 +113,12 @@ else
                 }
             </tbody>
         </table>
-        <details>
-            <summary>Query</summary>
-            <pre class="nf-mono">@result.Sql</pre>
-        </details>
+        @if (canManage)
+        {
+            <details>
+                <summary>Query</summary>
+                <pre class="nf-mono">@result.Sql</pre>
+            </details>
+        }
     }
 }

@@ -54,6 +54,24 @@
     margin-bottom: 1.25rem;
 }
 
+.queryz-drag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: var(--nf-muted);
+    cursor: grab;
+}
+
+.queryz-drag:active {
+    cursor: grabbing;
+}
+
+.nf-table tr.queryz-drop td {
+    background: var(--nf-accent-soft);
+}
+
 .nf-table td.queryz-actions {
     width: 1%;
     white-space: nowrap;

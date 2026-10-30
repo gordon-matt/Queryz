@@ -455,16 +455,43 @@ public partial class ReportEditor
         columnsCustomized = true;
     }
 
-    private void MoveColumn(int index, int delta)
+    private int? draggedColumn;
+
+    private int? dragOverColumn;
+
+    private void BeginColumnDrag(int index) => draggedColumn = index;
+
+    private void DragColumnOver(int index)
     {
-        int target = index + delta;
-        if (target < 0 || target >= form.Columns.Count)
+        if (draggedColumn is not null)
         {
-            return;
+            dragOverColumn = index;
+        }
+    }
+
+    private void DropColumn(int index)
+    {
+        if (draggedColumn is int from && from != index && from >= 0 && from < form.Columns.Count)
+        {
+            var column = form.Columns[from];
+            form.Columns.RemoveAt(from);
+            int target = index;
+            if (target > form.Columns.Count)
+            {
+                target = form.Columns.Count;
+            }
+
+            form.Columns.Insert(target, column);
+            columnsCustomized = true;
         }
 
-        (form.Columns[index], form.Columns[target]) = (form.Columns[target], form.Columns[index]);
-        columnsCustomized = true;
+        EndColumnDrag();
+    }
+
+    private void EndColumnDrag()
+    {
+        draggedColumn = null;
+        dragOverColumn = null;
     }
 
     private async Task RemoveColumnAsync(int index)

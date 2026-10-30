@@ -89,6 +89,7 @@ else
             <table class="nf-table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Column</th>
                         <th>Type</th>
                         <th>Alias</th>
@@ -104,7 +105,16 @@ else
                     {
                         int columnIndex = index;
                         var column = form.Columns[columnIndex];
-                        <tr>
+                        <tr class="@(dragOverColumn == columnIndex ? "queryz-drop" : null)"
+                            @ondragover:preventDefault
+                            @ondragover="() => DragColumnOver(columnIndex)"
+                            @ondrop="() => DropColumn(columnIndex)">
+                            <td>
+                                <span class="queryz-drag" draggable="true" title="Drag to reorder" aria-label="Drag to reorder"
+                                      @ondragstart="() => BeginColumnDrag(columnIndex)" @ondragend="EndColumnDrag">
+                                    <Icon Name="grip" />
+                                </span>
+                            </td>
                             <td>
                                 @if (column.IsLiteral)
                                 {
@@ -143,8 +153,6 @@ else
                             <td><input class="nf-input" @bind="column.Format" /></td>
                             <td><input type="checkbox" @bind="column.IsHidden" /></td>
                             <td>
-                                <button type="button" class="nf-button" disabled="@(columnIndex == 0)" @onclick="() => MoveColumn(columnIndex, -1)">Up</button>
-                                <button type="button" class="nf-button" disabled="@(columnIndex == form.Columns.Count - 1)" @onclick="() => MoveColumn(columnIndex, 1)">Down</button>
                                 <button type="button" class="nf-button" @onclick="() => RemoveColumnAsync(columnIndex)">Remove</button>
                             </td>
                         </tr>
