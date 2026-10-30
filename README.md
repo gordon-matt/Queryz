@@ -1,6 +1,6 @@
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=gordon_matt%40live%2ecom&lc=AU&currency_code=AUD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 
-<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Logo.png" alt="Logo" width="350" />
+<img src="https://github.com/gordon-matt/Queryz/blob/main/_Misc/Logo_Dark.png" alt="Logo" width="350" />
 
 Queryz is a Blazor Razor Class Library for building reports against the databases you connect. A report selects columns from one or more joined tables, stores its filters as [QueryKrafter](https://github.com/gordon-matt/QueryKrafter) rules, and turns those rules into a parameterized WHERE clause on the server. Running a report shows the filters first, then a preview of the first 10 rows. Download exports the full result as Excel (.xlsx) or a delimited file (comma, tab, vertical bar, or semicolon), still honoring a row limit saved on the report.
 
