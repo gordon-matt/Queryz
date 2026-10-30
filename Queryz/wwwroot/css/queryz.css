@@ -1,58 +1,42 @@
-﻿.reports-grid {
-    border-style: dashed;
-    border-width: 2px;
-    border-color: black;
+﻿/* Host extras. NetForge supplies the shell. */
+
+.queryz-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1rem;
 }
 
-.two-columns {
-    -webkit-column-count: 2; /* Chrome, Safari, Opera */
-    -moz-column-count: 2; /* Firefox */
-    column-count: 2;
+.queryz-row-actions {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: flex-end;
 }
 
-.wizard .content {
-    min-height: 100px;
-}
-
-    .wizard .content > .body {
-        width: 100%;
-        height: auto;
-        padding: 15px;
-        position: absolute;
-    }
-
-    .wizard .content .body.current {
-        position: relative;
-    }
-
-.wizard > .content > .body ul.dropdown-menu > li {
-    display: inherit !important;
-}
-
-.visible-icon-checkbox {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-    .visible-icon-checkbox + label:before {
-        font-family: 'FontAwesome';
-        font-weight: normal;
-        font-size: 1.2em;
-        content: "\f06e"; /* eye icon */
-        color: green;
-        letter-spacing: 10px;
-        cursor: pointer;
-    }
-
-    .visible-icon-checkbox:checked + label:before {
-        content: "\f070"; /* eye-slash icon */
-        color: red;
-        letter-spacing: 10px;
-    }
-
-.pt-4_5 {
-    padding-top: 2.5rem !important;
+/* QueryKrafter keeps its own palette. Theme="host" lets these win over its light and dark sets. */
+.qk-root[data-theme="host"] {
+    --qk-font: var(--nf-font);
+    --qk-radius: var(--nf-radius);
+    --qk-radius-small: var(--nf-radius-small);
+    --qk-surface: var(--nf-surface-2);
+    --qk-surface-raised: var(--nf-surface);
+    --qk-field: var(--nf-surface);
+    --qk-hover: var(--nf-hover);
+    --qk-border: var(--nf-border);
+    --qk-border-strong: var(--nf-border);
+    --qk-line: var(--nf-border);
+    --qk-text: var(--nf-text);
+    --qk-muted: var(--nf-muted);
+    --qk-accent: var(--nf-accent);
+    --qk-accent-hover: var(--nf-accent);
+    --qk-accent-text: var(--nf-accent-text);
+    --qk-accent-soft: var(--nf-accent-soft);
+    --qk-accent-ring: var(--nf-accent-soft);
+    --qk-not: var(--nf-warning);
+    --qk-not-soft: var(--nf-warning-soft);
+    --qk-danger: var(--nf-danger);
+    --qk-danger-soft: var(--nf-danger-soft);
+    --qk-hidden: var(--nf-info);
+    --qk-hidden-soft: var(--nf-info-soft);
+    --qk-shadow: none;
+    color-scheme: inherit;
 }

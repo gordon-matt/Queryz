@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Ardalis.Result" Version="10.1.0" />
+		<PackageReference Include="Heroicsoft.NetForge.Abstractions" Version="1.1.0" />
+		<PackageReference Include="Heroicsoft.NetForge.Results" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.13" />
+		<PackageReference Include="MySqlConnector" Version="2.5.0" />
+		<PackageReference Include="Npgsql" Version="10.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Queryz.Core\Queryz.Core.csproj" />
+		<ProjectReference Include="..\Queryz.Data\Queryz.Data.csproj" />
+		<ProjectReference Include="..\Queryz.Models\Queryz.Models.csproj" />
+		<ProjectReference Include="..\..\..\Components\QueryKrafter\QueryKrafter.Core\QueryKrafter.Core.csproj" />
+	</ItemGroup>
+
+</Project>

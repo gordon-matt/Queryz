@@ -1,0 +1,31 @@
+@using Heroicsoft.NetForge.Components
+@using Microsoft.Extensions.Options
+@inject IOptions<ForgeUiOptions> UiOptions
+@{
+    var ui = UiOptions.Value;
+    string? accentCss = ForgeAccentCss.Build(ui);
+}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Queryz</title>
+    <script src="~/_content/Heroicsoft.NetForge.Components/js/theme-init.js"
+            data-theme-key="@ui.ThemeStorageKey"
+            data-default-theme="@ui.DefaultColorScheme"></script>
+    <link rel="stylesheet" href="~/_content/Heroicsoft.NetForge.Components/css/nf.css" />
+    @if (accentCss is not null)
+    {
+        <style>@Html.Raw(accentCss)</style>
+    }
+</head>
+<body>
+    <div class="nf-standalone">
+        <div class="nf-auth-card">
+            <a class="nf-brand-link" href="/">Queryz</a>
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>

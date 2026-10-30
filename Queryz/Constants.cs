@@ -1,8 +1,6 @@
-﻿using Extenso.AspNetCore.Mvc.ExtensoUI;
+﻿namespace Queryz.Legacy;
 
-namespace Queryz;
-
-internal static class Constants
+/// <summary>Kept so the previous MVC host's file name does not hide <see cref="Constants"/>.</summary>
+internal static class RetiredMvcConstants
 {
-    public const State DefaultExtensoUIState = State.Inverse;
 }

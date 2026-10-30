@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Queryz.Core/Queryz.Core.csproj" />
+  <Project Path="Queryz.Models/Queryz.Models.csproj" />
+  <Project Path="Queryz.Data/Queryz.Data.csproj" />
+  <Project Path="Queryz.Data.Sqlite/Queryz.Data.Sqlite.csproj" />
+  <Project Path="Queryz.Data.Sql/Queryz.Data.Sql.csproj" />
+  <Project Path="Queryz.Data.Npgsql/Queryz.Data.Npgsql.csproj" />
+  <Project Path="Queryz.Data.MySql/Queryz.Data.MySql.csproj" />
+  <Project Path="Queryz.Services/Queryz.Services.csproj" />
+  <Project Path="Queryz/Queryz.csproj" />
+</Solution>

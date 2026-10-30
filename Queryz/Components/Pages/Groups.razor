@@ -1,0 +1,100 @@
+@page "/groups"
+@attribute [Authorize]
+
+<PageTitle>Groups - Queryz</PageTitle>
+
+@if (editing)
+{
+    <PageHeader Title="@(editingId is null ? "New group" : "Edit group")" Description="Reports are listed under a group.">
+        <Actions>
+            <button type="button" class="nf-button" disabled="@saving" @onclick="Cancel">Cancel</button>
+            <button type="button" class="nf-button nf-button-primary" disabled="@saving" @onclick="SaveAsync">@(saving ? "Saving." : "Save")</button>
+        </Actions>
+    </PageHeader>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <p class="nf-validation">@error</p>
+    }
+
+    <Field Label="Name" For="group-name">
+        <input id="group-name" class="nf-input" @bind="name" />
+    </Field>
+    <Field Label="Time zone" For="group-timezone">
+        <InputSelect id="group-timezone" class="nf-input" @bind-Value="timeZoneId">
+            <option value=""></option>
+            @foreach (var zone in timeZones)
+            {
+                <option value="@zone.Id">@zone.DisplayName</option>
+            }
+        </InputSelect>
+    </Field>
+    <p class="nf-muted">Roles decide who appears on a report's user blacklist. Convert Time Zone uses this time zone.</p>
+    @if (roles.Count == 0)
+    {
+        <p class="nf-muted">No roles are defined.</p>
+    }
+    else
+    {
+        <div class="queryz-fields">
+            @foreach (var role in roles)
+            {
+                <label class="nf-check">
+                    <input type="checkbox" checked="@selectedRoleIds.Contains(role.Id)" @onchange="() => ToggleRole(role.Id)" />
+                    <span>@role.Name</span>
+                </label>
+            }
+        </div>
+    }
+}
+else
+{
+    <PageHeader Title="Groups" Description="Groups are how reports are listed.">
+        <Actions>
+            <button type="button" class="nf-button nf-button-primary" @onclick="Create">Create</button>
+        </Actions>
+    </PageHeader>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <p class="nf-validation">@error</p>
+    }
+
+    @if (loading)
+    {
+        <p class="nf-muted">Loading.</p>
+    }
+    else if (groups.Count == 0)
+    {
+        <EmptyState Icon="search" Title="No groups yet">
+            <button type="button" class="nf-button nf-button-primary" @onclick="Create">Create</button>
+        </EmptyState>
+    }
+    else
+    {
+        <table class="nf-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Time zone</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in Page)
+                {
+                    <tr>
+                        <td>@group.Name</td>
+                        <td>@TimeZoneLabel(group.TimeZoneId)</td>
+                        <td>
+                            <button type="button" class="nf-button" @onclick="() => Edit(group)">Edit</button>
+                            <button type="button" class="nf-button" @onclick="() => DeleteAsync(group.Id)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <Pager PageNumber="pageNumber" PageNumberChanged="OnPageChanged" PageSize="pageSize" PageSizeChanged="OnPageSizeChanged"
+               TotalCount="groups.Count" PageSizes="pageSizes" />
+    }
+}

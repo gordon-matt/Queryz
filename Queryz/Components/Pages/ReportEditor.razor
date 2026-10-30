@@ -1,0 +1,302 @@
+@page "/reports/new"
+@page "/reports/{Id:int}/edit"
+@attribute [Authorize]
+
+<PageTitle>@(Id is null ? "New report" : "Edit report") - Queryz</PageTitle>
+
+<PageHeader Title="@(Id is null ? "New report" : "Edit report")" Description="Work through the steps. Next checks the current step before it moves on. Previous always goes back.">
+    <Actions>
+        <a class="nf-button" href="/">Cancel</a>
+    </Actions>
+</PageHeader>
+
+@if (loading)
+{
+    <p class="nf-muted">Loading.</p>
+}
+else if (missing)
+{
+    <EmptyState Icon="alert" Title="That report isn't here">
+        <a href="/">Back to reports</a>
+    </EmptyState>
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <p class="nf-validation">@error</p>
+    }
+
+    <Wizard Busy="saving" FinishText="@(saving ? "Saving." : "Finish")" OnFinished="SaveAsync">
+        <WizardStep Title="Database settings" OnLeaving="LeaveSettingsAsync">
+            <div class="queryz-fields">
+                <Field Label="Name" For="report-name">
+                    <input id="report-name" class="nf-input" @bind="form.Name" />
+                </Field>
+                <Field Label="Group" For="report-group">
+                    <InputSelect id="report-group" class="nf-input" @bind-Value="form.GroupId">
+                        @foreach (var group in groups)
+                        {
+                            <option value="@group.Id">@group.Name</option>
+                        }
+                    </InputSelect>
+                </Field>
+            </div>
+            <Field Label="Data source" For="report-source">
+                <InputSelect id="report-source" class="nf-input" @bind-Value="form.DataSourceId">
+                    @foreach (var source in sources)
+                    {
+                        <option value="@source.Id">@source.Name</option>
+                    }
+                </InputSelect>
+            </Field>
+            <label class="nf-check">
+                <input type="checkbox" @bind="form.Enabled" />
+                <span>Enabled</span>
+            </label>
+            <label class="nf-check">
+                <input type="checkbox" @bind="form.EmailEnabled" />
+                <span>Email enabled</span>
+            </label>
+        </WizardStep>
+
+        <WizardStep Title="Tables" OnLeaving="LeaveTables">
+            @if (tables.Count == 0)
+            {
+                <p class="nf-muted">This data source has no tables.</p>
+            }
+            else
+            {
+                <div class="queryz-fields">
+                    @foreach (var table in tables)
+                    {
+                        <label class="nf-check">
+                            <input type="checkbox" checked="@IsTableSelected(table.Name)" @onchange="() => ToggleTable(table.Name)" />
+                            <span>@table.Name</span>
+                        </label>
+                    }
+                </div>
+            }
+        </WizardStep>
+
+        <WizardStep Title="Columns" OnLeaving="LeaveColumns">
+            <table class="nf-table">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Type</th>
+                        <th>Alias</th>
+                        <th>Enumeration</th>
+                        <th>Transform</th>
+                        <th>Format</th>
+                        <th>Hidden</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int index = 0; index < form.Columns.Count; index++)
+                    {
+                        int columnIndex = index;
+                        var column = form.Columns[columnIndex];
+                        <tr>
+                            <td>
+                                @if (column.IsLiteral)
+                                {
+                                    <input class="nf-input" @bind="column.Name" placeholder="Expression" />
+                                }
+                                else
+                                {
+                                    <select class="nf-input" value="@column.Name" @onchange="args => ChangeColumn(columnIndex, args)">
+                                        @foreach (var offered in CurrentColumns)
+                                        {
+                                            <option value="@offered.Name">@offered.Name</option>
+                                        }
+                                    </select>
+                                }
+                            </td>
+                            <td class="nf-muted">@(column.IsLiteral ? "Literal" : ColumnType(column.Name))</td>
+                            <td><input class="nf-input" @bind="column.Alias" /></td>
+                            <td>
+                                <select class="nf-input" @bind="column.EnumerationId">
+                                    <option value="0">None</option>
+                                    @foreach (var item in enumerations)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <select class="nf-input" @bind="column.TransformFunction">
+                                    <option value="">None</option>
+                                    @foreach (string transform in ReportTransforms.All)
+                                    {
+                                        <option value="@transform">@transform</option>
+                                    }
+                                </select>
+                            </td>
+                            <td><input class="nf-input" @bind="column.Format" /></td>
+                            <td><input type="checkbox" @bind="column.IsHidden" /></td>
+                            <td>
+                                <button type="button" class="nf-button" disabled="@(columnIndex == 0)" @onclick="() => MoveColumn(columnIndex, -1)">Up</button>
+                                <button type="button" class="nf-button" disabled="@(columnIndex == form.Columns.Count - 1)" @onclick="() => MoveColumn(columnIndex, 1)">Down</button>
+                                <button type="button" class="nf-button" @onclick="() => RemoveColumn(columnIndex)">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button type="button" class="nf-button nf-button-primary" @onclick="AddColumn">Add</button>
+            <button type="button" class="nf-button" @onclick="AddLiteral">Add literal</button>
+            @if (form.Columns.Count > 0)
+            {
+                <button type="button" class="nf-button" @onclick="ClearColumnsAsync">Remove all</button>
+            }
+        </WizardStep>
+
+        <WizardStep Title="Filtering">
+            <QueryBuilder Config="filterConfig" @bind-Rules="rules" Theme="host" />
+        </WizardStep>
+
+        <WizardStep Title="Sorting" OnLeaving="LeaveSorting">
+            <table class="nf-table">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Direction</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int index = 0; index < form.Sorts.Count; index++)
+                    {
+                        int sortIndex = index;
+                        <tr>
+                            <td>
+                                <select class="nf-input" @bind="form.Sorts[sortIndex].ColumnName">
+                                    <option value="">Choose a column</option>
+                                    @foreach (string name in SortableColumns)
+                                    {
+                                        <option value="@name">@name</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <InputSelect class="nf-input" @bind-Value="form.Sorts[sortIndex].Direction">
+                                    <option value="@ReportSortDirection.Ascending">Ascending</option>
+                                    <option value="@ReportSortDirection.Descending">Descending</option>
+                                </InputSelect>
+                            </td>
+                            <td>
+                                <button type="button" class="nf-button" disabled="@(sortIndex == 0)" @onclick="() => MoveSort(sortIndex, -1)">Up</button>
+                                <button type="button" class="nf-button" disabled="@(sortIndex == form.Sorts.Count - 1)" @onclick="() => MoveSort(sortIndex, 1)">Down</button>
+                                <button type="button" class="nf-button" @onclick="() => form.Sorts.RemoveAt(sortIndex)">Remove</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button type="button" class="nf-button nf-button-primary" @onclick="AddSort">Add</button>
+        </WizardStep>
+
+        <WizardStep Title="Relationships" OnLeaving="LeaveRelationships">
+            @if (form.Tables.Count < 2)
+            {
+                <p class="nf-muted">One table is selected, so the query reads it directly. Add another table when you need a join.</p>
+            }
+            else
+            {
+                <p class="nf-muted">Leave the parent empty on the table the query starts from. Join every other table back to one that is already in the query.</p>
+                <table class="nf-table">
+                    <thead>
+                        <tr>
+                            <th>Join</th>
+                            <th>Table</th>
+                            <th>Parent table</th>
+                            <th>Primary key</th>
+                            <th>Foreign key</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in form.Tables)
+                        {
+                            <tr>
+                                <td>
+                                    <InputSelect class="nf-input" @bind-Value="row.JoinType">
+                                        <option value="@ReportJoinType.InnerJoin">Inner</option>
+                                        <option value="@ReportJoinType.LeftJoin">Left</option>
+                                        <option value="@ReportJoinType.RightJoin">Right</option>
+                                        <option value="@ReportJoinType.OuterJoin">Full</option>
+                                    </InputSelect>
+                                </td>
+                                <td>@row.Name</td>
+                                <td>
+                                    <select class="nf-input" @bind="row.ParentTable" @bind:after="() => row.PrimaryKey = string.Empty">
+                                        <option value=""></option>
+                                        @foreach (string parent in ParentChoices(row.Name))
+                                        {
+                                            <option value="@parent">@parent</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="nf-input" @bind="row.PrimaryKey">
+                                        <option value=""></option>
+                                        @foreach (string column in ColumnsOf(row.ParentTable))
+                                        {
+                                            <option value="@column">@column</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="nf-input" @bind="row.ForeignKey">
+                                        <option value=""></option>
+                                        @foreach (string column in ColumnsOf(row.Name))
+                                        {
+                                            <option value="@column">@column</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </WizardStep>
+
+        <WizardStep Title="Other options">
+            <label class="nf-check">
+                <input type="checkbox" @bind="form.IsDistinct" />
+                <span>Distinct</span>
+            </label>
+            <div class="queryz-fields">
+                <Field Label="Row limit" For="report-limit">
+                    <input id="report-limit" type="number" step="10" class="nf-input" @bind="form.RowLimit" />
+                </Field>
+                <Field Label="Enumeration handling" For="enum-handling">
+                    <InputSelect id="enum-handling" class="nf-input" @bind-Value="form.EnumerationHandling">
+                        <option value="@EnumerationHandling.ShowText">Show text</option>
+                        <option value="@EnumerationHandling.ShowNumericValue">Show numeric value</option>
+                        <option value="@EnumerationHandling.ShowBoth">Show both</option>
+                    </InputSelect>
+                </Field>
+            </div>
+            <p class="nf-muted">These users cannot view the report. The list is everyone in the group's roles.</p>
+            @if (candidates.Count == 0)
+            {
+                <p class="nf-muted">This group has no roles, so there is nobody to block.</p>
+            }
+            else
+            {
+                <div class="queryz-fields">
+                    @foreach (var user in candidates)
+                    {
+                        <label class="nf-check">
+                            <input type="checkbox" checked="@form.DeniedUserIds.Contains(user.Id)" @onchange="() => ToggleDenied(user.Id)" />
+                            <span>@user.Name</span>
+                        </label>
+                    }
+                </div>
+            }
+        </WizardStep>
+    </Wizard>
+}

@@ -1,0 +1,55 @@
+@page "/"
+@attribute [Authorize]
+
+<PageTitle>Reports - Queryz</PageTitle>
+
+<PageHeader Title="Reports" Description="Saved queries over the data sources you connect.">
+    <Actions>
+        <a class="nf-button nf-button-primary" href="/reports/new">New report</a>
+    </Actions>
+</PageHeader>
+
+@if (loading)
+{
+    <p class="nf-muted">Loading.</p>
+}
+else if (loadError is not null)
+{
+    <EmptyState Icon="alert" Title="The reports could not be read" Description="@loadError" />
+}
+else if (visible.Count == 0)
+{
+    <EmptyState Icon="search" Title="No reports yet">
+        <p>Add a data source, then build a report with QueryKrafter.</p>
+        <a class="nf-button nf-button-primary" href="/data-sources">Data sources</a>
+    </EmptyState>
+}
+else
+{
+    <table class="nf-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Data source</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in visible)
+            {
+                <tr>
+                    <td>@report.Name</td>
+                    <td>@report.GroupName</td>
+                    <td>@report.DataSourceName</td>
+                    <td>
+                        <div class="queryz-row-actions">
+                            <a class="nf-button nf-button-primary" href="@($"/reports/{report.Id}")">Run</a>
+                            <a class="nf-button" href="@($"/reports/{report.Id}/edit")">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

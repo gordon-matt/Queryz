@@ -1,0 +1,101 @@
+@page "/enumerations"
+@attribute [Authorize]
+
+<PageTitle>Enumerations - Queryz</PageTitle>
+
+@if (editing)
+{
+    <PageHeader Title="@(editingId is null ? "New enumeration" : "Edit enumeration")" Description="A column can show these names instead of the stored number.">
+        <Actions>
+            <button type="button" class="nf-button" disabled="@saving" @onclick="Cancel">Cancel</button>
+            <button type="button" class="nf-button nf-button-primary" disabled="@saving" @onclick="SaveAsync">@(saving ? "Saving." : "Save")</button>
+        </Actions>
+    </PageHeader>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <p class="nf-validation">@error</p>
+    }
+
+    <div class="queryz-fields">
+        <Field Label="Name" For="enum-name">
+            <input id="enum-name" class="nf-input" @bind="name" />
+        </Field>
+        <label class="nf-check">
+            <input type="checkbox" @bind="isBitFlags" />
+            <span>Bit flags</span>
+        </label>
+    </div>
+
+    <table class="nf-table">
+        <thead>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var value in values)
+            {
+                <tr>
+                    <td><input type="number" class="nf-input" @bind="value.Id" /></td>
+                    <td><input class="nf-input" @bind="value.Name" /></td>
+                    <td><button type="button" class="nf-button" @onclick="() => values.Remove(value)">Remove</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="button" class="nf-button nf-button-primary" @onclick="AddValue">Add value</button>
+}
+else
+{
+    <PageHeader Title="Enumerations" Description="Named values a report column can display.">
+        <Actions>
+            <button type="button" class="nf-button nf-button-primary" @onclick="Create">Create</button>
+        </Actions>
+    </PageHeader>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <p class="nf-validation">@error</p>
+    }
+
+    @if (loading)
+    {
+        <p class="nf-muted">Loading.</p>
+    }
+    else if (enumerations.Count == 0)
+    {
+        <EmptyState Icon="search" Title="No enumerations yet">
+            <button type="button" class="nf-button nf-button-primary" @onclick="Create">Create</button>
+        </EmptyState>
+    }
+    else
+    {
+        <table class="nf-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Values</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Page)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Values.Count</td>
+                        <td>
+                            <button type="button" class="nf-button" @onclick="() => Edit(item)">Edit</button>
+                            <button type="button" class="nf-button" @onclick="() => DeleteAsync(item.Id)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <Pager PageNumber="pageNumber" PageNumberChanged="OnPageChanged" PageSize="pageSize" PageSizeChanged="OnPageSizeChanged"
+               TotalCount="enumerations.Count" PageSizes="pageSizes" />
+    }
+}

@@ -1,0 +1,148 @@
+@page "/data-sources"
+@attribute [Authorize]
+
+<PageTitle>Data sources - Queryz</PageTitle>
+
+@if (editing)
+{
+    <PageHeader Title="@(editingId is null ? "New data source" : "Edit data source")" Description="Choose a provider, then the server and database. The connection string is built on the server.">
+        <Actions>
+            <button type="button" class="nf-button" disabled="@saving" @onclick="Cancel">Cancel</button>
+            <button type="button" class="nf-button nf-button-primary" disabled="@saving" @onclick="SaveAsync">@(saving ? "Saving." : "Save")</button>
+        </Actions>
+    </PageHeader>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <p class="nf-validation">@error</p>
+    }
+
+    <div class="queryz-fields">
+        <Field Label="Name" For="source-name">
+            <input id="source-name" class="nf-input" @bind="form.Name" />
+        </Field>
+        <Field Label="Data provider" For="source-provider">
+            <InputSelect id="source-provider" class="nf-input" @bind-Value="form.Provider" @bind-Value:after="OnProviderChanged">
+                @foreach (var provider in Enum.GetValues<ReportProvider>())
+                {
+                    <option value="@provider">@ProviderLabel(provider)</option>
+                }
+            </InputSelect>
+        </Field>
+    </div>
+
+    @if (form.Provider == ReportProvider.Sqlite)
+    {
+        <Field Label="Database file" For="source-file">
+            <input id="source-file" class="nf-input" @bind="form.Connection.FilePath" placeholder="C:\data\reports.db" />
+        </Field>
+    }
+    else
+    {
+        <div class="queryz-fields">
+            <Field Label="Server" For="source-server">
+                <input id="source-server" class="nf-input" @bind="form.Connection.Server" @bind:after="LoadDatabasesAsync" />
+            </Field>
+            @if (form.Provider != ReportProvider.SqlServer)
+            {
+                <Field Label="Port" For="source-port">
+                    <input id="source-port" type="number" class="nf-input" @bind="form.Connection.Port" @bind:after="LoadDatabasesAsync" />
+                </Field>
+            }
+        </div>
+
+        @if (form.Provider == ReportProvider.SqlServer)
+        {
+            <label class="nf-check">
+                <input type="checkbox" @bind="form.Connection.IntegratedSecurity" @bind:after="LoadDatabasesAsync" />
+                <span>Integrated security</span>
+            </label>
+        }
+
+        <div class="queryz-fields">
+            <Field Label="User ID" For="source-user">
+                <input id="source-user" class="nf-input" autocomplete="off" disabled="@SqlIntegrated" @bind="form.Connection.UserId" @bind:after="LoadDatabasesAsync" />
+            </Field>
+            <Field Label="Password" For="source-password">
+                <input id="source-password" type="password" class="nf-input" autocomplete="off" disabled="@SqlIntegrated" @bind="form.Connection.Password" @bind:after="LoadDatabasesAsync" />
+            </Field>
+        </div>
+        @if (hasPassword && string.IsNullOrEmpty(form.Connection.Password))
+        {
+            <p class="nf-muted">Leave the password blank to keep the one already stored.</p>
+        }
+
+        <Field Label="Database" For="source-database">
+            @if (databases.Count == 0)
+            {
+                <input id="source-database" class="nf-input" @bind="form.Connection.Database" />
+            }
+            else
+            {
+                <InputSelect id="source-database" class="nf-input" @bind-Value="form.Connection.Database">
+                    @foreach (string database in databases)
+                    {
+                        <option value="@database">@database</option>
+                    }
+                </InputSelect>
+            }
+            @if (loadingDatabases)
+            {
+                <p class="nf-muted">Loading databases.</p>
+            }
+        </Field>
+
+        @if (form.Provider == ReportProvider.PostgreSql)
+        {
+            <Field Label="Schema" For="source-schema">
+                <input id="source-schema" class="nf-input" @bind="form.Connection.Schema" placeholder="public" />
+            </Field>
+        }
+    }
+}
+else
+{
+    <PageHeader Title="Data sources" Description="Connection strings stay on the server. Reports only see the columns you select.">
+        <Actions>
+            <button type="button" class="nf-button nf-button-primary" @onclick="Create">Create</button>
+        </Actions>
+    </PageHeader>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <p class="nf-validation">@error</p>
+    }
+
+    @if (loading)
+    {
+        <p class="nf-muted">Loading.</p>
+    }
+    else if (sources.Count == 0)
+    {
+        <EmptyState Icon="search" Title="No data sources yet">
+            <button type="button" class="nf-button nf-button-primary" @onclick="Create">Create</button>
+        </EmptyState>
+    }
+    else
+    {
+        <table class="nf-table">
+            <thead>
+                <tr><th>Name</th><th>Provider</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var source in sources)
+                {
+                    <tr>
+                        <td>@source.Name</td>
+                        <td>@ProviderLabel(source.Provider)</td>
+                        <td>
+                            <button type="button" class="nf-button" @onclick="() => TestAsync(source.Id)">Test</button>
+                            <button type="button" class="nf-button" @onclick="() => EditAsync(source.Id)">Edit</button>
+                            <button type="button" class="nf-button" @onclick="() => DeleteAsync(source.Id)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

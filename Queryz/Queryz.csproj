@@ -1,66 +1,51 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
-
-		<EnableDefaultContentItems>false</EnableDefaultContentItems>
-		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-		
-		<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
-		<EmbedAllSources>true</EmbedAllSources>
-		<EnableDefaultEmbeddedResourceItems>true</EnableDefaultEmbeddedResourceItems>
+		<BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="wwwroot\**\*" Pack="true" PackagePath="wwwroot\" />
-		
-		<Content Include="Views\ReportBuilder\Index.cshtml" />
-		<Content Include="Views\ReportBuilder\Preview.cshtml" />
-		<Content Include="Views\ReportBuilder\RunReport.cshtml" />
-		<Content Include="Views\ReportBuilder\_ConnectionBuilderMySql.cshtml" />
-		<Content Include="Views\ReportBuilder\_ConnectionBuilderPostgreSql.cshtml" />
-		<Content Include="Views\ReportBuilder\_ConnectionBuilderSqlServer.cshtml" />
-		<Content Include="Views\ReportBuilder\_EnumerationValuesTable.cshtml" />
-		<Content Include="Views\ReportBuilder\_WizardStep1.cshtml" />
-		<Content Include="Views\ReportBuilder\_WizardStep2.cshtml" />
-		<Content Include="Views\ReportBuilder\_WizardStep3.cshtml" />
-		<Content Include="Views\ReportBuilder\_WizardStep4.cshtml" />
-		<Content Include="Views\ReportBuilder\_WizardStep5.cshtml" />
-		<Content Include="Views\ReportBuilder\_WizardStep6.cshtml" />
-		<Content Include="Views\ReportBuilder\_WizardStep7.cshtml" />
-		<Content Include="Views\Shared\CssPartial.cshtml" />
-		<Content Include="Views\Shared\JsPartial.cshtml" />
-		<Content Include="Views\Shared\_QueryzDefaultLayout.cshtml" />
-		<Content Include="Views\_ViewImports.cshtml" />
-
-		<EmbeddedResource Include="wwwroot\**\*" />
+		<Compile Remove="Controllers\**" />
+		<Compile Remove="Extensions\**" />
+		<Compile Remove="Models\**" />
+		<Compile Remove="Services\**" />
+		<Compile Remove="IQueryzAssemblyMarker.cs" />
+		<Content Remove="Views\**" />
+		<None Remove="Views\**" />
+		<ScopedCss Remove="Views\**" />
+		<Content Remove="wwwroot\js\**" />
+		<Content Remove="wwwroot\jQuery-QueryBuilder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Extenso.AspNetCore.Mvc.ExtensoUI" Version="9.3.0" />
-		<PackageReference Include="Extenso.WebAssets.KendoUI" Version="1.0.0" />
-		<PackageReference Include="JQQueryBuilderHelpers" Version="1.0.0" />
+		<PackageReference Include="Ardalis.Result" Version="10.1.0" />
+		<PackageReference Include="Heroicsoft.NetForge.Authentication" Version="1.1.0" />
+		<PackageReference Include="LogVue" Version="1.1.1" />
+		<PackageReference Include="LogVue.Providers.Serilog" Version="1.1.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.13" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Queryz.Shared\Queryz.Shared.csproj" />
+		<ProjectReference Include="..\Queryz.Core\Queryz.Core.csproj" />
+		<ProjectReference Include="..\Queryz.Data\Queryz.Data.csproj" />
+		<ProjectReference Include="..\Queryz.Data.MySql\Queryz.Data.MySql.csproj" />
+		<ProjectReference Include="..\Queryz.Data.Npgsql\Queryz.Data.Npgsql.csproj" />
+		<ProjectReference Include="..\Queryz.Data.Sql\Queryz.Data.Sql.csproj" />
+		<ProjectReference Include="..\Queryz.Data.Sqlite\Queryz.Data.Sqlite.csproj" />
+		<ProjectReference Include="..\Queryz.Models\Queryz.Models.csproj" />
+		<ProjectReference Include="..\Queryz.Services\Queryz.Services.csproj" />
+		<ProjectReference Include="..\..\..\Libraries\Heroicsoft.NetForge\Heroicsoft.NetForge.Components\Heroicsoft.NetForge.Components.csproj" />
+		<ProjectReference Include="..\..\..\Components\QueryKrafter\QueryKrafter.Components\QueryKrafter.Components.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<Content Update="Views\**\*.cshtml" Pack="true" PackagePath="Views" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Update="Views\Shared\_QueryzDefaultLayout.cshtml">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	</ItemGroup>
-
-	<!--<ItemGroup>
-		<Content Include="wwwroot\**" Pack="true" PackagePath="wwwroot" />
-	</ItemGroup>-->
 
 </Project>
