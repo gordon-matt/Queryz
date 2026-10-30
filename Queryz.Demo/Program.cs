@@ -28,8 +28,8 @@ builder.Services.AddNetForgeComponents(ui =>
 {
     ui.ThemeStorageKey = Queryz.Constants.ClientThemeLocalStorageKey;
     ui.DefaultColorScheme = "system";
-    ui.AccentColor = "#0f766e";
-    ui.AccentColorDark = "#2dd4bf";
+    ui.AccentColor = "#0072F0";
+    ui.AccentColorDark = "#4C9FFF";
 });
 
 builder.Services.Configure<ForgeShellOptions>(shell =>

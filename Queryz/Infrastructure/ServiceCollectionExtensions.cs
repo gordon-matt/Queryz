@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.Configure<ForgeShellOptions>(shell =>
         {
             shell.LogoUrl ??= "/_content/Queryz/img/Logo.png";
+            shell.LogoDarkUrl ??= "/_content/Queryz/img/Logo_Dark.png";
             shell.MarkUrl ??= "/_content/Queryz/img/Icon.png";
         });
         return authProvider;
