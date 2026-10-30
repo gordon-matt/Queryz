@@ -160,7 +160,7 @@ else
         </WizardStep>
 
         <WizardStep Title="Filtering">
-            <QueryBuilder Config="filterConfig" @bind-Rules="rules" Theme="host" />
+            <QueryBuilder Config="filterConfig" @bind-Rules="rules" DesignMode="true" Theme="host" />
         </WizardStep>
 
         <WizardStep Title="Sorting" OnLeaving="LeaveSorting">

@@ -37,6 +37,23 @@
     justify-content: flex-end;
 }
 
+.queryz-run {
+    color: var(--nf-accent-text);
+    background: var(--nf-accent);
+    border-color: var(--nf-accent);
+}
+
+.queryz-run:hover {
+    filter: brightness(1.07);
+}
+
+.queryz-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
 .nf-table td.queryz-actions {
     width: 1%;
     white-space: nowrap;

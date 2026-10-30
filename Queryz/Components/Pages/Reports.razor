@@ -54,7 +54,9 @@ else
                     <td>@report.DataSourceName</td>
                     <td class="queryz-actions">
                         <div class="queryz-row-actions">
-                            <a class="nf-button nf-button-primary" href="@($"/reports/{report.Id}")">Run</a>
+                            <a class="nf-icon-button queryz-run" href="@($"/reports/{report.Id}")" title="Run" aria-label="Run">
+                                <Icon Name="play" />
+                            </a>
                             @if (canManage)
                             {
                                 <a class="nf-icon-button" href="@($"/reports/{report.Id}/edit")" title="Edit" aria-label="Edit">

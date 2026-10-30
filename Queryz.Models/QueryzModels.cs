@@ -212,4 +212,7 @@ public sealed class ReportDownloadRequest
     public bool AlwaysEnquote { get; set; }
 
     public bool OutputColumnNames { get; set; }
+
+    /// <summary>The filters the runner set. Hidden conditions are taken from the saved report.</summary>
+    public string? RulesJson { get; set; }
 }

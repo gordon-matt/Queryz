@@ -14,10 +14,15 @@ public interface IReportService
 
     Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default);
 
-    Task<Result<ReportResultDto>> RunAsync(int id, bool preview, CancellationToken cancellationToken = default);
+    Task<Result<ReportRunSetup>> GetRunSetupAsync(int id, CancellationToken cancellationToken = default);
+
+    Task<Result<ReportResultDto>> RunAsync(int id, bool preview, string? rulesJson = null, CancellationToken cancellationToken = default);
 
     QueryBuilderConfig Filters(IReadOnlyList<SchemaColumnDto> columns);
 }
+
+/// <summary>The filter step shown before a report runs.</summary>
+public sealed record ReportRunSetup(string Name, QueryBuilderConfig Filters, QueryGroup Rules);
 
 public sealed class ReportService(
     ILogger<ReportService> logger,
@@ -317,7 +322,42 @@ public sealed class ReportService(
         return Result.Success();
     }
 
-    public async Task<Result<ReportResultDto>> RunAsync(int id, bool preview, CancellationToken cancellationToken = default)
+    public async Task<Result<ReportRunSetup>> GetRunSetupAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var definition = await GetAsync(id, cancellationToken);
+        if (!definition.IsSuccess)
+        {
+            return definition.Map(_ => new ReportRunSetup(string.Empty, new QueryBuilderConfig(), new QueryGroup()));
+        }
+
+        var report = definition.Value;
+        if (!report.Enabled && !await access.CanManageAsync())
+        {
+            return Result<ReportRunSetup>.Forbidden();
+        }
+
+        var schemaResult = await schema.GetTablesAsync(report.DataSourceId, cancellationToken);
+        if (!schemaResult.IsSuccess)
+        {
+            return schemaResult.Status == ResultStatus.Forbidden
+                ? Result<ReportRunSetup>.Forbidden()
+                : Result<ReportRunSetup>.Error(new ErrorList(schemaResult.Errors));
+        }
+
+        var offered = ColumnsFor(schemaResult.Value);
+        var filterColumns = offered
+            .Where(item => report.Columns.Any(column => !column.IsLiteral && string.Equals(column.Name, item.Name, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+        var rules = ReportRules.ForRunner(report.RulesJson, report.Columns);
+        var config = ReportRules.Picker(Filters(filterColumns) with { AllowEmpty = true }, rules, report.Columns);
+        return Result.Success(new ReportRunSetup(report.Name, config, rules));
+    }
+
+    public async Task<Result<ReportResultDto>> RunAsync(
+        int id,
+        bool preview,
+        string? rulesJson = null,
+        CancellationToken cancellationToken = default)
     {
         var definition = await GetAsync(id, cancellationToken);
         if (!definition.IsSuccess)
@@ -394,8 +434,9 @@ public sealed class ReportService(
         var filterColumns = offered
             .Where(item => columnInputs.Any(column => !column.IsLiteral && string.Equals(column.Name, item.Name, StringComparison.OrdinalIgnoreCase)))
             .ToList();
-        var config = Filters(filterColumns);
-        var where = SqlGenerator.Generate(report.RulesJson, config, new SqlGeneratorOptions
+        var config = Filters(filterColumns) with { AllowEmpty = true };
+        string effectiveRules = ReportRules.Enforce(report.RulesJson, rulesJson, ReportRules.AdminFields(report.Columns));
+        var where = SqlGenerator.Generate(effectiveRules, config, new SqlGeneratorOptions
         {
             Dialect = ReportSql.Dialect(source.Provider),
         });

@@ -18,7 +18,7 @@ public static class ReportExportEndpoint
         IReportService reports,
         CancellationToken cancellationToken)
     {
-        var ran = await reports.RunAsync(id, preview: false, cancellationToken);
+        var ran = await reports.RunAsync(id, preview: false, request.RulesJson, cancellationToken);
         if (!ran.IsSuccess)
         {
             if (ran.Status == ResultStatus.NotFound)
