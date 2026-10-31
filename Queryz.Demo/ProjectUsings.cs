@@ -1,6 +1,7 @@
 global using Heroicsoft.NetForge.Abstractions.Auth;
 global using Heroicsoft.NetForge.Authentication;
 global using Heroicsoft.NetForge.Components;
+global using Heroicsoft.NetForge.Components.Navigation;
 global using Heroicsoft.NetForge.Components.Layout;
 global using Heroicsoft.NetForge.Components.Theming;
 global using Queryz;

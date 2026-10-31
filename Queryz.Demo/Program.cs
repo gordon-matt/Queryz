@@ -30,12 +30,23 @@ builder.Services.AddNetForgeComponents(ui =>
     ui.DefaultColorScheme = "system";
     ui.AccentColor = "#0072F0";
     ui.AccentColorDark = "#4C9FFF";
+    ui.ActiveSharedMenuPlacement = NetForgeMenuPlacement.Sidebar;
 });
 
 builder.Services.Configure<ForgeShellOptions>(shell =>
 {
     shell.Brand = "Queryz";
     shell.SearchPlaceholder = "Find a report";
+    shell.UseSharedMenu = true;
+    shell.SharedMenuName = "Admin";
+});
+
+builder.Services.BuildMenu("Admin", menu =>
+{
+    menu.AddItems().AddQueryz(options => options.Title = "Reports");
+    menu.AddItems(group => group.Roles = WellKnownRoles.Administrator)
+        .AsTopbar()
+        .AddLogVue(options => options.Title = "Logs");
 });
 
 builder.Services.AddSingleton(TimeProvider.System);

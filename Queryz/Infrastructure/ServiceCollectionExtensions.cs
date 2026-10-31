@@ -23,12 +23,15 @@ public static class ServiceCollectionExtensions
         services.AddQueryzRepositories();
         services.AddQueryzServices();
         var authProvider = services.AddQueryzAuthentication(configuration);
+        services.AddNetForgeMenuContributor<QueryzMenuContributor>();
         services.AddScoped<IShellNavigation, QueryzNavigation>();
         services.Configure<ForgeShellOptions>(shell =>
         {
             shell.LogoUrl ??= "/_content/Queryz/img/Logo.png";
             shell.LogoDarkUrl ??= "/_content/Queryz/img/Logo_Dark.png";
             shell.MarkUrl ??= "/_content/Queryz/img/Icon.png";
+            shell.UseSharedMenu = true;
+            shell.SharedMenuName ??= "Admin";
         });
         return authProvider;
     }

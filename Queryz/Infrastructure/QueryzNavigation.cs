@@ -2,14 +2,13 @@ using Heroicsoft.NetForge.Abstractions.Navigation;
 
 namespace Queryz.Infrastructure;
 
-public sealed class QueryzNavigation(IReportGroupService groups, IQueryzAuthorization access) : IShellNavigation
+public sealed class QueryzNavigation(IReportGroupService groups) : IShellNavigation
 {
     public string? SearchUrlFormat => "/?q={0}";
 
     public async Task<IReadOnlyList<ForgeNavSection>> GetSectionsAsync(CancellationToken cancellationToken = default)
     {
         var listed = await groups.ListAsync(cancellationToken);
-        bool manage = await access.CanManageAsync();
         var items = new List<ForgeNavItem>
         {
             new()
@@ -36,41 +35,54 @@ public sealed class QueryzNavigation(IReportGroupService groups, IQueryzAuthoriz
             }));
         }
 
-        var sections = new List<ForgeNavSection>();
-        if (manage)
-        {
-            sections.Add(new ForgeNavSection
+        return
+        [
+            new ForgeNavSection
             {
                 Items =
                 [
-                    new ForgeNavItem { Title = "New report", Href = "/reports/new", Icon = "plus" },
-                    new ForgeNavItem { Title = "Data sources", Href = "/data-sources", Icon = "database" },
-                    new ForgeNavItem { Title = "Groups", Href = "/groups", Icon = "folder" },
-                    new ForgeNavItem { Title = "Enumerations", Href = "/enumerations", Icon = "list" },
+                    new ForgeNavItem
+                    {
+                        Title = "Reports",
+                        Href = "/",
+                        Icon = "library",
+                        MatchAll = true,
+                    },
+                    new ForgeNavItem
+                    {
+                        Title = "New report",
+                        Href = "/reports/new",
+                        Icon = "plus",
+                        Roles = WellKnownRoles.Administrator,
+                    },
+                    new ForgeNavItem
+                    {
+                        Title = "Data sources",
+                        Href = "/data-sources",
+                        Icon = "database",
+                        Roles = WellKnownRoles.Administrator,
+                    },
+                    new ForgeNavItem
+                    {
+                        Title = "Groups",
+                        Href = "/groups",
+                        Icon = "folder",
+                        Roles = WellKnownRoles.Administrator,
+                    },
+                    new ForgeNavItem
+                    {
+                        Title = "Enumerations",
+                        Href = "/enumerations",
+                        Icon = "list",
+                        Roles = WellKnownRoles.Administrator,
+                    },
                 ],
-            });
-        }
-
-        sections.Add(new ForgeNavSection
-        {
-            Heading = "Groups",
-            Items = items,
-        });
-        sections.Add(new ForgeNavSection
-        {
-            Heading = "Administration",
-            Roles = WellKnownRoles.Administrator,
-            Items =
-            [
-                new ForgeNavItem
-                {
-                    Title = "Logs",
-                    Href = "/logvue",
-                    Icon = "logs",
-                    External = true,
-                },
-            ],
-        });
-        return sections;
+            },
+            new ForgeNavSection
+            {
+                Heading = "Groups",
+                Items = items,
+            },
+        ];
     }
 }
