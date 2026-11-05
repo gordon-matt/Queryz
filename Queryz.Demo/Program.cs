@@ -33,6 +33,8 @@ builder.Services.AddNetForgeComponents(ui =>
     ui.ActiveSharedMenuPlacement = NetForgeMenuPlacement.Sidebar;
 });
 
+builder.Services.ConfigureNetForgeToastSounds(sounds => sounds.EnableSounds = true);
+
 builder.Services.Configure<ForgeShellOptions>(shell =>
 {
     shell.Brand = "Queryz";
